@@ -8,17 +8,18 @@
     const logo = stage?.querySelector('img');
     const controls = header.querySelector('.header-controls');
     if (!stage || !logo || !controls) return;
-    let startY = 0;
+    let stageCenter = 0;
     let startSize = 0;
     const measure = () => {
       const rect = logo.getBoundingClientRect();
-      startY = rect.top + rect.height / 2;
+      stageCenter = rect.top + window.scrollY + rect.height / 2;
       startSize = logo.getBoundingClientRect().width || 142;
     };
     const render = () => {
       const progress = Math.max(0, Math.min(1, window.scrollY / 135));
       const size = startSize + (37 - startSize) * progress;
-      const y = startY + (34.5 - startY) * progress;
+      const naturalY = stageCenter - window.scrollY;
+      const y = naturalY + (34.5 - naturalY) * progress;
       logo.classList.add('home-moving-logo');
       logo.style.top = `${y}px`;
       logo.style.width = `${size}px`;
@@ -39,6 +40,10 @@
       const content = [...document.querySelectorAll('.tab-content')];
       const drawer = document.querySelector('.static-menu');
       const overlay = document.querySelector('.static-menu-overlay');
+      const outsideSections = [...document.querySelectorAll('#outside .archive-section')];
+      if (outsideSections[0]) outsideSections[0].id = 'zines';
+      if (outsideSections[1]) outsideSections[1].id = 'cyanotype';
+      if (outsideSections[2]) outsideSections[2].id = 'merch';
       const insideTargets = new Set(['inside', 'exhibitions', 'objects', 'drawings']);
       const openSection = (target) => {
         const tabName = insideTargets.has(target) ? 'inside' : 'outside';
@@ -62,7 +67,7 @@
       const closeDrawer = (after) => {
         if (!drawer || drawer.hidden) return after?.();
         drawer.classList.add('is-closing');
-        overlay && (overlay.hidden = true);
+        if (overlay) overlay.hidden = true;
         window.setTimeout(() => { drawer.hidden = true; drawer.classList.remove('is-closing'); after?.(); }, 240);
       };
       drawer?.querySelectorAll('button[data-target]').forEach((button) => button.addEventListener('click', (event) => {
@@ -88,6 +93,16 @@
         next.classList.add(`tab-enter-${direction}`);
         window.setTimeout(() => next.classList.remove(`tab-enter-${direction}`), 360);
       }, true));
+      const exhibitionIds = ['polya-prisutstviya', 'uyazvimoe-mesto', 'portal', 'black-show', 'rusty-box', 'sleepy-stupor'];
+      document.addEventListener('click', (event) => {
+        const card = event.target.closest('#exhibitions .archive-card');
+        if (!card) return;
+        const cards = [...document.querySelectorAll('#exhibitions .archive-card')];
+        const id = exhibitionIds[cards.indexOf(card)];
+        if (!id) return;
+        event.preventDefault();
+        window.location.href = `exhibition.html?id=${id}`;
+      });
       const initialTarget = window.location.hash.slice(1);
       if (initialTarget && document.getElementById(initialTarget)) openSection(initialTarget);
     }, 0);

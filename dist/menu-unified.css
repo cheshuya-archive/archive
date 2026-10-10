@@ -5,3 +5,14 @@
 .static-menu-close,.zine-menu-close{position:absolute!important;top:64px;right:max(16px,calc((100vw - 640px)/2));width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;display:grid!important;place-items:center!important;border:0!important;background:transparent!important;color:#171717!important;font-size:18px!important;line-height:1!important;font-weight:700;box-shadow:none!important}.zine-menu.is-closing{animation:drawer-out .24s cubic-bezier(.4,0,1,1) forwards}
 .section-heading span,.section-heading a{display:flex;align-items:center;color:#171717!important;font-size:13px;font-weight:600;line-height:1.1;text-decoration:none}
 .exhibition-page .zine-info .exhibition-place{font-size:15px;color:#555}.exhibition-page .zine-controls[hidden]{display:none}.exhibition-page .zine-pagination>:first-child::after{content:"Предыдущая"}.exhibition-page .zine-pagination>:last-child::before{content:"Следующая"}
+
+/* Shared mobile behaviour — explicit colors prevent Safari's default blue controls. */
+button,.header-controls button,.inner-header-controls button,.static-menu button,.zine-menu button,.zine-menu a,.static-menu a{color:#171717!important;-webkit-tap-highlight-color:transparent;appearance:none}
+.header-controls button,.inner-header-controls button{border-color:#e5e5e5!important;background:#fff!important}
+html,body{background:#fff;overscroll-behavior-y:none}.archive-page{overflow-x:clip}.archive-header{isolation:isolate}.archive-header:before{content:"";position:absolute;z-index:-1;inset:calc(-1 * max(16px,env(safe-area-inset-top))) 0 0;background:#fff}
+@media(max-width:700px){
+  .archive-header{height:calc(58px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top)}
+  .logo-stage{height:calc(257px + env(safe-area-inset-top));padding-top:calc(85px + env(safe-area-inset-top))}
+  .static-menu,.zine-menu{padding-top:calc(58px + env(safe-area-inset-top));padding-bottom:18px}
+  .static-menu-close,.zine-menu-close{top:calc(18px + env(safe-area-inset-top))}
+}
