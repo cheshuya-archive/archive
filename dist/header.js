@@ -10,6 +10,7 @@
     if (!stage || !logo || !controls) return;
     let stageCenter = 0;
     let startSize = 0;
+    let isAtStage = true;
     const measure = () => {
       const rect = logo.getBoundingClientRect();
       stageCenter = rect.top + window.scrollY + rect.height / 2;
@@ -17,7 +18,9 @@
     };
     const render = () => {
       const progress = Math.max(0, Math.min(1, window.scrollY / 135));
-      if (progress <= 0.001) {
+      if (isAtStage && window.scrollY > 4) isAtStage = false;
+      if (!isAtStage && window.scrollY === 0) isAtStage = true;
+      if (isAtStage) {
         logo.classList.remove('home-moving-logo');
         logo.classList.add('home-at-stage');
         logo.style.top = '';
@@ -30,7 +33,9 @@
       }
       const size = startSize + (37 - startSize) * progress;
       const naturalY = stageCenter - window.scrollY;
-      const y = naturalY + (34.5 - naturalY) * progress;
+      const headerButton = controls.querySelector('button');
+      const headerY = headerButton ? headerButton.getBoundingClientRect().top + headerButton.getBoundingClientRect().height / 2 : 34.5;
+      const y = naturalY + (headerY - naturalY) * progress;
       logo.classList.remove('home-at-stage');
       logo.classList.add('home-moving-logo');
       logo.style.top = `${y}px`;
@@ -77,8 +82,8 @@
       makeCatalogLink(document.querySelector('#exhibitions'), 'catalog-exhibitions.html');
       makeCatalogLink(document.querySelector('#objects'), 'catalog-objects.html');
       makeCatalogLink(document.querySelector('#drawings'), 'catalog-drawings.html');
-      const menuButtons = drawer?.querySelectorAll('button[data-target]');
-      if (menuButtons?.[4]) menuButtons[4].textContent = 'Работа с материалом';
+      drawer?.querySelector('button[data-target="outside"]')?.remove();
+      drawer?.querySelector('button[data-target="inside"]')?.remove();
       const closeDrawer = (after) => {
         if (!drawer || drawer.hidden) return after?.();
         drawer.classList.add('is-closing');
@@ -162,7 +167,7 @@
   const menu = document.createElement('nav');
   menu.className = 'zine-menu';
   menu.hidden = true;
-  menu.innerHTML = '<button class="zine-menu-close" type="button" aria-label="Закрыть меню">×</button><p>Работа в среде</p><a href="index.html#outside">Уличное рисование</a><a href="catalog-prints.html">Печатные издания</a><a href="index.html#cyanotype">Цианотипия</a><a href="index.html#merch">Мерч</a><p>Работа с материалом</p><a href="index.html#inside">Работа с материалом</a><a href="catalog-exhibitions.html">Выставки</a><a href="catalog-objects.html">Объекты</a><a href="catalog-drawings.html">Рисунки</a>';
+  menu.innerHTML = '<button class="zine-menu-close" type="button" aria-label="Закрыть меню">×</button><p>Работа в среде</p><a href="catalog-prints.html">Печатные издания</a><a href="index.html#cyanotype">Цианотипия</a><a href="index.html#merch">Мерч</a><p>Работа с материалом</p><a href="catalog-exhibitions.html">Выставки</a><a href="catalog-objects.html">Объекты</a><a href="catalog-drawings.html">Рисунки</a>';
   document.body.append(overlay, menu);
   const close = (after) => {
     if (menu.hidden) return after?.();
