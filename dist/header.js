@@ -17,9 +17,21 @@
     };
     const render = () => {
       const progress = Math.max(0, Math.min(1, window.scrollY / 135));
+      if (progress <= 0.001) {
+        logo.classList.remove('home-moving-logo');
+        logo.classList.add('home-at-stage');
+        logo.style.top = '';
+        logo.style.width = '';
+        logo.style.height = '';
+        controls.style.width = '83px';
+        controls.style.justifyContent = 'flex-start';
+        header.classList.remove('is-compact');
+        return;
+      }
       const size = startSize + (37 - startSize) * progress;
       const naturalY = stageCenter - window.scrollY;
       const y = naturalY + (34.5 - naturalY) * progress;
+      logo.classList.remove('home-at-stage');
       logo.classList.add('home-moving-logo');
       logo.style.top = `${y}px`;
       logo.style.width = `${size}px`;
@@ -31,7 +43,10 @@
     };
     measure();
     render();
-    window.addEventListener('resize', () => { measure(); render(); });
+    window.addEventListener('resize', () => {
+      if (window.scrollY < 2) measure();
+      render();
+    });
     window.addEventListener('scroll', render, { passive: true });
     logo.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     logo.style.cursor = 'pointer';

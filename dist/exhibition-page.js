@@ -29,6 +29,18 @@
   if (item.images.length < 2) controls.hidden = true;
   document.querySelector('.prev')?.addEventListener('click', () => { imageIndex = (imageIndex + item.images.length - 1) % item.images.length; render(); });
   document.querySelector('.next')?.addEventListener('click', () => { imageIndex = (imageIndex + 1) % item.images.length; render(); });
+  let startX = 0;
+  let startY = 0;
+  const carousel = document.querySelector('.zine-carousel');
+  carousel?.addEventListener('pointerdown', (event) => { if (event.pointerType !== 'mouse') { startX = event.clientX; startY = event.clientY; } });
+  carousel?.addEventListener('pointerup', (event) => {
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    if (item.images.length > 1 && Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) {
+      imageIndex = dx > 0 ? (imageIndex + item.images.length - 1) % item.images.length : (imageIndex + 1) % item.images.length;
+      render();
+    }
+  });
   const previous = exhibitions[(currentIndex + exhibitions.length - 1) % exhibitions.length];
   const next = exhibitions[(currentIndex + 1) % exhibitions.length];
   const prevLink = document.querySelector('.exhibition-prev');

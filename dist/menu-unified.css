@@ -9,10 +9,13 @@
 /* Shared mobile behaviour — explicit colors prevent Safari's default blue controls. */
 button,.header-controls button,.inner-header-controls button,.static-menu button,.zine-menu button,.zine-menu a,.static-menu a{color:#171717!important;-webkit-tap-highlight-color:transparent;appearance:none}
 .header-controls button,.inner-header-controls button{border-color:#e5e5e5!important;background:#fff!important}
-html,body{background:#fff;overscroll-behavior-y:none}.archive-page{overflow-x:clip}.archive-header{isolation:isolate}.archive-header:before{content:"";position:absolute;z-index:-1;inset:calc(-1 * max(16px,env(safe-area-inset-top))) 0 0;background:#fff}
+html,body{min-height:100%;background:#fff;overscroll-behavior-y:none}.archive-page{overflow-x:clip}.archive-header{isolation:isolate}.archive-header:before{content:"";position:fixed;z-index:0;top:0;right:0;left:0;height:calc(74px + env(safe-area-inset-top));background:#fff;pointer-events:none}.archive-header .header-controls{position:relative;z-index:1}
 @media(max-width:700px){
   .archive-header{height:calc(58px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top)}
   .logo-stage{height:calc(257px + env(safe-area-inset-top));padding-top:calc(85px + env(safe-area-inset-top))}
   .static-menu,.zine-menu{padding-top:calc(58px + env(safe-area-inset-top));padding-bottom:18px}
   .static-menu-close,.zine-menu-close{top:calc(18px + env(safe-area-inset-top))}
 }
+.rail-scroll{touch-action:pan-x;overscroll-behavior-x:contain}.zine-carousel{touch-action:pan-y}
+.logo-stage img.home-at-stage{opacity:1;position:relative!important;left:auto!important;top:auto!important;width:142px;height:142px;transform:none!important}
+@media(min-width:641px){.logo-stage img.home-at-stage{width:162px;height:162px}}
