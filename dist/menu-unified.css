@@ -1,0 +1,7 @@
+.static-menu{top:0;right:0;bottom:auto;left:0;width:auto;padding:58px max(16px,calc((100vw - 640px)/2)) 18px;border:0;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.static-menu-overlay{background:rgba(255,255,255,.38);backdrop-filter:blur(7px)}
+.static-menu p{margin:12px 0 4px;font-size:12px;color:#777}
+.static-menu button:not(.static-menu-close){display:block;width:max-content;padding:7px 0;background:transparent!important;font-size:14px}
+.static-menu-close,.zine-menu-close{position:absolute!important;top:64px;right:max(16px,calc((100vw - 640px)/2));width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;display:grid!important;place-items:center!important;border:0!important;background:transparent!important;color:#171717!important;font-size:18px!important;line-height:1!important;font-weight:700;box-shadow:none!important}.zine-menu.is-closing{animation:drawer-out .24s cubic-bezier(.4,0,1,1) forwards}
+.section-heading span,.section-heading a{display:flex;align-items:center;color:#171717!important;font-size:13px;font-weight:600;line-height:1.1;text-decoration:none}
+.exhibition-page .zine-info .exhibition-place{font-size:15px;color:#555}.exhibition-page .zine-controls[hidden]{display:none}.exhibition-page .zine-pagination>:first-child::after{content:"Предыдущая"}.exhibition-page .zine-pagination>:last-child::before{content:"Следующая"}
