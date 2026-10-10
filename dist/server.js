@@ -11,7 +11,12 @@ http.createServer((request, response) => {
   fs.readFile(target, (error, data) => {
     const type = types[path.extname(target)] || "application/octet-stream";
     const page = !error && path.extname(target) === ".html"
-      ? Buffer.from(data.toString().replace("</head>", '<link rel="stylesheet" href="menu-unified.css"></head>').replace("</body>", '<script src="header.js"></script></body>'))
+      ? Buffer.from((() => {
+          let html = data.toString();
+          if (!html.includes('menu-unified.css')) html = html.replace("</head>", '<link rel="stylesheet" href="menu-unified.css"></head>');
+          if (!html.includes('src="header.js"')) html = html.replace("</body>", '<script src="header.js"></script></body>');
+          return html;
+        })())
       : data;
     response.writeHead(error ? 404 : 200, { "Content-Type": type });
     response.end(error ? "Not found" : page);
