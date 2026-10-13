@@ -69,6 +69,7 @@
         label.replaceWith(link);
       };
       makeCatalogLink(document.querySelector('#outside .archive-section'), 'catalog-prints.html');
+      makeCatalogLink(document.querySelector('#cyanotype'), 'cyanotype.html');
       makeCatalogLink(document.querySelector('#exhibitions'), 'catalog-exhibitions.html');
       makeCatalogLink(document.querySelector('#objects'), 'catalog-objects.html');
       makeCatalogLink(document.querySelector('#drawings'), 'catalog-drawings.html');
@@ -139,7 +140,9 @@
     const page = window.location.pathname;
     const anchor = page.includes('exhibitions') ? 'exhibitions' : page.includes('objects') ? 'objects' : page.includes('drawings') ? 'drawings' : 'zines';
     back.href = `index.html#${anchor}`;
-  } else if (back) back.href = window.location.pathname.endsWith('exhibition.html') ? 'catalog-exhibitions.html' : 'catalog-prints.html';
+  } else if (back) back.href = window.location.pathname.endsWith('exhibition.html')
+    ? 'catalog-exhibitions.html'
+    : window.location.pathname.endsWith('cyanotype.html') ? 'index.html#cyanotype' : 'catalog-prints.html';
   const logo = document.createElement('a');
   logo.className = 'site-home-logo';
   logo.href = 'index.html';
@@ -160,7 +163,7 @@
   const menu = document.createElement('nav');
   menu.className = 'zine-menu';
   menu.hidden = true;
-  menu.innerHTML = '<button class="zine-menu-close" type="button" aria-label="Закрыть меню">×</button><p>Работа в среде</p><a href="catalog-prints.html">Печатные издания</a><a href="index.html#cyanotype">Цианотипия</a><a href="index.html#merch">Мерч</a><p>Работа с материалом</p><a href="catalog-exhibitions.html">Выставки</a><a href="catalog-objects.html">Объекты</a><a href="catalog-drawings.html">Рисунки</a>';
+  menu.innerHTML = '<button class="zine-menu-close" type="button" aria-label="Закрыть меню">×</button><p>Работа в среде</p><a href="catalog-prints.html">Печатные издания</a><a href="cyanotype.html">Цианотипия</a><a href="index.html#merch">Мерч</a><p>Работа с материалом</p><a href="catalog-exhibitions.html">Выставки</a><a href="catalog-objects.html">Объекты</a><a href="catalog-drawings.html">Рисунки</a>';
   document.body.append(overlay, menu);
   const close = (after) => {
     if (menu.hidden) return after?.();
