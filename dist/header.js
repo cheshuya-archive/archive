@@ -3,6 +3,10 @@
   if (!header) return;
   const isHome = header.classList.contains('archive-header');
 
+  const isTelegramIOS = /iP(hone|ad|od)/.test(navigator.userAgent)
+    && (/Telegram/i.test(navigator.userAgent) || /t\.me\//i.test(document.referrer));
+  if (isTelegramIOS) document.documentElement.classList.add('telegram-ios');
+
   if (isHome) {
     const stage = document.querySelector('.logo-stage');
     const logo = stage?.querySelector('img');
@@ -10,33 +14,22 @@
     if (!stage || !logo || !controls) return;
     let stageCenter = 0;
     let startSize = 0;
-    let isAtStage = true;
     const measure = () => {
-      const rect = logo.getBoundingClientRect();
-      stageCenter = rect.top + window.scrollY + rect.height / 2;
-      startSize = logo.getBoundingClientRect().width || 142;
+      const rect = stage.getBoundingClientRect();
+      const stageStyle = window.getComputedStyle(stage);
+      const paddingTop = Number.parseFloat(stageStyle.paddingTop) || 0;
+      const paddingBottom = Number.parseFloat(stageStyle.paddingBottom) || 0;
+      const contentHeight = rect.height - paddingTop - paddingBottom;
+      stageCenter = rect.top + window.scrollY + paddingTop + contentHeight / 2;
+      startSize = window.matchMedia('(min-width: 641px)').matches ? 162 : 142;
     };
     const render = () => {
       const progress = Math.max(0, Math.min(1, window.scrollY / 135));
-      if (isAtStage && window.scrollY > 4) isAtStage = false;
-      if (!isAtStage && window.scrollY === 0) isAtStage = true;
-      if (isAtStage) {
-        logo.classList.remove('home-moving-logo');
-        logo.classList.add('home-at-stage');
-        logo.style.top = '';
-        logo.style.width = '';
-        logo.style.height = '';
-        controls.style.width = '83px';
-        controls.style.justifyContent = 'flex-start';
-        header.classList.remove('is-compact');
-        return;
-      }
       const size = startSize + (37 - startSize) * progress;
       const naturalY = stageCenter - window.scrollY;
       const headerButton = controls.querySelector('button');
       const headerY = headerButton ? headerButton.getBoundingClientRect().top + headerButton.getBoundingClientRect().height / 2 : 34.5;
       const y = naturalY + (headerY - naturalY) * progress;
-      logo.classList.remove('home-at-stage');
       logo.classList.add('home-moving-logo');
       logo.style.top = `${y}px`;
       logo.style.width = `${size}px`;
@@ -48,10 +41,7 @@
     };
     measure();
     render();
-    window.addEventListener('resize', () => {
-      if (window.scrollY < 2) measure();
-      render();
-    });
+    window.addEventListener('resize', () => { measure(); render(); });
     window.addEventListener('scroll', render, { passive: true });
     logo.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     logo.style.cursor = 'pointer';
