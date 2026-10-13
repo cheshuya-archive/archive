@@ -32,6 +32,12 @@
   let startX = 0;
   let startY = 0;
   const carousel = document.querySelector('.zine-carousel');
+  carousel?.setAttribute('tabindex', '0');
+  carousel?.addEventListener('keydown', (event) => {
+    if (item.images.length < 2) return;
+    if (event.key === 'ArrowLeft') { event.preventDefault(); imageIndex = (imageIndex + item.images.length - 1) % item.images.length; render(); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); imageIndex = (imageIndex + 1) % item.images.length; render(); }
+  });
   carousel?.addEventListener('pointerdown', (event) => { if (event.pointerType !== 'mouse') { startX = event.clientX; startY = event.clientY; } });
   carousel?.addEventListener('pointerup', (event) => {
     const dx = event.clientX - startX;

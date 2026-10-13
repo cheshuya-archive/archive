@@ -14,15 +14,68 @@
     image.srcset = `images/${base}-600.webp 600w, images/${base}-1200.webp 1200w, images/${base}-2000.webp 2000w`;
     image.sizes = '(max-width: 700px) 100vw, 600px';
   };
+  const setImageSource = (image, base) => {
+    if (!image) return;
+    image.src = `images/${base}-1200.webp`;
+    image.srcset = `images/${base}-600.webp 600w, images/${base}-1200.webp 1200w, images/${base}-2000.webp 2000w`;
+    image.sizes = '(max-width: 700px) 100vw, 600px';
+  };
+  const enableRailInteractions = (rail, bindButtons = false) => {
+    if (!rail || rail.dataset.carouselReady) return;
+    rail.dataset.carouselReady = 'true';
+    const viewport = rail.querySelector('.rail-scroll');
+    if (!viewport) return;
+    viewport.tabIndex = 0;
+    viewport.setAttribute('aria-label', 'Галерея работ');
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); viewport.scrollBy({ left: -Math.max(220, viewport.clientWidth * .8), behavior: 'smooth' }); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); viewport.scrollBy({ left: Math.max(220, viewport.clientWidth * .8), behavior: 'smooth' }); }
+    });
+    let pointerStart = 0, scrollStart = 0, dragging = false;
+    viewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      pointerStart = event.clientX;
+      scrollStart = viewport.scrollLeft;
+      dragging = true;
+      viewport.setPointerCapture?.(event.pointerId);
+    });
+    viewport.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const delta = event.clientX - pointerStart;
+      if (Math.abs(delta) > 3) viewport.scrollLeft = scrollStart - delta;
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => viewport.addEventListener(type, () => { dragging = false; }));
+    if (bindButtons) {
+      rail.querySelector('.rail-prev')?.addEventListener('click', () => viewport.scrollBy({ left: -viewport.clientWidth, behavior: 'smooth' }));
+      rail.querySelector('.rail-next')?.addEventListener('click', () => viewport.scrollBy({ left: viewport.clientWidth, behavior: 'smooth' }));
+    }
+  };
+  const makeMerchCarousel = () => {
+    const section = document.querySelector('.merch-section');
+    const card = section?.querySelector('.archive-card');
+    if (!section || !card || section.querySelector('.rail-scroll')) return;
+    const rail = document.createElement('div');
+    rail.className = 'rail rail-art merch-carousel';
+    rail.innerHTML = '<div class="rail-scroll"></div><button class="rail-arrow rail-prev" type="button" aria-label="Предыдущая фотография">←</button><button class="rail-arrow rail-next" type="button" aria-label="Следующая фотография">→</button>';
+    const viewport = rail.querySelector('.rail-scroll');
+    const secondCard = card.cloneNode(true);
+    setImageSource(secondCard.querySelector('img'), 'new-site-assets/merch/image%2075');
+    card.replaceWith(rail);
+    viewport.append(card, secondCard);
+    enableRailInteractions(rail, true);
+  };
   window.setTimeout(() => {
     setResponsiveImage('.street-feature .feature-image img', 'new-site-assets/environment/street-feature');
     setResponsiveImage('#zines .archive-card:nth-of-type(2) img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
     setResponsiveImage('#zines .archive-card:nth-of-type(3) img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
     setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(1) img', 'new-site-assets/cyanotypes/3Zlo6afGt3c');
     setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(2) img', 'new-site-assets/cyanotypes/4fZgpzXQfcE');
+    document.querySelector('#cyanotype .section-description')?.remove();
     setResponsiveImage('.merch-section .archive-image img', 'new-site-assets/merch/image%2074');
     setResponsiveImage('.catalog-card-link:nth-of-type(2) .catalog-image img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
     setResponsiveImage('.catalog-card-link:nth-of-type(3) .catalog-image img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
+    document.querySelectorAll('.rail').forEach(rail => enableRailInteractions(rail));
+    makeMerchCarousel();
   }, 0);
 
   if (isHome) {

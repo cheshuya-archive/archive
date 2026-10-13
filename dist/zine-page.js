@@ -18,6 +18,11 @@
   const next = () => { index = (index + 1) % images.length; render(); };
   document.querySelector('.prev')?.addEventListener('click', previous);
   document.querySelector('.next')?.addEventListener('click', next);
+  carousel?.setAttribute('tabindex', '0');
+  carousel?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); previous(); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); next(); }
+  });
   let startX = 0, startY = 0;
   carousel?.addEventListener('pointerdown', (event) => {
     if (event.pointerType !== 'mouse') { startX = event.clientX; startY = event.clientY; }
