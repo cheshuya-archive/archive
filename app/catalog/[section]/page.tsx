@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import { CatalogPage } from "@/components/catalog-page";
 import { drawings, exhibitions, objects, zines } from "@/content/site-content";
 
+export function generateStaticParams() {
+  return ["prints", "exhibitions", "objects", "drawings"].map((section) => ({ section }));
+}
+
 export default async function Page({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params;
   if (section === "prints") return <CatalogPage title="Печатные издания" items={zines} />;

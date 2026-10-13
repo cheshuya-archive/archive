@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ResponsiveImage } from "@/components/responsive-image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Instagram, Menu, Youtube } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -16,7 +16,7 @@ function Rail({ children, art = false }: { children: React.ReactNode; art?: bool
 }
 
 function Card({ image, title, note, href }: { image: string; title: string; note: string; href?: string }) {
-  const card = <article className="archive-card"><div className="archive-image"><Image src={image} alt={title} fill sizes="235px" /></div><div className="archive-caption"><strong>{title}</strong><span>{note}</span></div></article>;
+  const card = <article className="archive-card"><div className="archive-image"><ResponsiveImage src={image} alt={title} fill sizes="235px" /></div><div className="archive-caption"><strong>{title}</strong><span>{note}</span></div></article>;
   return href ? <Link className="archive-card-link" href={href}>{card}</Link> : card;
 }
 
@@ -31,16 +31,16 @@ export function HomePage() {
   const resetStreetImage = (event: React.PointerEvent<HTMLElement>) => { event.currentTarget.style.setProperty("--street-x", "0px"); event.currentTarget.style.setProperty("--street-y", "0px"); };
   return <main className="archive-page">
     <header className={`archive-header ${compact ? "is-compact" : ""}`}>
-      <Button className="header-logo" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Наверх"><Image src="/media/logo.jpg" alt="Чешуя" width={112} height={112} priority /></Button>
+      <Button className="header-logo" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Наверх"><ResponsiveImage src="/media/logo.jpg" alt="Чешуя" width={112} height={112} sizes="37px" priority /></Button>
       <div className="header-controls"><Button className="language-button" variant="outline" size="icon" onClick={() => setLocale(locale === "ru" ? "en" : "ru")} aria-label="Сменить язык">{locale === "ru" ? "En" : "Ru"}</Button><Sheet><SheetTrigger asChild><Button variant="outline" size="icon" aria-label="Открыть меню"><Menu size={18}/></Button></SheetTrigger><SheetContent><nav className="menu-list"><p>{t.outside}</p><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("outside", "outside")}>Уличное рисование</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("outside", "zines")}>Печатные издания</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("outside", "cyanotype")}>Цианотипия</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("outside", "merch")}>Мерч</Button></SheetClose><p>{t.inside}</p><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("inside", "inside")}>Поиск форм</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("inside", "exhibitions")}>Выставки</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("inside", "objects")}>Объекты</Button></SheetClose><SheetClose asChild><Button variant="ghost" onClick={() => scrollTo("inside", "drawings")}>Рисунки</Button></SheetClose></nav></SheetContent></Sheet></div>
     </header>
-    <section className="logo-stage" onPointerMove={moveStreetImage} onPointerLeave={resetStreetImage}><Image src="/media/logo.jpg" alt="Чешуя" width={290} height={290} priority /></section>
+    <section className="logo-stage" onPointerMove={moveStreetImage} onPointerLeave={resetStreetImage}><ResponsiveImage src="/media/logo.jpg" alt="Чешуя" width={290} height={290} sizes="162px" priority /></section>
     <Tabs value={activeTab} onValueChange={setActiveTab} className="archive-shell" id="outside">
         <TabsList><TabsTrigger value="outside" onPointerDown={() => setActiveTab("outside")}>{t.outside.toLowerCase()}</TabsTrigger><TabsTrigger value="inside" onPointerDown={() => setActiveTab("inside")}>{t.inside.toLowerCase()}</TabsTrigger></TabsList>
       <TabsContent value="outside" className="tab-content">
-        <section className="street-feature"><div className="feature-image"><Image src="/media/image%201.png" alt="Уличная работа Чешуи" fill sizes="(max-width: 640px) 100vw, 600px" /></div><h1>{t.streetTitle}</h1><p>{t.streetText}</p><div className="social-links"><a href="https://www.instagram.com/cheshu_ya/" target="_blank" rel="noreferrer"><Instagram size={15}/> Instagram</a><a href="https://www.youtube.com/@cheshu_ya" target="_blank" rel="noreferrer"><Youtube size={15}/> YouTube</a></div></section>
+        <section className="street-feature"><div className="feature-image"><ResponsiveImage src="/media/image%201.png" alt="Уличная работа Чешуи" fill sizes="(max-width: 640px) 100vw, 600px" priority /></div><h1>{t.streetTitle}</h1><p>{t.streetText}</p><div className="social-links"><a href="https://www.instagram.com/cheshu_ya/" target="_blank" rel="noreferrer"><Instagram size={15}/> Instagram</a><a href="https://www.youtube.com/@cheshu_ya" target="_blank" rel="noreferrer"><Youtube size={15}/> YouTube</a></div></section>
         <section className="archive-section" id="zines"><div className="section-heading"><h2>{t.zines}</h2><Link href="/catalog/prints">перейти</Link></div><Rail>{zines.map((zine) => <Card key={zine.title} image={zine.image} title={zine.title} note={zine.year} href={`/zines/${zine.slug}`} />)}</Rail></section>
-        <section className="archive-section" id="cyanotype"><div className="section-heading"><h2>{t.cyanotype}</h2><span>{t.all}</span></div><p className="section-description">{t.cyanotypeText}</p><Rail art>{["/media/DSCF3126-Recovered_1.png", ...cyanotypes].map((image, i) => <article className="cyanotype-slide" key={image}><Image src={image} alt={`Цианотипия ${i + 1}`} fill sizes="(max-width: 640px) 100vw, 600px" /></article>)}</Rail></section>
+        <section className="archive-section" id="cyanotype"><div className="section-heading"><h2>{t.cyanotype}</h2><span>{t.all}</span></div><p className="section-description">{t.cyanotypeText}</p><Rail art>{["/media/DSCF3126-Recovered_1.png", ...cyanotypes].map((image, i) => <article className="cyanotype-slide" key={image}><ResponsiveImage src={image} alt={`Цианотипия ${i + 1}`} fill sizes="(max-width: 640px) 100vw, 600px" /></article>)}</Rail></section>
         <section className="archive-section merch-section" id="merch"><div className="section-heading"><h2>{t.shirts}</h2></div><p className="section-description">Принт отсылает к уличной работе 2020 года, сделанной в Казани.</p><Card image="/media/image%202.png" title="Футболка «Дом»" note="Тиражная продукция" /></section>
       </TabsContent>
         <TabsContent value="inside" id="inside" className="tab-content inside-preview">
