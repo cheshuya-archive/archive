@@ -10,7 +10,7 @@ const manifestPath = path.join(outputDir, ".image-manifest.json");
 const staticDir = path.join(root, "dist");
 const widths = [600, 1200, 2000];
 const quality = Number(process.env.IMAGE_WEBP_QUALITY ?? 82);
-const supportedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff", ".avif"]);
+const supportedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff", ".avif", ".heic", ".heif"]);
 
 async function filesIn(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -109,7 +109,13 @@ for (const sourcePath of sourceFiles) {
     continue;
   }
 
-  const metadata = await sharp(sourcePath).metadata();
+  let metadata;
+  try {
+    metadata = await sharp(sourcePath).metadata();
+  } catch (error) {
+    console.warn(`Пропущен неподдерживаемый файл: ${relativePath} (${error.message.split("\n")[0]})`);
+    continue;
+  }
   if (!metadata.width) {
     console.warn(`Пропущен файл без ширины: ${relativePath}`);
     continue;
@@ -121,14 +127,21 @@ for (const sourcePath of sourceFiles) {
     const destination = path.join(outputDir, outputRelativePath);
     await mkdir(path.dirname(destination), { recursive: true });
     const temporary = `${destination}.tmp`;
-    await sharp(sourcePath)
-      .rotate()
-      .resize({ width, withoutEnlargement: true })
-      .webp({ quality })
-      .toFile(temporary);
-    await rename(temporary, destination);
-    outputs.push({ width, file: outputRelativePath.split(path.sep).join("/") });
+    try {
+      await sharp(sourcePath)
+        .rotate()
+        .resize({ width, withoutEnlargement: true })
+        .webp({ quality })
+        .toFile(temporary);
+      await rename(temporary, destination);
+      outputs.push({ width, file: outputRelativePath.split(path.sep).join("/") });
+    } catch (error) {
+      console.warn(`Пропущен неподдерживаемый файл: ${relativePath} (${error.message.split("\n")[0]})`);
+      break;
+    }
   }
+
+  if (outputs.length !== widths.length) continue;
 
   manifest.assets[relativePath] = { hash, quality, outputs };
   optimized += 1;

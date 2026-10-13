@@ -7,6 +7,24 @@
     && (/Telegram/i.test(navigator.userAgent) || /t\.me\//i.test(document.referrer));
   if (isTelegramIOS) document.documentElement.classList.add('telegram-ios');
 
+  const setResponsiveImage = (selector, base) => {
+    const image = document.querySelector(selector);
+    if (!image) return;
+    image.src = `images/${base}-1200.webp`;
+    image.srcset = `images/${base}-600.webp 600w, images/${base}-1200.webp 1200w, images/${base}-2000.webp 2000w`;
+    image.sizes = '(max-width: 700px) 100vw, 600px';
+  };
+  window.setTimeout(() => {
+    setResponsiveImage('.street-feature .feature-image img', 'new-site-assets/environment/street-feature');
+    setResponsiveImage('#zines .archive-card:nth-of-type(2) img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
+    setResponsiveImage('#zines .archive-card:nth-of-type(3) img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
+    setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(1) img', 'new-site-assets/cyanotypes/3Zlo6afGt3c');
+    setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(2) img', 'new-site-assets/cyanotypes/4fZgpzXQfcE');
+    setResponsiveImage('.merch-section .archive-image img', 'new-site-assets/merch/image%2074');
+    setResponsiveImage('.catalog-card-link:nth-of-type(2) .catalog-image img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
+    setResponsiveImage('.catalog-card-link:nth-of-type(3) .catalog-image img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
+  }, 0);
+
   if (isHome) {
     const stage = document.querySelector('.logo-stage');
     const logo = stage?.querySelector('img');
