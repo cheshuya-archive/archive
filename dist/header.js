@@ -77,7 +77,7 @@
       const closeDrawer = (after) => {
         if (!drawer || drawer.hidden) return after?.();
         drawer.classList.add('is-closing');
-        if (overlay) overlay.hidden = true;
+        document.querySelectorAll('.static-menu-overlay, .zine-menu-overlay').forEach((item) => { item.hidden = true; });
         window.setTimeout(() => { drawer.hidden = true; drawer.classList.remove('is-closing'); after?.(); }, 240);
       };
       drawer?.querySelectorAll('button[data-target]').forEach((button) => button.addEventListener('click', (event) => {
@@ -147,6 +147,9 @@
   logo.innerHTML = '<img src="media/cheshuya-figma-logo.svg" alt="Чешуя">';
   header.prepend(logo);
 
+  // Older static pages create their own drawer before this shared script loads.
+  // Remove it along with its overlay so two layers can never remain on the page.
+  document.querySelectorAll('.zine-menu, .zine-menu-overlay').forEach((element) => element.remove());
   const oldBurger = header.querySelector('.catalog-burger, .zine-burger');
   if (!oldBurger) return;
   const burger = oldBurger.cloneNode(true);
@@ -162,7 +165,7 @@
   const close = (after) => {
     if (menu.hidden) return after?.();
     menu.classList.add('is-closing');
-    overlay.hidden = true;
+    document.querySelectorAll('.static-menu-overlay, .zine-menu-overlay').forEach((item) => { item.hidden = true; });
     window.setTimeout(() => { menu.hidden = true; menu.classList.remove('is-closing'); after?.(); }, 240);
   };
   burger.addEventListener('click', () => { menu.hidden = false; overlay.hidden = false; });
