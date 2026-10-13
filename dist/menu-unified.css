@@ -34,4 +34,4 @@ html.telegram-ios,.telegram-ios body{height:100%;min-height:100%;overscroll-beha
 .archive-header,.archive-header:before{background:transparent!important}
 
 /* On desktop, leave part of the third zine card in view as a scroll cue. */
-@media(min-width:641px){#zines .rail-scroll>.archive-card{flex-basis:270px}}
+@media(min-width:641px){#zines .rail-scroll>.archive-card{flex-basis:250px}}
