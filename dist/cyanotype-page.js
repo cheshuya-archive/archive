@@ -1,14 +1,14 @@
 (() => {
-  const images = ['media/DSCF3126-Recovered_1.png', 'media/6_(2).jpg', 'media/7_(2).jpg'];
+  const images = ['media/DSCF3126-Recovered_1.png', 'media/6_(2).jpg', 'media/7_(2).jpg', 'media/8_(2).jpg', 'media/1_(1).jpg'];
   const photo = document.querySelector('.zine-photo');
-  const counter = document.querySelector('.counter');
+  const counter = document.querySelector('.cyanotype-counter');
   const carousel = document.querySelector('.zine-carousel');
   const thumbnails = [...document.querySelectorAll('.cyanotype-thumbnails button')];
   let index = 0;
 
   const render = () => {
     photo.src = images[index];
-    counter.textContent = `${index + 1} / ${images.length}`;
+    counter.textContent = `${index + 1} из ${images.length}`;
     thumbnails.forEach((button, buttonIndex) => button.classList.toggle('is-active', buttonIndex === index));
   };
   const move = (direction) => { index = (index + direction + images.length) % images.length; render(); };
