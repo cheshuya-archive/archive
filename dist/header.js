@@ -98,6 +98,7 @@
   };
   window.setTimeout(() => {
     setResponsiveImage('.street-feature .feature-image img', 'new-site-assets/environment/street-feature');
+    setResponsiveImage('#zines .archive-card:nth-of-type(1) img', 'new-site-assets/zines/nedostatochno-pamyati/cover');
     setResponsiveImage('#zines .archive-card:nth-of-type(2) img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
     setResponsiveImage('#zines .archive-card:nth-of-type(3) img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
     setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(1) img', 'new-site-assets/cyanotypes/3Zlo6afGt3c');
@@ -105,6 +106,7 @@
     document.querySelector('#cyanotype .section-description')?.remove();
     addHomeCyanotypes();
     setResponsiveImage('.merch-section .archive-image img', 'new-site-assets/merch/image%2074');
+    setResponsiveImage('.catalog-card-link:nth-of-type(1) .catalog-image img', 'new-site-assets/zines/nedostatochno-pamyati/cover');
     setResponsiveImage('.catalog-card-link:nth-of-type(2) .catalog-image img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
     setResponsiveImage('.catalog-card-link:nth-of-type(3) .catalog-image img', 'new-site-assets/zines/sloi/DboMwpEfEh4');
     document.querySelectorAll('.rail').forEach(rail => enableRailInteractions(rail));

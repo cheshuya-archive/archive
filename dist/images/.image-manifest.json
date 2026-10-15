@@ -1243,6 +1243,114 @@
           "file": "new-site-assets/zines/ubezhishche/IMG_20200621_165935-2000.webp"
         }
       ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/cover.jpg": {
+      "hash": "9791fe3d86307e6a15bbce4113210911dfd784563112527c22a299f8a7e9ed85",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/cover-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/cover-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/cover-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/spread-01.jpg": {
+      "hash": "95d35641c9d8c2d6efa69918ee19a5932c244ae4d4c69ac0042a00ce2ebdf48b",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-01-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-01-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-01-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/spread-02.jpg": {
+      "hash": "a4d2d3942bb362ab1d8c181905f6f78a5ecc3ce9cf6c6928d9b7315459e5176f",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-02-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-02-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-02-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/spread-03.jpg": {
+      "hash": "175a6c5548628b6e787075cafb9f35848a72a1eb8f7567adbd50409a1076eb61",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-03-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-03-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-03-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/spread-04.jpg": {
+      "hash": "c450fb823ffb107042e38eebdcbdaf3ff33778da0b8e8c8decde3128d4591865",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-04-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-04-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-04-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/zines/nedostatochno-pamyati/spread-05.jpg": {
+      "hash": "6d09ac1b93b228187760b19668589af51b2b8a4231f7ed700e630d3ca1253e8c",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-05-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-05-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/zines/nedostatochno-pamyati/spread-05-2000.webp"
+        }
+      ]
     }
   }
 }
