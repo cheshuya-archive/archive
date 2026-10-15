@@ -3205,6 +3205,60 @@
           "file": "new-site-assets/exhibitions/uyazvimoe-mesto/12-2000.webp"
         }
       ]
+    },
+    "new-site-assets/objects/object-01.png": {
+      "hash": "c86c22cf68fa864c8c6d6b652e0457252849ced1b26e3e419f1acdf015268501",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/objects/object-01-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/objects/object-01-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/objects/object-01-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/objects/object-02.png": {
+      "hash": "66476f26fdc31c4d8750d52c1eb7fd760bdb3f5c3bcbffee18876acbc9a39869",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/objects/object-02-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/objects/object-02-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/objects/object-02-2000.webp"
+        }
+      ]
+    },
+    "new-site-assets/objects/object-03.png": {
+      "hash": "78ed38f515d07381ab3d63fd8c49eee7b80fb73c4b79dc4f1e084400bc247e80",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "new-site-assets/objects/object-03-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "new-site-assets/objects/object-03-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "new-site-assets/objects/object-03-2000.webp"
+        }
+      ]
     }
   }
 }

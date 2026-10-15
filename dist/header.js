@@ -79,7 +79,7 @@
     let pointerStart = 0, scrollStart = 0, startedAt = 0, dragging = false;
     viewport.addEventListener('pointerdown', (event) => {
       startedAt = viewport.scrollLeft;
-      if (event.pointerType !== 'mouse') return;
+      if (event.pointerType !== 'mouse' || event.target.closest('.object-slide-button')) return;
       pointerStart = event.clientX;
       scrollStart = viewport.scrollLeft;
       dragging = true;
@@ -132,6 +132,80 @@
       viewport.append(slide);
     });
   };
+  const addHomeObjects = () => {
+    const viewport = document.querySelector('#objects .rail-scroll');
+    if (!viewport) return;
+    const descriptions = ['Керамический объект', 'Объект из металла', 'Объект из дерева'];
+    const bases = descriptions.map((_, index) => `new-site-assets/objects/object-0${index + 1}`);
+    const dialog = document.createElement('dialog');
+    dialog.className = 'object-lightbox';
+    dialog.setAttribute('aria-label', 'Просмотр объектов');
+    dialog.innerHTML = '<button class="object-lightbox-close" type="button" aria-label="Закрыть">×</button><div class="object-lightbox-view"><button class="object-lightbox-prev" type="button" aria-label="Предыдущее фото">←</button><img alt=""><button class="object-lightbox-next" type="button" aria-label="Следующее фото">→</button></div><span class="object-lightbox-counter" aria-live="polite"></span>';
+    document.body.append(dialog);
+    const fullImage = dialog.querySelector('img');
+    const counter = dialog.querySelector('.object-lightbox-counter');
+    let activeIndex = 0;
+    let opener = null;
+    let previousOverflow = '';
+    const render = () => {
+      fullImage.src = `images/${bases[activeIndex]}-2000.webp`;
+      fullImage.alt = descriptions[activeIndex];
+      counter.textContent = `${activeIndex + 1} / ${bases.length}`;
+    };
+    const move = (direction) => {
+      activeIndex = (activeIndex + direction + bases.length) % bases.length;
+      render();
+    };
+    const open = (index, button) => {
+      activeIndex = index;
+      opener = button;
+      render();
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+      dialog.querySelector('.object-lightbox-close').focus();
+    };
+    const slides = bases.map((base, index) => {
+      const slide = document.createElement('article');
+      slide.className = 'cyanotype-slide';
+      const button = document.createElement('button');
+      button.className = 'object-slide-button';
+      button.type = 'button';
+      button.setAttribute('aria-label', `Открыть фото: ${descriptions[index]}`);
+      const image = document.createElement('img');
+      image.alt = descriptions[index];
+      image.loading = 'lazy';
+      setImageSource(image, base);
+      button.append(image);
+      slide.append(button);
+      button.addEventListener('click', () => open(index, button));
+      return slide;
+    });
+    viewport.replaceChildren(...slides);
+    dialog.querySelector('.object-lightbox-close').addEventListener('click', () => dialog.close());
+    dialog.querySelector('.object-lightbox-prev').addEventListener('click', () => move(-1));
+    dialog.querySelector('.object-lightbox-next').addEventListener('click', () => move(1));
+    dialog.addEventListener('close', () => {
+      document.body.style.overflow = previousOverflow;
+      opener?.focus();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); move(-1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); move(1); }
+    });
+    let startX = 0;
+    let startY = 0;
+    dialog.querySelector('.object-lightbox-view').addEventListener('pointerdown', (event) => {
+      startX = event.clientX;
+      startY = event.clientY;
+    });
+    dialog.querySelector('.object-lightbox-view').addEventListener('pointerup', (event) => {
+      if (event.target.closest('button')) return;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? -1 : 1);
+    });
+  };
   window.setTimeout(() => {
     const exhibitionRail = document.querySelector('#exhibitions .rail-scroll');
     if (exhibitionRail) exhibitionRail.replaceChildren(...exhibitions.map((item) => exhibitionCard(item, true)));
@@ -143,6 +217,7 @@
     setResponsiveImage('#cyanotype .cyanotype-slide:nth-of-type(2) img', 'new-site-assets/cyanotypes/4fZgpzXQfcE');
     document.querySelector('#cyanotype .section-description')?.remove();
     addHomeCyanotypes();
+    addHomeObjects();
     setResponsiveImage('.merch-section .archive-image img', 'new-site-assets/merch/image%2074');
     setResponsiveImage('.catalog-card-link:nth-of-type(1) .catalog-image img', 'new-site-assets/zines/nedostatochno-pamyati/cover');
     setResponsiveImage('.catalog-card-link:nth-of-type(2) .catalog-image img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
