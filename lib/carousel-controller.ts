@@ -178,7 +178,7 @@ export function createCardCarousel(viewport: HTMLElement) {
   viewport.addEventListener("scroll", rememberScroll, { passive: true });
   motion.addEventListener("change", onMotion);
   return {
-    move, refresh,
+    move, refresh, cancel: stop,
     goToIndex(index: number) {
       stops = measure();
       const destination = stops[Math.max(0, Math.min(stops.length - 1, index))];
@@ -289,6 +289,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     const current = requested;
     const ticket = ++version;
     pending = true;
+    stage.setAttribute("data-animating", "");
     syncControls(current);
     prepare(current);
     stage.setAttribute("aria-busy", "true");
@@ -297,7 +298,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
       pending = false;
       stage.setAttribute("aria-busy", "false");
       if (photos[current].naturalWidth) controller.goToIndex(current);
-      else { requested = selectedIndex(); syncControls(requested); }
+      else { stage.removeAttribute("data-animating"); requested = selectedIndex(); syncControls(requested); }
     };
     photos[current].decode().then(ready, ready);
   };
@@ -331,6 +332,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   sync();
   return {
     move, show,
+    cancel() { controller.cancel(); onGesture(); sync(); },
     destroy() {
       version++;
       preloadVersion++;

@@ -1,5 +1,5 @@
 export type PhotoSource = { src: string; srcSet?: string; alt?: string };
-type Gallery = { move(direction: -1 | 1): void; show(index: number): void; destroy(): void };
+type Gallery = { cancel(): void; move(direction: -1 | 1): void; show(index: number): void; destroy(): void };
 type CreateGallery = (stage: HTMLElement, onChange?: (index: number) => void, initialIndex?: number) => Gallery;
 export function createPhotoLightbox(options: {
   images: readonly PhotoSource[];

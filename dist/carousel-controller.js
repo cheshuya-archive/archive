@@ -180,7 +180,7 @@ function createCardCarousel(viewport) {
   viewport.addEventListener("scroll", rememberScroll, { passive: true });
   motion.addEventListener("change", onMotion);
   return {
-    move, refresh,
+    move, refresh, cancel: stop,
     goToIndex(index) {
       stops = measure();
       const destination = stops[Math.max(0, Math.min(stops.length - 1, index))];
@@ -291,6 +291,7 @@ function createImageGallery(stage, onChange = () => {}, initialIndex = 0) {
     const current = requested;
     const ticket = ++version;
     pending = true;
+    stage.setAttribute("data-animating", "");
     syncControls(current);
     prepare(current);
     stage.setAttribute("aria-busy", "true");
@@ -299,7 +300,7 @@ function createImageGallery(stage, onChange = () => {}, initialIndex = 0) {
       pending = false;
       stage.setAttribute("aria-busy", "false");
       if (photos[current].naturalWidth) controller.goToIndex(current);
-      else { requested = selectedIndex(); syncControls(requested); }
+      else { stage.removeAttribute("data-animating"); requested = selectedIndex(); syncControls(requested); }
     };
     photos[current].decode().then(ready, ready);
   };
@@ -333,6 +334,7 @@ function createImageGallery(stage, onChange = () => {}, initialIndex = 0) {
   sync();
   return {
     move, show,
+    cancel() { controller.cancel(); onGesture(); sync(); },
     destroy() {
       version++;
       preloadVersion++;
