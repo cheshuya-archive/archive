@@ -298,6 +298,7 @@ async function checkPhotoZoom(path) {
   await opener.click();
   await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
+  await page.waitForFunction(() => document.querySelector(".lightbox-stage img[data-active=true]")?.naturalWidth > 0);
   await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).click();
   await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
   await page.keyboard.press("Escape");
