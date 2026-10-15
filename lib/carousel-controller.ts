@@ -193,6 +193,8 @@ export function createCardCarousel(viewport: HTMLElement) {
 
 // Detail galleries use the same measured horizontal rail as the home page.
 export function createImageGallery(stage: HTMLElement, onChange: (index: number) => void = () => {}) {
+  stage.tabIndex = 0;
+  stage.setAttribute("aria-label", "Фотографии работ");
   const photos = Array.from(stage.querySelectorAll("img"));
   const carousel = stage.parentElement || stage;
   const controller = createCardCarousel(stage);
@@ -203,16 +205,30 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   const loadPhoto = (photo: HTMLImageElement) => {
     if (photo.dataset.gallerySrc && !photo.dataset.galleryLoaded) {
       photo.dataset.galleryLoaded = "true";
-      photo.sizes = "(max-width: 700px) 100vw, 600px";
+      photo.sizes = "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
       if (photo.dataset.gallerySrcset) photo.srcset = photo.dataset.gallerySrcset;
-      photo.src = photo.dataset.gallerySrc;
+      if (photo.getAttribute('src') !== photo.dataset.gallerySrc) photo.src = photo.dataset.gallerySrc;
     }
+    photo.decoding = "async";
     photo.loading = "eager";
   };
+  let preloadVersion = 0;
   const prepare = (index: number) => {
-    for (const candidate of [index - 1, index, index + 1]) {
-      if (photos[candidate]) loadPhoto(photos[candidate]);
-    }
+    const photo = photos[index];
+    if (!photo) return;
+    photo.fetchPriority = "high";
+    loadPhoto(photo);
+    const ticket = ++preloadVersion;
+    // The visible image gets the connection first; then warm its two neighbours.
+    photo.decode().catch(() => {}).then(() => {
+      if (ticket !== preloadVersion) return;
+      for (const candidate of [index - 1, index + 1]) {
+        if (photos[candidate]) {
+          photos[candidate].fetchPriority = "low";
+          loadPhoto(photos[candidate]);
+        }
+      }
+    });
   };
   const selectedIndex = () => {
     const left = stage.getBoundingClientRect().left + stage.clientLeft;
@@ -279,6 +295,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     move, show,
     destroy() {
       version++;
+      preloadVersion++;
       if (syncFrame !== null) cancelAnimationFrame(syncFrame);
       observer.disconnect();
       controller.destroy();

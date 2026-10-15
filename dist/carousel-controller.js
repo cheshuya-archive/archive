@@ -195,6 +195,8 @@ function createCardCarousel(viewport) {
 
 // Detail galleries use the same measured horizontal rail as the home page.
 function createImageGallery(stage, onChange = () => {}) {
+  stage.tabIndex = 0;
+  stage.setAttribute("aria-label", "Фотографии работ");
   const photos = Array.from(stage.querySelectorAll("img"));
   const carousel = stage.parentElement || stage;
   const controller = createCardCarousel(stage);
@@ -205,16 +207,30 @@ function createImageGallery(stage, onChange = () => {}) {
   const loadPhoto = (photo) => {
     if (photo.dataset.gallerySrc && !photo.dataset.galleryLoaded) {
       photo.dataset.galleryLoaded = "true";
-      photo.sizes = "(max-width: 700px) 100vw, 600px";
+      photo.sizes = "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
       if (photo.dataset.gallerySrcset) photo.srcset = photo.dataset.gallerySrcset;
-      photo.src = photo.dataset.gallerySrc;
+      if (photo.getAttribute('src') !== photo.dataset.gallerySrc) photo.src = photo.dataset.gallerySrc;
     }
+    photo.decoding = "async";
     photo.loading = "eager";
   };
+  let preloadVersion = 0;
   const prepare = (index) => {
-    for (const candidate of [index - 1, index, index + 1]) {
-      if (photos[candidate]) loadPhoto(photos[candidate]);
-    }
+    const photo = photos[index];
+    if (!photo) return;
+    photo.fetchPriority = "high";
+    loadPhoto(photo);
+    const ticket = ++preloadVersion;
+    // The visible image gets the connection first; then warm its two neighbours.
+    photo.decode().catch(() => {}).then(() => {
+      if (ticket !== preloadVersion) return;
+      for (const candidate of [index - 1, index + 1]) {
+        if (photos[candidate]) {
+          photos[candidate].fetchPriority = "low";
+          loadPhoto(photos[candidate]);
+        }
+      }
+    });
   };
   const selectedIndex = () => {
     const left = stage.getBoundingClientRect().left + stage.clientLeft;
@@ -281,6 +297,7 @@ function createImageGallery(stage, onChange = () => {}) {
     move, show,
     destroy() {
       version++;
+      preloadVersion++;
       if (syncFrame !== null) cancelAnimationFrame(syncFrame);
       observer.disconnect();
       controller.destroy();
@@ -303,7 +320,7 @@ function mountImageGallery(stage, sources, onChange) {
     let srcset = typeof source === "string" ? "" : source.srcset || "";
     if (!srcset && src.startsWith("media/")) {
       const name = decodeURIComponent(src.slice(6)).replace(/\.[^.]+$/, "").split("/").map(encodeURIComponent).join("/");
-      srcset = [600, 1200, 2000].map(width => `images/${name}-${width}.webp ${width}w`).join(", ");
+      srcset = [400, 600, 800, 1200, 2000].map(width => `images/${name}-${width}.webp ${width}w`).join(", ");
     }
     image.className = "zine-photo";
     image.alt = original?.alt || "Работа Чешуи";
