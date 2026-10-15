@@ -233,10 +233,11 @@ async function checkObjectLightbox() {
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 3");
   await page.locator(".object-lightbox-next").click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "2 / 3");
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 3");
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox").open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
   assert.equal(await opener.evaluate(element => document.activeElement === element), true);
   await page.waitForFunction(() => document.body.style.overflow === "");
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");

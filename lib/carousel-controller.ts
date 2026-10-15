@@ -21,6 +21,14 @@ export function createCardCarousel(viewport: HTMLElement) {
       child.getBoundingClientRect().left - left + viewport.scrollLeft - padding,
     )));
   };
+  const previousRail = viewport.parentElement?.querySelector<HTMLButtonElement>(".rail-prev, .carousel-actions button:first-child");
+  const nextRail = viewport.parentElement?.querySelector<HTMLButtonElement>(".rail-next, .carousel-actions button:last-child");
+  const syncRailControls = () => {
+    const anchor = target ?? viewport.scrollLeft;
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    if (previousRail) previousRail.disabled = !viewport.clientWidth || anchor <= 1;
+    if (nextRail) nextRail.disabled = !viewport.clientWidth || anchor >= max - 1;
+  };
   const stop = () => {
     if (width === viewport.clientWidth) lastScroll = viewport.scrollLeft;
     if (frame !== null) cancelAnimationFrame(frame);
@@ -28,6 +36,7 @@ export function createCardCarousel(viewport: HTMLElement) {
     frame = restoreFrame = target = null;
     velocity = lastTime = 0;
     viewport.removeAttribute("data-animating");
+    syncRailControls();
   };
   const restoreSnap = () => {
     restoreFrame = requestAnimationFrame(() => {
@@ -62,6 +71,7 @@ export function createCardCarousel(viewport: HTMLElement) {
     restoreFrame = null;
     if (frame === null) { lastTime = 0; position = viewport.scrollLeft; }
     target = destination;
+    syncRailControls();
     viewport.setAttribute("data-animating", "");
     if (motion.matches) {
       viewport.scrollLeft = destination;
@@ -79,7 +89,7 @@ export function createCardCarousel(viewport: HTMLElement) {
     positions.reduce((nearest, position, index) =>
       Math.abs(position - anchor) < Math.abs(positions[nearest] - anchor) ? index : nearest, 0);
   const refresh = () => {
-    if (!viewport.clientWidth) return;
+    if (!viewport.clientWidth) { syncRailControls(); return; }
     const next = measure();
     if (width === viewport.clientWidth && next.length === stops.length &&
         next.every((position, index) => Math.abs(position - stops[index]) < 1)) return;
@@ -90,11 +100,13 @@ export function createCardCarousel(viewport: HTMLElement) {
     viewport.removeAttribute("data-dragging");
     stops = next;
     width = viewport.clientWidth;
+    syncRailControls();
     if (stops.length) {
       viewport.setAttribute("data-animating", "");
       viewport.scrollLeft = stops[Math.min(index, stops.length - 1)];
       lastScroll = viewport.scrollLeft;
       restoreSnap();
+      syncRailControls();
     }
   };
   const observer = new ResizeObserver(refresh);
@@ -108,6 +120,7 @@ export function createCardCarousel(viewport: HTMLElement) {
   mutation.observe(viewport, { childList: true });
   stops = measure();
   observeCards();
+  syncRailControls();
   const onPointerDown = (event: PointerEvent) => {
     stop();
     if (event.pointerType === "mouse" && event.button === 0)
@@ -150,6 +163,7 @@ export function createCardCarousel(viewport: HTMLElement) {
   const onDrag = (event: DragEvent) => event.preventDefault();
   const rememberScroll = () => {
     if (width === viewport.clientWidth) lastScroll = viewport.scrollLeft;
+    syncRailControls();
   };
   viewport.addEventListener("pointerdown", onPointerDown, { passive: true });
   viewport.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -192,20 +206,36 @@ export function createCardCarousel(viewport: HTMLElement) {
 }
 
 // Detail galleries use the same measured horizontal rail as the home page.
-export function createImageGallery(stage: HTMLElement, onChange: (index: number) => void = () => {}) {
+export function createImageGallery(stage: HTMLElement, onChange: (index: number) => void = () => {}, initialIndex = 0) {
   stage.tabIndex = 0;
   stage.setAttribute("aria-label", "Фотографии работ");
   const photos = Array.from(stage.querySelectorAll("img"));
   const carousel = stage.parentElement || stage;
+  const initial = Math.max(0, Math.min(photos.length - 1, initialIndex));
+  stage.scrollLeft = initial * stage.clientWidth;
   const controller = createCardCarousel(stage);
-  let requested = 0;
+  const previous = carousel.querySelector<HTMLButtonElement>(".zine-controls button:first-child");
+  const next = carousel.querySelector<HTMLButtonElement>(".zine-controls button:last-child");
+  const counter = carousel.querySelector<HTMLElement>(".counter");
+  if (counter && counter.closest(".zine-controls")) {
+    counter.classList.add("gallery-counter");
+    counter.setAttribute("role", "status");
+    counter.setAttribute("aria-live", "polite");
+    carousel.querySelector(".zine-controls")?.after(counter);
+  }
+  const syncControls = (index: number) => {
+    if (previous) previous.disabled = index <= 0 || photos.length < 2;
+    if (next) next.disabled = index >= photos.length - 1 || photos.length < 2;
+  };
+  let requested = initial;
+  let announced = -1;
   let version = 0;
   let pending = false;
   let syncFrame: number | null = null;
   const loadPhoto = (photo: HTMLImageElement) => {
     if (photo.dataset.gallerySrc && !photo.dataset.galleryLoaded) {
       photo.dataset.galleryLoaded = "true";
-      photo.sizes = "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
+      photo.sizes = photo.dataset.gallerySizes || "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
       if (photo.dataset.gallerySrcset) photo.srcset = photo.dataset.gallerySrcset;
       if (photo.getAttribute('src') !== photo.dataset.gallerySrc) photo.src = photo.dataset.gallerySrc;
     }
@@ -247,7 +277,8 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
       photo.setAttribute("aria-hidden", String(index !== current));
     });
     if (!pending && !stage.hasAttribute("data-animating")) requested = current;
-    onChange(current);
+    syncControls(pending || stage.hasAttribute("data-animating") ? requested : current);
+    if (announced !== current) { announced = current; onChange(current); }
   };
   const onScroll = () => {
     if (syncFrame === null) syncFrame = requestAnimationFrame(sync);
@@ -258,6 +289,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     const current = requested;
     const ticket = ++version;
     pending = true;
+    syncControls(current);
     prepare(current);
     stage.setAttribute("aria-busy", "true");
     const ready = () => {
@@ -265,6 +297,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
       pending = false;
       stage.setAttribute("aria-busy", "false");
       if (photos[current].naturalWidth) controller.goToIndex(current);
+      else { requested = selectedIndex(); syncControls(requested); }
     };
     photos[current].decode().then(ready, ready);
   };
@@ -283,7 +316,12 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     pending = false;
     stage.setAttribute("aria-busy", "false");
     requested = selectedIndex();
+    syncControls(requested);
   };
+  const onSelect = (event: Event) => {
+    if (event instanceof CustomEvent && Number.isInteger(event.detail)) show(event.detail);
+  };
+  stage.addEventListener("gallery:select", onSelect);
   const observer = new ResizeObserver(sync);
   observer.observe(stage);
   carousel.addEventListener("keydown", onKey, true);
@@ -303,6 +341,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
       stage.removeEventListener("pointerdown", onGesture, true);
       stage.removeEventListener("wheel", onGesture);
       stage.removeEventListener("scroll", onScroll);
+      stage.removeEventListener("gallery:select", onSelect);
       carousel.style.removeProperty("--gallery-height");
     },
   };

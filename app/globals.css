@@ -35,7 +35,7 @@
 .zine-controls{position:absolute;z-index:2;top:calc(var(--gallery-height,100%)/2);left:5px;right:5px;display:flex;align-items:center;justify-content:space-between;transform:translateY(-50%);pointer-events:none}
 .zine-controls[hidden]{display:none}
 .zine-controls button{box-sizing:border-box;pointer-events:auto}
-.zine-controls span{display:none}
+
 @media(max-width:700px){
   .carousel-card{flex-basis:82%}
   .zine-page{height:auto;overflow:visible;padding-bottom:32px}
