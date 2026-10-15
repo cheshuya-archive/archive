@@ -237,7 +237,7 @@ async function checkObjectLightbox() {
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 3");
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
   assert.equal(await opener.evaluate(element => document.activeElement === element), true);
   await page.waitForFunction(() => document.body.style.overflow === "");
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
@@ -293,7 +293,7 @@ async function checkPhotoZoom(path) {
   await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "3 / 6");
   assert.equal(await stage.getAttribute("data-zoom-scale"), "1.000", "Next photo resets zoom");
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
   assert.equal(await opener.evaluate(el=>el===document.activeElement),true);
   await opener.click();
   await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
@@ -302,14 +302,14 @@ async function checkPhotoZoom(path) {
   await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).click();
   await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
   await opener.click();
   await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
   assert.equal(await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).getAttribute("aria-pressed"), "false");
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
   await cdp.detach();
   await checkOverflow();
 }

@@ -13,9 +13,11 @@ export function createPhotoLightbox(options, createGallery) {
   const stage = dialog.querySelector(".lightbox-stage");
   const counter = dialog.querySelector(".object-lightbox-counter");
   const status = dialog.querySelector(".lightbox-loading");
-  let gallery = null, zoom = null, active = 0, opener = null, overflow = "", destroyed = false;
+  let gallery = null, zoom = null, active = 0, opener = null, overflow = "", destroyed = false, opened = false;
   let openVersion = 0;
   const release = () => {
+    if (!opened) return;
+    opened = false;
     openVersion++;
     zoom?.destroy();
     zoom = null;
@@ -29,7 +31,15 @@ export function createPhotoLightbox(options, createGallery) {
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     }
   };
-  dialog.querySelector(".object-lightbox-close").addEventListener("click", () => dialog.close());
+  const close = () => {
+    if (dialog.open) dialog.close();
+    release();
+  };
+  // Native close events are queued: an event from an earlier opening must not
+  // destroy a viewer which has already reopened.
+  const onClosed = () => { if (!dialog.open) release(); };
+  dialog.querySelector(".object-lightbox-close").addEventListener("click", close);
+  dialog.addEventListener("cancel", event => { event.preventDefault(); close(); });
   const navigate = direction => { zoom?.reset(); gallery?.move(direction); };
   dialog.querySelector(".object-lightbox-prev").addEventListener("click", () => navigate(-1));
   dialog.querySelector(".object-lightbox-next").addEventListener("click", () => navigate(1));
@@ -37,7 +47,7 @@ export function createPhotoLightbox(options, createGallery) {
   dialog.addEventListener("keydown", event => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") zoom?.reset();
   }, true);
-  dialog.addEventListener("close", release);
+  dialog.addEventListener("close", onClosed);
   dialog.addEventListener("keydown", event => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       event.preventDefault();
@@ -47,7 +57,7 @@ export function createPhotoLightbox(options, createGallery) {
   dialog.addEventListener("click", event => {
     if (event.target !== dialog) return;
     const rect = dialog.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close();
   });
   return {
     open(index = 0, trigger = document.activeElement) {
@@ -70,6 +80,7 @@ export function createPhotoLightbox(options, createGallery) {
       });
       stage.replaceChildren(...photos);
       counter.textContent = (active + 1) + " / " + sources.length;
+      opened = true;
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
       document.body.append(dialog);
@@ -106,16 +117,8 @@ export function createPhotoLightbox(options, createGallery) {
     },
     destroy() {
       destroyed = true;
-      dialog.removeEventListener("close", release);
-      openVersion++;
-      zoom?.destroy();
-      zoom = null;
-      gallery?.destroy();
-      gallery = null;
-      if (dialog.open) {
-        dialog.close();
-        document.body.style.overflow = overflow;
-      }
+      dialog.removeEventListener("close", onClosed);
+      close();
       dialog.remove();
     },
   };
