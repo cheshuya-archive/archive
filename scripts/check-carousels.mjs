@@ -266,6 +266,7 @@ async function checkPhotoZoom(path) {
   }
   await touch("touchEnd", []);
   await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale) > 2);
+  await page.waitForFunction(() => !document.querySelector(".photo-zoom-layer").hidden && document.querySelector(".photo-zoom-image").naturalWidth>0);
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / " + total);
   const before = await page.locator(".photo-zoom-image").evaluate(el => el.style.transform);
   await touch("touchStart", [[0,cx,cy]]);
