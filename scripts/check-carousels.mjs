@@ -250,6 +250,8 @@ async function checkPhotoZoom(path) {
   const opener = page.getByRole("button", { name: "Открыть изображение крупно", exact: true });
   await opener.click();
   const stage = page.locator(".object-lightbox .lightbox-stage");
+  const total = await stage.locator("img").count();
+  assert.ok(total >= 3);
   await page.waitForFunction(() => document.querySelector(".object-lightbox .lightbox-stage img")?.naturalWidth > 0);
   const box = await stage.boundingBox();
   const cx = box.x + box.width / 2, cy = box.y + box.height * .35;
@@ -264,18 +266,18 @@ async function checkPhotoZoom(path) {
   }
   await touch("touchEnd", []);
   await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale) > 2);
-  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 6");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / " + total);
   const before = await page.locator(".photo-zoom-image").evaluate(el => el.style.transform);
   await touch("touchStart", [[0,cx,cy]]);
   await touch("touchMove", [[0,cx+40,cy+35]]);
   await touch("touchEnd", []);
   assert.notEqual(await page.locator(".photo-zoom-image").evaluate(el => el.style.transform), before, "Enlarged photo pans");
   await touchSwipe(".object-lightbox .lightbox-stage");
-  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 6", "Pan must not change photos");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / " + total, "Pan must not change photos");
   await page.getByRole("button", { name: "Сбросить масштаб", exact: true }).click();
   assert.equal(await stage.getAttribute("data-zoom-scale"), "1.000");
   await touchSwipe(".object-lightbox .lightbox-stage");
-  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "2 / 6");
+  await page.waitForFunction(total => document.querySelector(".object-lightbox-counter").textContent === "2 / " + total, total);
   await page.waitForFunction(() => {
     const el=document.querySelector(".lightbox-stage");
     return !el.hasAttribute("data-animating") && Math.abs(el.scrollLeft-el.clientWidth)<2;
@@ -287,10 +289,10 @@ async function checkPhotoZoom(path) {
   }
   await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
   await page.setViewportSize({ width: 768, height: 844 });
-  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 6");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / " + total);
   await checkOverflow();
   await page.locator(".object-lightbox-next").click();
-  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "3 / 6");
+  await page.waitForFunction(total => document.querySelector(".object-lightbox-counter").textContent === "3 / " + total, total);
   assert.equal(await stage.getAttribute("data-zoom-scale"), "1.000", "Next photo resets zoom");
   await page.keyboard.press("Escape");
   await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
