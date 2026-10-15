@@ -16,7 +16,7 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
   layer.append(image);
   stage.after(layer);
   let scale = 1, x = 0, y = 0, gesture = null, hadPinch = false;
-  let lastTap = null, imageIndex = -1, resolution = 0;
+  let lastTap = null, lastTouch = -Infinity, imageIndex = -1, resolution = 0;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const photo = () => stage.querySelectorAll("img")[getIndex()];
   const point = event => {
@@ -102,6 +102,7 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
     };
   };
   const down = event => {
+    if (event.pointerType !== "mouse") lastTouch = performance.now();
     if (event.pointerType === "mouse" && (event.button !== 0 || scale === 1)) return;
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -163,6 +164,8 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
   };
   const doubleClick = event => {
     event.preventDefault();
+    // Touch double taps already toggle in pointerup; browsers may also emit dblclick.
+    if (performance.now() - lastTouch < 500) return;
     toggle(point(event));
   };
   const resize = new ResizeObserver(() => {
@@ -171,6 +174,7 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
   });
   resize.observe(stage);
   stage.dataset.zoomScale = "1.000";
+  onScale(1);
   stage.addEventListener("pointerdown", down, true);
   stage.addEventListener("pointermove", move, true);
   stage.addEventListener("pointerup", up, true);
