@@ -298,9 +298,17 @@ async function checkPhotoZoom(path) {
   await opener.click();
   await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
+  await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).click();
+  await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
   await page.keyboard.press("Escape");
   await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
+  await opener.click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
+  assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
+  assert.equal(await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).getAttribute("aria-pressed"), "false");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox")?.open);
   await cdp.detach();
   await checkOverflow();
 }

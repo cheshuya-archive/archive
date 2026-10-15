@@ -63,9 +63,9 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
     ids.forEach(id => { if (stage.hasPointerCapture(id)) stage.releasePointerCapture(id); });
     stage.removeAttribute("data-dragging");
   };
-  const reset = () => {
+  const reset = (preserveSwipe = false) => {
     // Counter updates during a normal swipe must not interrupt that swipe.
-    if (scale > 1) endPointers();
+    if (!preserveSwipe || scale > 1) endPointers();
     scale = 1; x = y = 0; lastTap = null;
     layer.hidden = true;
     image.removeAttribute("src");
@@ -79,6 +79,7 @@ export function createPhotoZoom(stage, { cancel, show, getIndex, onScale }) {
   const toggle = origin => {
     if (!photo()?.naturalWidth) return;
     cancel();
+    endPointers();
     stage.scrollLeft = getIndex() * stage.clientWidth;
     const next = scale > 1 ? 1 : 2.5;
     const anchor = origin || { x: 0, y: 0 };
