@@ -1,4 +1,19 @@
 (() => {
+  // Exhibition titles and the short Text property are taken from the Notion export.
+  // The first numbered source image is the cover; Rusty box starts at 2.png.
+  const exhibitions = [
+    { id: 'polya-prisutstviya', title: 'Поля присутствия', year: '2026', description: 'ДНИ, Москва 2026', count: 30 },
+    { id: 'uyazvimoe-mesto', title: 'Уязвимое место', year: '2026', description: 'KMSA, Kazan 2026', count: 12 },
+    { id: 'portal', title: 'Portal', year: '2024', description: 'Оff-site show at Protvino, 2024', count: 13 },
+    { id: 'black-show', title: 'Black show', year: '2024', description: 'Оff-site show at Protvino, 2024', count: 12 },
+    { id: 'rusty-box', title: 'Rusty box', year: '2023', description: 'Оff-site show at Almaty, December 2023', count: 10, extension: 'png' },
+    { id: 'sleepy-stupor', title: 'Sleeppy stupor', year: '2023', description: 'Оff-site show at Almaty, 2023', count: 8 },
+    { id: 'deep-woods-cold-winters', title: 'Deep Woods Cold Winters', year: '2022', description: 'ISSMAG gallery, Moscow, 2022', count: 9 },
+    { id: 'rekviem-po-zhek-artu', title: 'Реквием по ЖЭК-арту', year: '2022', description: 'VMDPNI, Moscow, 2022', count: 9, extension: 'jpg' },
+  ];
+  const exhibitionBase = (item, index = 1) => `new-site-assets/exhibitions/${item.id}/${String(index).padStart(2, '0')}`;
+  window.cheshuyaExhibitions = exhibitions;
+  window.cheshuyaExhibitionBase = exhibitionBase;
   const header = document.querySelector('.archive-header, .catalog-header, .zine-header');
   if (!header) return;
   const isHome = header.classList.contains('archive-header');
@@ -19,6 +34,27 @@
     image.src = `images/${base}-1200.webp`;
     image.srcset = `images/${base}-600.webp 600w, images/${base}-1200.webp 1200w, images/${base}-2000.webp 2000w`;
     image.sizes = '(max-width: 700px) 100vw, 600px';
+  };
+  const exhibitionCard = (item, home = false) => {
+    const card = document.createElement('article');
+    card.className = home ? 'archive-card' : 'catalog-card';
+    card.dataset.exhibitionId = item.id;
+    const imageWrap = document.createElement('div');
+    imageWrap.className = home ? 'archive-image' : 'catalog-image';
+    const image = document.createElement('img');
+    image.alt = item.title;
+    image.loading = 'lazy';
+    setImageSource(image, exhibitionBase(item));
+    imageWrap.append(image);
+    const caption = document.createElement('div');
+    caption.className = home ? 'archive-caption' : 'catalog-caption';
+    const title = document.createElement('strong');
+    title.textContent = item.title;
+    const year = document.createElement('span');
+    year.textContent = item.year;
+    caption.append(title, year);
+    card.append(imageWrap, caption);
+    return card;
   };
   const enableRailInteractions = (rail) => {
     if (!rail || rail.dataset.carouselReady) return;
@@ -97,6 +133,8 @@
     });
   };
   window.setTimeout(() => {
+    const exhibitionRail = document.querySelector('#exhibitions .rail-scroll');
+    if (exhibitionRail) exhibitionRail.replaceChildren(...exhibitions.map((item) => exhibitionCard(item, true)));
     setResponsiveImage('.street-feature .feature-image img', 'new-site-assets/environment/street-feature');
     setResponsiveImage('#zines .archive-card:nth-of-type(1) img', 'new-site-assets/zines/nedostatochno-pamyati/cover');
     setResponsiveImage('#zines .archive-card:nth-of-type(2) img', 'new-site-assets/zines/ubezhishche/IMG_20200621_165755');
@@ -210,12 +248,10 @@
         next.classList.add(`tab-enter-${direction}`);
         window.setTimeout(() => next.classList.remove(`tab-enter-${direction}`), 360);
       }, true));
-      const exhibitionIds = ['polya-prisutstviya', 'uyazvimoe-mesto', 'portal', 'black-show', 'rusty-box', 'sleepy-stupor'];
       document.addEventListener('click', (event) => {
         const card = event.target.closest('#exhibitions .archive-card');
         if (!card) return;
-        const cards = [...document.querySelectorAll('#exhibitions .archive-card')];
-        const id = exhibitionIds[cards.indexOf(card)];
+        const id = card.dataset.exhibitionId;
         if (!id) return;
         event.preventDefault();
         window.location.href = `exhibition.html?id=${id}`;
@@ -227,10 +263,10 @@
   }
 
   if (window.location.pathname.endsWith('catalog-exhibitions.html')) {
-    const exhibitionIds = ['polya-prisutstviya', 'uyazvimoe-mesto', 'portal', 'black-show', 'rusty-box', 'sleepy-stupor'];
-    document.querySelectorAll('.catalog-card').forEach((card, index) => {
-      const id = exhibitionIds[index];
-      if (!id) return;
+    const grid = document.querySelector('.catalog-grid');
+    if (grid) grid.replaceChildren(...exhibitions.map((item) => exhibitionCard(item)));
+    document.querySelectorAll('.catalog-card').forEach((card) => {
+      const id = card.dataset.exhibitionId;
       card.setAttribute('role', 'link');
       card.tabIndex = 0;
       const open = () => { window.location.href = `exhibition.html?id=${id}`; };
