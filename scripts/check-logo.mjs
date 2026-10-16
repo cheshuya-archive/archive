@@ -138,6 +138,15 @@ try {
   await cdp.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] });
   await page.waitForTimeout(2300);
   assert.equal(await page.locator(".logo-particles-layer svg").evaluate(svg => svg.style.transform), "");
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y, id: 1 }] });
+  for (let step = 1; step <= 6; step++) {
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: y - step * 16, id: 1 }] });
+    await page.waitForTimeout(35);
+  }
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await page.waitForFunction(() => scrollY > 25);
+  await page.waitForTimeout(400);
+  assert.equal(await page.locator(".logo-particles-layer").count(), 0, "Touch scroll cancels held effect");
   await context.close();
   assert.deepEqual(errors, []);
   console.log("PASS logo: mobile touch hold, release, cancellation; no browser errors");
