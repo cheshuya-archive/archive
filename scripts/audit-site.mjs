@@ -62,9 +62,10 @@ async function measure(origin,path) {
     blockingScripts:[...document.querySelectorAll("head script[src]:not([defer]):not([type=module])")].map(s=>s.getAttribute("src")),
   }));
   try { if(path==="index.html"){
+    if (!await page.locator(".language-button").isVisible()) await page.locator(".header-controls button:last-child").click();
     await page.locator(".language-button").click();await wait(100);
     data.english=await page.locator("html").getAttribute("lang");
-    await page.locator(".header-controls button:last-child").click();
+    if (await page.locator(".static-menu").evaluate(e=>e.hidden)) await page.locator(".header-controls button:last-child").click();
     await page.keyboard.press("Escape");await wait(300);
     data.menuEscape=await page.locator(".static-menu").evaluate(e=>e.hidden);
   }else{
@@ -139,10 +140,13 @@ try {
             assert.equal(await page.locator("#inside").isVisible(),true);
             await page.locator("#inside-tab").press("Home");
             assert.equal(await page.locator("#outside").isVisible(),true);
+            await page.locator(".header-controls button:last-child").click();
             await page.locator(".language-button").click();
             assert.equal(await page.locator(".static-menu [data-target=objects]").textContent(),"Objects");
             await page.locator(".language-button").click();
             assert.equal(await page.locator("#zines h2").textContent(),"Печатные издания");
+            await page.keyboard.press("Escape");
+            await page.waitForFunction(()=>!document.querySelector("main").inert);
             await page.locator(".header-controls button:last-child").click();
             await page.locator(".static-menu button").last().press("Tab");
             assert.equal(await page.locator(".static-menu-close").evaluate(e=>e===document.activeElement),true);

@@ -1,0 +1,53 @@
+/* IBM Plex Mono complete WOFF2 files include Cyrillic and Latin. */
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/IBMPlexMono-Regular.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/IBMPlexMono-Medium.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/IBMPlexMono-SemiBold.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/IBMPlexMono-Bold.woff2") format("woff2")}
+:root{
+--site-font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+--page:#fff;--surface:#fff;--text:#171717;--muted:#737373;--soft:#767676;--secondary:#555;
+--border:#e5e5e5;--border-card:#e4e4e4;--border-arrow:#e3e3e3;--border-strong:#d2d2d2;--border-mid:#d5d5d5;--hairline:#ddd;
+--placeholder:#dedede;--hover:#f2f2f2;--track:#f1f1f1;--faint:#f5f5f5;--link:#0074bb;
+--glass-92:rgba(255,255,255,.92);--glass-49:rgba(255,255,255,.49);--glass-46:rgba(255,255,255,.46);--glass-38:rgba(255,255,255,.38);--glass-0:rgba(255,255,255,0);--glass-53:#ffffff88;
+--shadow-7:#00000012;--shadow-9:#00000018;--shadow-8:#00000014;--shadow-6:rgba(0,0,0,.06);--shadow-12:rgba(0,0,0,.12);--shadow-27:#0004;--backdrop:rgba(0,0,0,.45);
+color-scheme:light}
+:root[data-theme=dark]{
+--page:#161616;--surface:#1e1e1e;--text:#ececec;--muted:#aaa;--soft:#aaa;--secondary:#bdbdbd;
+--border:#414141;--border-card:#414141;--border-arrow:#505050;--border-strong:#777;--border-mid:#666;--hairline:#414141;
+--placeholder:#262626;--hover:#303030;--track:#252525;--faint:#252525;--link:#8bcfff;
+--glass-92:rgba(22,22,22,.92);--glass-49:rgba(22,22,22,.49);--glass-46:rgba(22,22,22,.46);--glass-38:rgba(22,22,22,.65);--glass-0:rgba(22,22,22,0);--glass-53:rgba(255,255,255,.06);
+--shadow-7:#0003;--shadow-9:#0004;--shadow-8:#0004;--shadow-6:#0003;--shadow-12:#0005;--shadow-27:#0008;--backdrop:rgba(0,0,0,.75);
+color-scheme:dark}
+html body{font-family:var(--site-font);background:var(--page);color:var(--text)}
+button,input,textarea,select{font-family:var(--site-font)}
+:root[data-theme=dark] .logo-stage img,:root[data-theme=dark] .header-logo img,:root[data-theme=dark] .site-home-logo img{filter:invert(1)}
+.theme-toggle{display:grid;place-items:center;position:relative;flex:none;padding:0;cursor:pointer}
+.theme-toggle .theme-sun{display:none}
+[data-theme=dark] .theme-toggle .theme-sun{display:block}
+[data-theme=dark] .theme-toggle .theme-moon{display:none}
+.menu-preferences{display:flex;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.static-menu .menu-preferences .language-button,.zine-menu .menu-preferences .language-button,.top-drawer .menu-preferences .language-button{position:relative;display:grid;place-items:center;width:37px;min-width:37px;height:37px;padding:0!important;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--text)!important;font-size:14px;font-weight:600;line-height:1}
+.menu-preferences .language-button::after{content:"";position:absolute;inset:-3.5px;min-width:44px;min-height:44px;background:transparent!important;transform:none!important;border-radius:inherit;pointer-events:auto}
+.menu-preferences .language-button:focus-visible,.theme-toggle:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.static-menu,.zine-menu,.top-drawer{max-height:100dvh;overflow-y:auto;overscroll-behavior:contain}
+.section-heading{gap:12px}
+.section-heading h2{min-width:0;overflow-wrap:anywhere}
+.section-heading a,.section-heading span{flex:none}
+.static-tabs button,[role=tablist]>[role=tab]{min-width:0;white-space:normal;line-height:1.25;padding:4px 6px}
+.top-drawer{background:var(--surface)!important;color:var(--text)}
+.sheet-close{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+[data-theme] [role=tablist]{background:var(--track)}
+[data-theme] [role=tablist]>[role=tab]{color:var(--muted)}
+[data-theme] [role=tablist]>[role=tab][data-state=active]{background:var(--surface);color:var(--text)}
+[data-theme=dark] .bg-white{background-color:var(--surface)}
+[data-theme=dark] .border-neutral-200{border-color:var(--border)}
+[data-theme=dark] button:hover{--tw-ring-color:var(--text)}
+[data-theme] :focus-visible{--tw-ring-color:var(--text);--tw-ring-offset-color:var(--page)}
+@media(prefers-reduced-motion:reduce){.theme-toggle,.theme-toggle svg{transition:none!important}}
+
+.menu-list>div{display:contents}
+
+.inner-header-controls{position:absolute;right:0;left:auto!important;transform:none!important;display:flex;align-items:center;gap:9px}
+.catalog-header,.zine-header{justify-content:space-between}
+.catalog-header>a:not(.site-home-logo),.zine-return>a{display:grid;place-items:center;width:37px;height:37px;padding:0}
+.top-drawer>.menu-preferences{width:min(640px,100%);margin:12px auto 0}

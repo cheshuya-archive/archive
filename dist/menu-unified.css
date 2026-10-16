@@ -1,15 +1,15 @@
-.static-menu{top:0;right:0;bottom:auto;left:0;width:auto;padding:58px max(16px,calc((100vw - 640px)/2)) 18px;border:0;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.08)}
-.static-menu-overlay{background:rgba(255,255,255,.38);backdrop-filter:blur(7px)}
-.static-menu p{margin:12px 0 4px;font-size:12px;color:#737373}
+.static-menu{top:0;right:0;bottom:auto;left:0;width:auto;padding:58px max(16px,calc((100vw - 640px)/2)) 18px;border:0;border-radius:0 0 16px 16px;background:var(--surface);box-shadow:0 10px 30px var(--shadow-8)}
+.static-menu-overlay{background:var(--glass-38);backdrop-filter:blur(7px)}
+.static-menu p{margin:12px 0 4px;font-size:12px;color:var(--muted)}
 .static-menu button:not(.static-menu-close){display:block;width:max-content;padding:7px 0;background:transparent!important;font-size:14px}
-.static-menu-close,.zine-menu-close{position:absolute!important;top:64px;right:max(16px,calc((100vw - 640px)/2));width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;display:grid!important;place-items:center!important;border:0!important;background:transparent!important;color:#171717!important;font-size:18px!important;line-height:1!important;font-weight:700;box-shadow:none!important}.zine-menu.is-closing{animation:drawer-out .24s cubic-bezier(.4,0,1,1) forwards}
-.section-heading span,.section-heading a{display:flex;align-items:center;color:#171717!important;font-size:13px;font-weight:600;line-height:1.1;text-decoration:none}
-.exhibition-page .zine-info .exhibition-place{font-size:15px;color:#555}.exhibition-page .zine-controls[hidden]{display:none}.exhibition-page .zine-pagination>:first-child::after{content:"Предыдущая"}.exhibition-page .zine-pagination>:last-child::before{content:"Следующая"}
+.static-menu-close,.zine-menu-close{position:absolute!important;top:64px;right:max(16px,calc((100vw - 640px)/2));width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;display:grid!important;place-items:center!important;border:0!important;background:transparent!important;color:var(--text)!important;font-size:18px!important;line-height:1!important;font-weight:700;box-shadow:none!important}.zine-menu.is-closing{animation:drawer-out .24s cubic-bezier(.4,0,1,1) forwards}
+.section-heading span,.section-heading a{display:flex;align-items:center;color:var(--text)!important;font-size:13px;font-weight:600;line-height:1.1;text-decoration:none}
+.exhibition-page .zine-info .exhibition-place{font-size:15px;color:var(--secondary)}.exhibition-page .zine-controls[hidden]{display:none}.exhibition-page .zine-pagination>:first-child::after{content:"Предыдущая"}.exhibition-page .zine-pagination>:last-child::before{content:"Следующая"}
 
 /* Shared mobile behaviour — explicit colors prevent Safari's default blue controls. */
-button,.header-controls button,.inner-header-controls button,.static-menu button,.zine-menu button,.zine-menu a,.static-menu a{color:#171717!important;-webkit-tap-highlight-color:transparent;appearance:none}
-.header-controls button,.inner-header-controls button{border-color:#e5e5e5!important;background:#fff!important}
-html,body{min-height:100%;background:#fff;overscroll-behavior-y:none}.archive-page{overflow-x:clip}.archive-header{isolation:isolate}.archive-header:before{content:"";position:fixed;z-index:0;top:0;right:0;left:0;height:calc(74px + env(safe-area-inset-top));background:#fff;pointer-events:none}.archive-header .header-controls{position:relative;z-index:1}
+button,.header-controls button,.inner-header-controls button,.static-menu button,.zine-menu button,.zine-menu a,.static-menu a{color:var(--text)!important;-webkit-tap-highlight-color:transparent;appearance:none}
+.header-controls button,.inner-header-controls button{border-color:var(--border)!important;background:var(--surface)!important}
+html,body{min-height:100%;background:var(--surface);overscroll-behavior-y:none}.archive-page{overflow-x:clip}.archive-header{isolation:isolate}.archive-header:before{content:"";position:fixed;z-index:0;top:0;right:0;left:0;height:calc(74px + env(safe-area-inset-top));background:var(--surface);pointer-events:none}.archive-header .header-controls{position:relative;z-index:1}
 @media(max-width:700px){
   .archive-header{height:calc(58px + max(16px,env(safe-area-inset-top)));padding-top:max(16px,env(safe-area-inset-top))}
   .logo-stage{height:calc(257px + env(safe-area-inset-top));padding-top:calc(85px + env(safe-area-inset-top))}
@@ -22,7 +22,7 @@ html,body{min-height:100%;background:#fff;overscroll-behavior-y:none}.archive-pa
 
 
 /* Telegram's iOS browser already offsets its viewport below the Dynamic Island.
-   Applying safe-area padding once more leaves a visible white gap while scrolling. */
+   Applying safe-area padding once more leaves a visible var(--surface) gap while scrolling. */
 html.telegram-ios,.telegram-ios body{height:100%;min-height:100%;overscroll-behavior:none}
 .telegram-ios .archive-header{top:0!important;height:58px!important;padding-top:16px!important;transform:translateZ(0)}
 .telegram-ios .archive-header:before{height:58px!important}
@@ -30,11 +30,11 @@ html.telegram-ios,.telegram-ios body{height:100%;min-height:100%;overscroll-beha
 .telegram-ios .static-menu,.telegram-ios .zine-menu{padding-top:58px!important}
 .telegram-ios .static-menu-close,.telegram-ios .zine-menu-close{top:18px!important}
 
-/* Keep only the controls visible on the home header — no white background strip. */
+/* Keep only the controls visible on the home header — no var(--surface) background strip. */
 .archive-header,.archive-header:before{background:transparent!important}
 
 /* On desktop, leave part of the third zine card in view as a scroll cue. */
 @media(min-width:641px){#zines .rail-scroll>.archive-card{flex-basis:250px}}
 
 /* Cyanotype page extends the zine layout with direct image previews. */
-.cyanotype-page .zine-carousel{gap:12px;overflow:visible}.cyanotype-page .zine-slide{min-height:0}.cyanotype-thumbnails{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;flex:none;padding-bottom:2px}.cyanotype-thumbnails::-webkit-scrollbar{display:none}.cyanotype-thumbnails button{flex:0 0 62px;height:62px;padding:0;overflow:hidden;scroll-snap-align:start;border:1px solid #e5e5e5;background:#fff;opacity:.62}.cyanotype-thumbnails button.is-active{border-color:#171717;opacity:1}.cyanotype-thumbnails img{width:100%;height:100%;display:block;object-fit:contain}.cyanotype-page .cyanotype-back:after{content:"Назад"}.cyanotype-page .cyanotype-back{width:auto;padding:0 11px;gap:7px}.merch-carousel .rail-scroll{gap:0}.merch-carousel .archive-card{flex:0 0 100%;width:100%;max-width:none}.merch-carousel .rail-arrow{display:grid;place-items:center}.merch-carousel .rail-scroll{touch-action:pan-x pan-y pinch-zoom;cursor:grab}.rail-scroll:focus-visible,.zine-carousel:focus-visible{outline:2px solid #171717;outline-offset:3px}@media(max-width:700px){.cyanotype-thumbnails{width:100%}.cyanotype-thumbnails button{flex-basis:54px;height:54px}}
+.cyanotype-page .zine-carousel{gap:12px;overflow:visible}.cyanotype-page .zine-slide{min-height:0}.cyanotype-thumbnails{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;flex:none;padding-bottom:2px}.cyanotype-thumbnails::-webkit-scrollbar{display:none}.cyanotype-thumbnails button{flex:0 0 62px;height:62px;padding:0;overflow:hidden;scroll-snap-align:start;border:1px solid var(--border);background:var(--surface);opacity:.62}.cyanotype-thumbnails button.is-active{border-color:var(--text);opacity:1}.cyanotype-thumbnails img{width:100%;height:100%;display:block;object-fit:contain}.cyanotype-page .cyanotype-back:after{content:"Назад"}.cyanotype-page .cyanotype-back{width:auto;padding:0 11px;gap:7px}.merch-carousel .rail-scroll{gap:0}.merch-carousel .archive-card{flex:0 0 100%;width:100%;max-width:none}.merch-carousel .rail-arrow{display:grid;place-items:center}.merch-carousel .rail-scroll{touch-action:pan-x pan-y pinch-zoom;cursor:grab}.rail-scroll:focus-visible,.zine-carousel:focus-visible{outline:2px solid var(--text);outline-offset:3px}@media(max-width:700px){.cyanotype-thumbnails{width:100%}.cyanotype-thumbnails button{flex-basis:54px;height:54px}}

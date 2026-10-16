@@ -21,6 +21,42 @@
   if (/iP(hone|ad|od)/.test(navigator.userAgent) && (/Telegram/i.test(navigator.userAgent) || /t\.me\//i.test(document.referrer))) {
     document.documentElement.classList.add('telegram-ios');
   }
+
+  const readPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
+  const savePreference = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
+  const themeButton = document.createElement("button");
+  themeButton.type = "button";
+  themeButton.className = "theme-toggle";
+  themeButton.innerHTML = "<svg class=\"theme-moon\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><path d=\"M20.8 13A9 9 0 0 1 11 3.2 9 9 0 1 0 20.8 13Z\"/></svg><svg class=\"theme-sun\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/></svg>";
+  const controls = header.querySelector(".header-controls, .catalog-global-controls, .zine-global-controls");
+  controls?.prepend(themeButton);
+  const languageButton = header.querySelector(".language-button") || document.createElement("button");
+  languageButton.type = "button";
+  languageButton.className = "language-button";
+  let locale = readPreference("cheshuya-locale") === "en" ? "en" : "ru";
+  const savedTheme = readPreference("cheshuya-theme");
+  let explicitTheme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : null;
+  const systemTheme = matchMedia("(prefers-color-scheme: dark)");
+  const syncThemeButton = () => {
+    const dark = document.documentElement.dataset.theme === "dark";
+    const label = locale === "en" ? (dark ? "Use light theme" : "Use dark theme") : (dark ? "Включить светлую тему" : "Включить тёмную тему");
+    themeButton.setAttribute("aria-label", label);
+    themeButton.setAttribute("title", label);
+    themeButton.setAttribute("aria-pressed", String(dark));
+  };
+  const applyTheme = theme => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    syncThemeButton();
+  };
+  themeButton.addEventListener("click", () => {
+    explicitTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    savePreference("cheshuya-theme", explicitTheme);
+    applyTheme(explicitTheme);
+  });
+  systemTheme.addEventListener("change", () => { if (!explicitTheme) applyTheme(systemTheme.matches ? "dark" : "light"); });
+  syncThemeButton();
+
   const burger = header.querySelector('.header-controls button:last-child, .catalog-burger, .zine-burger');
   header.querySelector('.catalog-language, .zine-language')?.remove();
   header.querySelector('.catalog-global-controls, .zine-global-controls')?.classList.add('inner-header-controls');
@@ -68,6 +104,42 @@
       if (isHome) item.type = 'button'; else item.href = href;
       menu.append(item);
     });
+    const preferences = document.createElement("div");
+    preferences.className = "menu-preferences";
+    preferences.append(languageButton);
+    menu.append(preferences);
+    const englishLabels = { zines:"Printed editions", cyanotype:"Cyanotype", merch:"Merch", exhibitions:"Exhibitions", objects:"Objects", drawings:"Drawings" };
+    const innerTranslations = [...menu.querySelectorAll("[data-target]")].map(node => ({ node, ru:node.textContent, en:englishLabels[node.dataset.target] }));
+    [...menu.querySelectorAll("p")].forEach((node,index) => innerTranslations.push({ node, ru:node.textContent, en:index === 0 ? "Work in context" : "Work with material" }));
+    const heading = document.querySelector(".catalog-page h1, .cyanotype-page h1");
+    const headingNames = { "Печатные издания":"Printed editions", "Выставки":"Exhibitions", "Объекты":"Objects", "Рисунки":"Drawings", "Цианотипия":"Cyanotype" };
+    if (heading && headingNames[heading.textContent]) innerTranslations.push({ node:heading, ru:heading.textContent, en:headingNames[heading.textContent] });
+    const applyLocale = () => {
+      document.documentElement.lang = locale;
+      languageButton.textContent = locale === "ru" ? "En" : "Ru";
+      languageButton.setAttribute("aria-label", locale === "ru" ? "Сменить язык" : "Switch language");
+      if (!isHome) innerTranslations.forEach(({node,ru,en}) => { node.textContent = locale === "en" ? en : ru; });
+      syncThemeButton();
+      document.dispatchEvent(new CustomEvent("cheshuya:locale", { detail:locale }));
+    };
+    languageButton.addEventListener("click", () => {
+      locale = locale === "ru" ? "en" : "ru";
+      savePreference("cheshuya-locale", locale);
+      applyLocale();
+    });
+    window.CheshuyaLocale = { get: () => locale };
+    window.addEventListener("storage", event => {
+      if (event.key === "cheshuya-locale" || event.key === null) {
+        locale = readPreference("cheshuya-locale") === "en" ? "en" : "ru";
+        applyLocale();
+      }
+      if (event.key === "cheshuya-theme" || event.key === null) {
+        const stored = readPreference("cheshuya-theme");
+        explicitTheme = stored === "light" || stored === "dark" ? stored : null;
+        applyTheme(explicitTheme || (systemTheme.matches ? "dark" : "light"));
+      }
+    });
+    applyLocale();
     const overlay = document.createElement('div');
     overlay.className = isHome ? 'static-menu-overlay' : 'zine-menu-overlay';
     overlay.hidden = true;

@@ -63,15 +63,15 @@
     ['.inside-intro p, #objects .section-description', 'Experiments with metal, ceramics, wood and other materials. The work combines techniques, studies material properties and leaves room for improvisation.'],
     ['#drawings .section-description', 'Graphics and painting: series of works on paper, canvas and wood.'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
-    ['.section-heading a', 'view'],
+    ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
+    ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],
     ['.static-menu p:first-of-type', 'Work in context'], ['.static-menu p:last-of-type', 'Work with material'],
     ...Object.entries({zines:'Printed editions',cyanotype:'Cyanotype',merch:'Merch',exhibitions:'Exhibitions',objects:'Objects',drawings:'Drawings'}).map(([key,label]) => ['.static-menu [data-target="'+key+'"]',label]),
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
-  let english = false;
-  document.querySelector('.language-button').addEventListener('click', event => {
-    english = !english;
-    document.documentElement.lang = english ? 'en' : 'ru';
-    event.currentTarget.textContent = english ? 'Ru' : 'En';
+  const applyLocale = locale => {
+    const english = locale === "en";
     translations.forEach(({node,ru,en}) => { node.textContent = english ? en : ru; });
-  });
+  };
+  document.addEventListener("cheshuya:locale", event => applyLocale(event.detail));
+  applyLocale(window.CheshuyaLocale?.get() || "ru");
 })();
