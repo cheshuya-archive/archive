@@ -13,6 +13,8 @@ if (image && header && stage) {
   let controller = null, pending = null, pressed = false, pointer = null, key = null;
   const detach = () => {
     if (!controller || pressed) return;
+    window.removeEventListener("pointerdown", pointerInput, true);
+    window.removeEventListener("keydown", keyboardInput, true);
     stage.removeEventListener("pointermove", hover);
     stage.removeEventListener("pointerdown", down);
     image.removeEventListener("focus", prepare);
@@ -27,7 +29,7 @@ if (image && header && stage) {
   };
   const prepare = () => {
     if (controller || !canPlay()) return;
-    if (!pending) pending = import("./logo-particles.js?v=logo-final-2").then(({ createLogoParticles }) => {
+    if (!pending) pending = import("./logo-particles.js?v=logo-focus-1").then(({ createLogoParticles }) => {
       controller = createLogoParticles(image, {
         assetUrl: new URL("./media/cheshuya-figma-logo.svg", import.meta.url).href,
         canPlay: () => !header.classList.contains("is-compact"),
@@ -62,6 +64,12 @@ if (image && header && stage) {
   const hover = event => { if (canPlay() && near(event)) prepare(); };
   const hidden = () => { if (document.hidden) release(); };
   const contextMenu = event => { if (pressed && canPlay()) event.preventDefault(); };
+  const pointerInput = () => { image.dataset.logoInput = "pointer"; };
+  const keyboardInput = event => {
+    if (!event.metaKey && !event.ctrlKey && !event.altKey) image.dataset.logoInput = "keyboard";
+  };
+  window.addEventListener("pointerdown", pointerInput, true);
+  window.addEventListener("keydown", keyboardInput, true);
   stage.addEventListener("pointermove", hover, { passive: true });
   stage.addEventListener("pointerdown", down);
   image.addEventListener("focus", prepare);
