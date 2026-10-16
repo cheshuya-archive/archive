@@ -233,13 +233,87 @@ async function checkObjectLightbox() {
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 3");
   await page.locator(".object-lightbox-next").click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "2 / 3");
   assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 3");
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => !document.querySelector(".object-lightbox").open);
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
   assert.equal(await opener.evaluate(element => document.activeElement === element), true);
   await page.waitForFunction(() => document.body.style.overflow === "");
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
+  await checkOverflow();
+}
+
+async function checkPhotoZoom(path) {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(origin + path);
+  const opener = page.getByRole("button", { name: "Открыть изображение крупно", exact: true });
+  await opener.click();
+  const stage = page.locator(".object-lightbox .lightbox-stage");
+  const total = await stage.locator("img").count();
+  assert.ok(total >= 3);
+  await page.waitForFunction(() => document.querySelector(".object-lightbox .lightbox-stage img")?.naturalWidth > 0);
+  const box = await stage.boundingBox();
+  const cx = box.x + box.width / 2, cy = box.y + box.height * .35;
+  const cdp = await context.newCDPSession(page);
+  const touch = (type, points) => cdp.send("Input.dispatchTouchEvent", {
+    type, touchPoints: points.map(([id,x,y]) => ({ id,x,y })),
+  });
+  await touch("touchStart", [[0,cx-35,cy],[1,cx+35,cy]]);
+  for (let step=1; step<=6; step++) {
+    await touch("touchMove", [[0,cx-35-step*8,cy],[1,cx+35+step*8,cy]]);
+    await sleep(16);
+  }
+  await touch("touchEnd", []);
+  await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale) > 2);
+  await page.waitForFunction(() => !document.querySelector(".photo-zoom-layer").hidden && document.querySelector(".photo-zoom-image").naturalWidth>0);
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / " + total);
+  const before = await page.locator(".photo-zoom-image").evaluate(el => el.style.transform);
+  await touch("touchStart", [[0,cx,cy]]);
+  await touch("touchMove", [[0,cx+40,cy+35]]);
+  await touch("touchEnd", []);
+  assert.notEqual(await page.locator(".photo-zoom-image").evaluate(el => el.style.transform), before, "Enlarged photo pans");
+  await touchSwipe(".object-lightbox .lightbox-stage");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / " + total, "Pan must not change photos");
+  await page.getByRole("button", { name: "Сбросить масштаб", exact: true }).click();
+  assert.equal(await stage.getAttribute("data-zoom-scale"), "1.000");
+  await touchSwipe(".object-lightbox .lightbox-stage");
+  await page.waitForFunction(total => document.querySelector(".object-lightbox-counter").textContent === "2 / " + total, total);
+  await page.waitForFunction(() => {
+    const el=document.querySelector(".lightbox-stage");
+    return !el.hasAttribute("data-animating") && Math.abs(el.scrollLeft-el.clientWidth)<2;
+  });
+  for (let tap=0;tap<2;tap++) {
+    await touch("touchStart", [[0,cx,cy]]);
+    await touch("touchEnd", []);
+    await sleep(60);
+  }
+  await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
+  await page.setViewportSize({ width: 768, height: 844 });
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / " + total);
+  await checkOverflow();
+  await page.locator(".object-lightbox-next").click();
+  await page.waitForFunction(total => document.querySelector(".object-lightbox-counter").textContent === "3 / " + total, total);
+  assert.equal(await stage.getAttribute("data-zoom-scale"), "1.000", "Next photo resets zoom");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
+  assert.equal(await opener.evaluate(el=>el===document.activeElement),true);
+  await opener.click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
+  assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
+  await page.waitForFunction(() => document.querySelector(".lightbox-stage img[data-active=true]")?.naturalWidth > 0);
+  await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).click();
+  await page.waitForFunction(() => Number(document.querySelector(".lightbox-stage").dataset.zoomScale)>1);
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
+  assert.equal(await page.evaluate(() => document.body.style.overflow), "");
+  await opener.click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
+  assert.equal(await page.locator(".lightbox-stage").getAttribute("data-zoom-scale"), "1.000");
+  assert.equal(await page.getByRole("button", { name: "Увеличить фотографию", exact: true }).getAttribute("aria-pressed"), "false");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
+  await cdp.detach();
   await checkOverflow();
 }
 
@@ -272,6 +346,10 @@ try {
     await checkGallery(path);
     console.log("PASS gallery: home-style horizontal motion and buttons, stable stage, contain, rapid clicks, native swipe, overflow", path);
   }
+  for (const path of ["/static/zine-nedostatochno-pamyati.html", "/cheshuya/zines/nedostatochno-pamyati/"]) {
+    await checkPhotoZoom(path);
+    console.log("PASS photo zoom: pinch, pan, swipe, double tap, reset, resize, focus and reopen", path);
+  }
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(origin + "/static/index.html");
   await page.waitForFunction(() => document.querySelector("#cyanotype .rail-scroll")?.children.length >= 5);
@@ -293,6 +371,8 @@ try {
     url: location.href,
     cyanotypes: document.querySelector("#cyanotype .rail-scroll")?.children.length,
     ready: document.readyState,
+    zoom: document.querySelector(".lightbox-stage")?.dataset.zoomScale,
+    zoomButton: document.querySelector(".photo-zoom-toggle")?.getAttribute("aria-label"),
     gallery: (() => { const stage = document.querySelector(".zine-slide"); return stage && { width: stage.clientWidth, scroll: stage.scrollLeft, active: Array.from(stage.children).findIndex(photo => photo.dataset.active === "true"), positions: Array.from(stage.children, photo => photo.getBoundingClientRect().left - stage.getBoundingClientRect().left), animating: stage.hasAttribute("data-animating") }; })(),
   }))), errors);
   throw error;

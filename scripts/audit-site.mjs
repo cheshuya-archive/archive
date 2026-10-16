@@ -129,6 +129,7 @@ try {
             await page.locator("[data-object-index]").first().click();
             await page.waitForFunction(()=>document.querySelector(".object-lightbox")?.open);
             await page.locator(".object-lightbox-next").click();
+            await page.waitForFunction(()=>document.querySelector(".object-lightbox-counter").textContent==="2 / 3");
             assert.equal(await page.locator(".object-lightbox-counter").textContent(),"2 / 3");
             await page.keyboard.press("Escape");
             await page.waitForFunction(()=>document.body.style.overflow==="");

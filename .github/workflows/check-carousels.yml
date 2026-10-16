@@ -41,13 +41,13 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: node scripts/check-carousels.mjs
       - name: Prepare original site for comparison on GitHub
-        if: always()
+        if: success()
         run: |
           git fetch --no-tags --depth=1 origin "$AUDIT_BASE_SHA"
           mkdir -p "$RUNNER_TEMP/site-before"
           git archive "$AUDIT_BASE_SHA" dist | tar -x -C "$RUNNER_TEMP/site-before"
       - name: Audit loading and page actions
-        if: always()
+        if: success()
         env:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
           AUDIT_ASSERT: "true"

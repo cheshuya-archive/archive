@@ -1,0 +1,54 @@
+/* Shared viewer and larger hit areas; the visible 30px/37px controls stay unchanged. */
+.gallery-counter{display:block!important;flex:none;align-self:center;margin:0;padding:8px 0 0;color:#737373;font:13px/1.4 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none}
+.zine-carousel{overflow:visible}
+.zine-controls:has(button:disabled){display:flex}
+.rail-arrow:disabled,.zine-controls button:disabled{opacity:.35;cursor:default;pointer-events:auto!important}
+.rail-arrow:disabled:hover,.zine-controls button:disabled:hover{background:#fff!important;border-color:#e3e3e3!important}
+.carousel-actions button::after,.rail-arrow::after,.zine-controls button::after,.header-controls button::after,.catalog-global-controls button::after,.zine-global-controls button::after,.zine-header>.back-icon::after,.catalog-header>.back-icon::after,.zine-return>a::after,.catalog-header>a:not(.site-home-logo)::after,.site-home-logo::after,.sheet-close::after,.static-menu-close::after,.zine-menu-close::after,.gallery-zoom::after,.object-lightbox button::after{content:"";position:absolute;inset:calc((var(--control-size,37px) - 44px)/2);min-width:44px;min-height:44px;border-radius:inherit;transform:none!important;background:transparent!important;pointer-events:auto}
+.rail-arrow,.zine-controls button{--control-size:30px}
+.header-controls button,.catalog-global-controls button,.zine-global-controls button,.back-icon,.site-home-logo,.sheet-close,.static-menu-close,.zine-menu-close,.gallery-zoom,.object-lightbox button{--control-size:37px}
+.static-menu-close,.zine-menu-close,.sheet-close{--control-size:32px}
+.header-controls button,.catalog-global-controls button,.zine-global-controls button,.carousel-actions button,.zine-return>a,.catalog-header>a:not(.site-home-logo):not(.back-icon){position:relative}
+.carousel-actions button{--control-size:40px}
+.site-home-logo::after{display:block!important}
+.cyanotype-page .cyanotype-back::before{content:none}
+.cyanotype-page .cyanotype-back::after{content:"Назад";display:inline}
+.home-moving-logo{box-sizing:content-box;padding:3.5px}
+.gallery-zoom{position:absolute;z-index:3;top:8px;right:8px;display:grid;place-items:center;width:37px;height:37px;padding:0;border:1px solid #dedede;border-radius:50%;background:#fff;color:#171717;cursor:zoom-in}
+.gallery-zoom:hover{background:#f2f2f2}
+.gallery-zoom:focus-visible,.object-lightbox button:focus-visible{outline:2px solid #171717;outline-offset:2px}
+.can-enlarge img{cursor:zoom-in}
+.artwork-trigger{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:inherit;text-decoration:none;cursor:zoom-in}
+.archive-page .artwork-trigger:hover,.archive-page .artwork-trigger:active,.catalog-page .artwork-trigger:hover,.catalog-page .artwork-trigger:active{transform:none;background:transparent;border:0;box-shadow:none}
+.artwork-trigger:focus-visible{outline:2px solid #171717;outline-offset:-3px}
+#objects .cyanotype-slide{background:#fff}
+.object-slide-button{display:block;width:100%;height:100%;padding:0;border:0;background:transparent!important;cursor:zoom-in}
+.object-slide-button img{object-fit:contain}
+.object-lightbox{width:min(1100px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 32px);padding:16px;border:1px solid #e5e5e5;background:#fff;color:#171717;box-shadow:0 16px 60px #0004}
+.object-lightbox[open]{display:flex;flex-direction:column;gap:8px}
+.object-lightbox::backdrop{background:rgba(0,0,0,.45);backdrop-filter:blur(5px)}
+.object-lightbox button{position:relative;display:grid;place-items:center;width:37px;height:37px;min-width:37px;padding:0;border:1px solid #dedede;border-radius:50%;background:#fff;color:#171717;font:22px/1 Arial;cursor:pointer}
+.object-lightbox button:hover{background:#f2f2f2}
+.object-lightbox button:disabled{opacity:.35;cursor:default;pointer-events:auto}
+.object-lightbox-close{align-self:flex-end;flex:none}
+.object-lightbox-view{position:relative;width:100%;height:min(75dvh,820px);min-height:0}
+.object-lightbox .lightbox-stage{height:100%;width:100%;aspect-ratio:auto;min-height:0}
+.object-lightbox .lightbox-stage img{display:block;flex:0 0 100%;min-width:0;width:100%;height:100%;object-fit:contain}
+.object-lightbox .lightbox-controls{top:50%;left:8px;right:8px}
+.object-lightbox .lightbox-controls button{--control-size:37px}
+.object-lightbox-counter{align-self:center;padding:0;font-size:13px;color:#737373}
+.lightbox-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;color:#737373;background:#fff;font-size:14px}
+.lightbox-loading:empty{display:none}
+@media(max-width:700px){
+.object-lightbox{width:100vw;height:100dvh;max-height:none;margin:0;padding:max(16px,env(safe-area-inset-top)) 12px max(16px,env(safe-area-inset-bottom));border:0}
+.object-lightbox-view{flex:1;height:auto}
+.object-lightbox .lightbox-controls{left:0;right:0}
+}
+
+/* Photo gestures are scoped to the modal; browser zoom elsewhere stays available. */
+.photo-lightbox-toolbar{display:flex;justify-content:space-between;gap:12px;flex:none}
+.object-lightbox .lightbox-stage{touch-action:none;overscroll-behavior:contain}
+.photo-zoom-layer{position:absolute;inset:0;z-index:1;overflow:hidden;background:#fff;pointer-events:none}
+.object-lightbox .photo-zoom-image{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;transform-origin:center;will-change:transform}
+.object-lightbox .lightbox-stage[data-zoomed=true]{cursor:grab}
+.object-lightbox .lightbox-stage[data-zoomed=true][data-dragging]{cursor:grabbing}

@@ -32,3 +32,8 @@ for (const file of originals) {
   }
 }
 console.log("Prepared", count, "derived images per site:", bytes, "bytes. Original artwork files preserved.");
+
+await copyFile("lib/photo-lightbox.js", "dist/photo-lightbox.js");
+await copyFile("public/gallery-ui.css", "dist/gallery-ui.css");
+
+await copyFile("lib/photo-zoom.js", "dist/photo-zoom.js");
