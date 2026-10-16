@@ -4,22 +4,22 @@ const copy = {
   ru: {
     outside: "Работа в среде", inside: "Работа с материалом", menu: "Меню", close: "Закрыть",
     streetTitle: "Уличное рисование",
-    streetText: "Поиск новых мест и сооружений для рисования. Работа строится на адаптации к особенностям найденного пространства: его поверхностям, конструкции и окружающим условиям. Рисунок создаётся на месте, без предварительного эскиза.",
+    streetText: "Поиск новых мест и сооружений за пределами привычных маршрутов. Работа начинается со знакомства с пространством и его особенностями. Рисунок создаётся на месте, без предварительного эскиза, и меняется в зависимости от поверхности и окружающих условий.",
     instagram: "Instagram", video: "Видео", zines: "Зины", cyanotype: "Цианотипия", shirts: "Футболки",
     zinesText: "Издания о месте, слоях и маршрутах уличных работ.",
-    cyanotypeText: "Он обращается к воспоминаниям, пытаясь сохранить их в материальной форме. Используя цианотипию, он получает отпечатки, каждый из которых оказывается неповторимым. Случайные изменения и искажения изображения напоминают о том, как память преобразует пережитое. Возвращаясь к одним и тем же событиям, он каждый раз обнаруживает в них что-то новое.",
-    comingSoon: "Раздел готовится", objectsLead: "Эксперименты с металлом, керамикой, деревом и другими материалами. Работа строится на сочетании техник, изучении свойств материалов и импровизации в процессе создания объектов.",
+    cyanotypeText: "Работа с воспоминаниями через технику цианотипии. Каждый отпечаток получается немного другим из-за случайностей и особенностей процесса. Эти изменения перекликаются с тем, как воспоминания со временем теряют одни детали и приобретают другие.",
+    comingSoon: "Раздел готовится", objectsLead: "Работа с разными материалами и сочетанием техник. Их свойства и способы обработки становятся основой для экспериментов и импровизации. Форма определяется в процессе работы, а готовые объекты могут существовать в разных пространствах и контекстах.",
     exhibitions: "Выставки", objects: "Объекты", graphics: "Графика", all: "Смотреть раздел",
     metal: "Металл", ceramics: "Керамика", roots: "Корни",
   },
   en: {
     outside: "Work in context", inside: "Work with material", menu: "Menu", close: "Close",
     streetTitle: "Street drawing",
-    streetText: "Graffiti is ephemeral: it is here today, gone tomorrow. The process matters as much as the result.",
+    streetText: "Searching for new places and structures beyond familiar routes. The work begins with getting to know the space and its particular features. The drawing is created on site, without a preliminary sketch, and changes in response to the surface and surrounding conditions.",
     instagram: "Instagram", video: "Video", zines: "Zines", cyanotype: "Cyanotype", shirts: "T-shirts",
     zinesText: "Publications about place, layers and routes of street works.",
-    cyanotypeText: "A street-work series printed as cyanotypes on A4 paper.",
-    comingSoon: "Section coming soon", objectsLead: "Made artifacts — drawings, sculptures and traces of contact with material.",
+    cyanotypeText: "Working with memories through cyanotype. Each print turns out slightly different because of chance and the particularities of the process. These changes echo the way memories lose some details and acquire others over time.",
+    comingSoon: "Section coming soon", objectsLead: "Working with different materials and combinations of techniques. Their properties and methods of processing become the basis for experimentation and improvisation. Form emerges during the work, and the finished objects can exist in different spaces and contexts.",
     exhibitions: "Exhibitions", objects: "Objects", graphics: "Graphics", all: "View section",
     metal: "Metal", ceramics: "Ceramics", roots: "Roots",
   },
@@ -30,13 +30,13 @@ export const getCopy = (locale: Locale) => copy[locale];
 export const zines = [
   { title: "Недостаточно памяти", year: "2026", image: "/media/nedostatochno-pamyati-2026.webp", slug: "nedostatochno-pamyati" },
   { title: "Убежище", year: "2020", image: "/media/IMG_20200621_165755.jpg", slug: "ubezhishche" },
-  { title: "Слои", year: "2021", image: "/media/xjsg8vQO7rI.jpg", slug: "sloi" },
+  { title: "Слои", year: "2021", image: "/images/new-site-assets/zines/sloi/xjsg8vQO7rI-1200.webp", slug: "sloi" },
 ];
 
 export const zineDetails = {
-  "nedostatochno-pamyati": { ...zines[0], images: [zines[0].image, "/media/nedostatochno-pamyati-01.png", "/media/nedostatochno-pamyati-02.png"], text: "Зин Чешуи фиксирует ключевые принципы создания уличных работ. В издании содержится фотодокументация рисунков, созданных в период с 2018 по 2025 год.\n\nФормат А5, 50 страниц, цветная печать, тираж 50 экземпляров.", previous: "sloi", next: "ubezhishche" },
-  ubezhishche: { ...zines[1], images: ["/media/ubezhishche-01.png", "/media/ubezhishche-02.png", "/media/ubezhishche-03.png"], text: "Это зин о месте, которое собирало мои работы с 2014 года по 2019. За этот промежуток времени мой стиль успел измениться, а спот частично это запечатлил.\n\nРазмер 210×210.\nТираж 50 экземпляров.", previous: "nedostatochno-pamyati", next: "sloi" },
-  sloi: { ...zines[2], images: ["/media/sloi-01.png", "/media/sloi-02.png", "/media/sloi-03.png"], text: "С меня сползает очередной слой чешуи. На этот раз зин — альбом с коллекцией уличных работ, выполненных за последние 2 года.\n\nРазмер 210×210.\nТираж 35 экземпляров.", previous: "ubezhishche", next: "nedostatochno-pamyati" },
+  "nedostatochno-pamyati": { ...zines[0], images: [zines[0].image, "/media/nedostatochno-pamyati-01.png", "/media/nedostatochno-pamyati-02.png"], text: "Зин о практике уличного рисования. В издании собраны фотографии работ, созданных с 2018 по 2025 год, и описаны основные принципы работы с городским пространством.\n\nФормат А5, 50 страниц, цветная печать. Тираж 50 экземпляров.", previous: "sloi", next: "ubezhishche" },
+  ubezhishche: { ...zines[1], images: ["/media/ubezhishche-01.png", "/media/ubezhishche-02.png", "/media/ubezhishche-03.png"], text: "Зин посвящён одному месту, где создавались рисунки с 2014 по 2019 год. Фотографии показывают, как за это время менялся стиль, а само пространство постепенно становилось архивом этих изменений.\n\nФормат 210 × 210 мм. Тираж 50 экземпляров.", previous: "nedostatochno-pamyati", next: "sloi" },
+  sloi: { ...zines[2], images: ["/media/sloi-01.png", "/media/sloi-02.png", "/media/sloi-03.png"], text: "Фотоальбом с подборкой уличных работ, созданных за два года. Издание документирует очередной этап практики и изменения в рисунках.\n\nФормат 210 × 210 мм. Тираж 35 экземпляров.", previous: "ubezhishche", next: "nedostatochno-pamyati" },
 } as const;
 
 export const cyanotypes = [

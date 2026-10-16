@@ -56,22 +56,22 @@
     ['.static-tabs [data-tab="outside"]', 'work in context'],
     ['.static-tabs [data-tab="inside"]', 'work with material'],
     ['.street-feature h1', 'Street drawing'],
-    ['.street-feature p', 'Searching for new places and structures to draw on. The work adapts to the found space: its surfaces, construction and surrounding conditions. The drawing is made on site, without a preliminary sketch.'],
+    ['.street-feature p', 'Searching for new places and structures beyond familiar routes. The work begins with getting to know the space and its particular features. The drawing is created on site, without a preliminary sketch, and changes in response to the surface and surrounding conditions.'],
+    ['#cyanotype .section-description', "Working with memories through cyanotype. Each print turns out slightly different because of chance and the particularities of the process. These changes echo the way memories lose some details and acquire others over time."],
     ['#zines h2', 'Printed editions'], ['#cyanotype h2', 'Cyanotype'], ['#merch h2', 'Merch'],
     ['#merch .section-description', 'The print refers to a street work made in Kazan in 2020.'],
-    ['.inside-intro h1', 'Exploring forms'],
-    ['.inside-intro p, #objects .section-description', 'Experiments with metal, ceramics, wood and other materials. The work combines techniques, studies material properties and leaves room for improvisation.'],
+    ['#objects .section-description', 'Working with different materials and combinations of techniques. Their properties and methods of processing become the basis for experimentation and improvisation. Form emerges during the work, and the finished objects can exist in different spaces and contexts.'],
     ['#drawings .section-description', 'Graphics and painting: series of works on paper, canvas and wood.'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
-    ['.section-heading a', 'view'],
+    ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
+    ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],
     ['.static-menu p:first-of-type', 'Work in context'], ['.static-menu p:last-of-type', 'Work with material'],
     ...Object.entries({zines:'Printed editions',cyanotype:'Cyanotype',merch:'Merch',exhibitions:'Exhibitions',objects:'Objects',drawings:'Drawings'}).map(([key,label]) => ['.static-menu [data-target="'+key+'"]',label]),
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
-  let english = false;
-  document.querySelector('.language-button').addEventListener('click', event => {
-    english = !english;
-    document.documentElement.lang = english ? 'en' : 'ru';
-    event.currentTarget.textContent = english ? 'Ru' : 'En';
+  const applyLocale = locale => {
+    const english = locale === "en";
     translations.forEach(({node,ru,en}) => { node.textContent = english ? en : ru; });
-  });
+  };
+  document.addEventListener("cheshuya:locale", event => applyLocale(event.detail));
+  applyLocale(window.CheshuyaLocale?.get() || "ru");
 })();
