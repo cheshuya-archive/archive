@@ -212,12 +212,13 @@
         controls.style.removeProperty('width');
         return;
       }
-      const progress = Math.max(0, Math.min(1, scrollY / 135));
+      const currentScroll = Math.max(0, scrollY);
+      const progress = Math.min(1, currentScroll / 135);
       const size = startSize + (37 - startSize) * progress;
       logo.setAttribute('aria-label', size >= 100 ? (locale === 'en' ? 'Hold to attract logo particles' : 'Зажмите, чтобы притянуть частицы') : (locale === 'en' ? 'Back to top' : 'Наверх'));
       logo.classList.remove('home-at-stage');
       logo.classList.add('home-moving-logo');
-      logo.style.top = (center - scrollY + (headerY - center + scrollY) * progress) + 'px';
+      logo.style.top = (center - currentScroll + (headerY - center + currentScroll) * progress) + 'px';
       logo.style.width = logo.style.height = size + 'px';
       controls.style.width = (83 + (contentWidth - 83) * progress) + 'px';
       controls.style.justifyContent = 'space-between';
@@ -226,7 +227,7 @@
     const measure = () => {
       const rect = stage.getBoundingClientRect(), style = getComputedStyle(stage);
       const top = parseFloat(style.paddingTop) || 0, bottom = parseFloat(style.paddingBottom) || 0;
-      center = rect.top + scrollY + top + (rect.height - top - bottom) / 2;
+      center = rect.top + Math.max(0, scrollY) + top + (rect.height - top - bottom) / 2;
       startSize = matchMedia('(min-width:641px)').matches ? 162 : 142;
       const button = controls.querySelector('button').getBoundingClientRect();
       headerY = button.top + button.height / 2;
@@ -234,7 +235,14 @@
       render();
     };
     addEventListener('scroll', () => { if (frame === null) frame = requestAnimationFrame(render); }, { passive: true });
-    addEventListener('resize', measure);
+    let viewportWidth = innerWidth;
+    addEventListener('resize', () => {
+      // The mobile browser chrome changes height on entry; the stage layout does not.
+      if (innerWidth === viewportWidth) return;
+      viewportWidth = innerWidth;
+      measure();
+    });
+    addEventListener('pageshow', measure);
     motion.addEventListener('change', measure);
     const top = () => scrollTo({ top: 0, behavior: behavior() });
     logo.tabIndex = 0;

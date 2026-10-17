@@ -33,6 +33,15 @@ html.telegram-ios,.telegram-ios body{height:100%;min-height:100%;overscroll-beha
 /* Keep only the controls visible on the home header — no var(--surface) background strip. */
 .archive-header,.archive-header:before{background:transparent!important}
 
+/* Match the animated logo's first frame before deferred scripts execute. */
+@media(prefers-reduced-motion:no-preference){
+  .logo-stage img.home-at-stage{position:fixed!important;z-index:31;left:50%!important;top:207.5px!important;transform:translate(-50%,-50%)!important}
+}
+@media(max-width:700px) and (prefers-reduced-motion:no-preference){
+  .logo-stage img.home-at-stage{top:calc(171px + env(safe-area-inset-top))!important}
+}
+@media(prefers-reduced-motion:no-preference){.telegram-ios .logo-stage img.home-at-stage{top:171px!important}}
+
 /* On desktop, leave part of the third zine card in view as a scroll cue. */
 @media(min-width:641px){#zines .rail-scroll>.archive-card{flex-basis:250px}}
 
