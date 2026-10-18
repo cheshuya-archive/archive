@@ -47,8 +47,11 @@
   document.querySelector('.prev').addEventListener('click', () => gallery?.move(-1));
   document.querySelector('.next').addEventListener('click', () => gallery?.move(1));
   document.querySelector('.zine-carousel').setAttribute('tabindex', '0');
-  const previous = objects[(currentIndex + objects.length - 1) % objects.length];
-  const next = objects[(currentIndex + 1) % objects.length];
+  document.querySelector('.zine-header .back-icon').href = `catalog-objects-${object.material}.html`;
+  const materialObjects = objects.filter(item => item.material === object.material);
+  const materialIndex = materialObjects.findIndex(item => item.id === object.id);
+  const previous = materialObjects[(materialIndex + materialObjects.length - 1) % materialObjects.length];
+  const next = materialObjects[(materialIndex + 1) % materialObjects.length];
   document.querySelector('.object-prev').href = `object.html?id=${previous.id}`;
   document.querySelector('.object-next').href = `object.html?id=${next.id}`;
 })();

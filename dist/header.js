@@ -63,9 +63,13 @@
   if (!isHome) {
     const back = header.querySelector('.back-icon');
     const page = location.pathname;
-    if (back) back.href = header.classList.contains('catalog-header')
-      ? 'index.html#' + (page.includes('exhibitions') ? 'exhibitions' : page.includes('objects') ? 'objects' : page.includes('drawings') ? 'drawings' : 'zines')
-      : page.endsWith('exhibition.html') ? 'catalog-exhibitions.html' : page.endsWith('cyanotype.html') ? 'index.html#cyanotype' : 'catalog-prints.html';
+    if (back) back.href = page.endsWith('catalog-objects-ceramic.html') || page.endsWith('catalog-objects-metal.html')
+      ? 'catalog-objects.html'
+      : page.endsWith('object.html')
+        ? `catalog-objects-${new URLSearchParams(location.search).get('id')?.startsWith('metal-') ? 'metal' : 'ceramic'}.html`
+        : header.classList.contains('catalog-header')
+          ? 'index.html#' + (page.includes('exhibitions') ? 'exhibitions' : page.includes('objects') ? 'objects' : page.includes('drawings') ? 'drawings' : 'zines')
+          : page.endsWith('exhibition.html') ? 'catalog-exhibitions.html' : page.endsWith('cyanotype.html') ? 'index.html#cyanotype' : 'catalog-prints.html';
     const logo = document.createElement('a');
     logo.className = 'site-home-logo';
     logo.href = 'index.html';
