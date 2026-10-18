@@ -6,6 +6,7 @@
 .rail-arrow:disabled:hover,.zine-controls button:disabled:hover{background:var(--surface)!important;border-color:var(--border-arrow)!important}
 .carousel-actions button::after,.rail-arrow::after,.zine-controls button::after,.header-controls button::after,.catalog-global-controls button::after,.zine-global-controls button::after,.zine-header>.back-icon::after,.catalog-header>.back-icon::after,.zine-return>a::after,.catalog-header>a:not(.site-home-logo)::after,.site-home-logo::after,.sheet-close::after,.static-menu-close::after,.zine-menu-close::after,.gallery-zoom::after,.object-lightbox button::after{content:"";position:absolute;inset:calc((var(--control-size,37px) - 44px)/2);min-width:44px;min-height:44px;border-radius:inherit;transform:none!important;background:transparent!important;pointer-events:auto}
 .rail-arrow,.zine-controls button{--control-size:30px}
+.zine-controls button{position:relative}
 .header-controls button,.catalog-global-controls button,.zine-global-controls button,.back-icon,.site-home-logo,.sheet-close,.static-menu-close,.zine-menu-close,.gallery-zoom,.object-lightbox button{--control-size:37px}
 .static-menu-close,.zine-menu-close,.sheet-close{--control-size:32px}
 .header-controls button,.catalog-global-controls button,.zine-global-controls button,.carousel-actions button,.zine-return>a,.catalog-header>a:not(.site-home-logo):not(.back-icon){position:relative}

@@ -62,6 +62,17 @@
   });
   if (location.hash) openHash();
   else if (freshEntry) startAtTop();
+  const drawingRail = document.querySelector('#drawings .rail-scroll');
+  if (drawingRail) {
+    const categories = [
+      { slug:'paper', title:'На бумаге', image:'images/drawings/paper/1/01' },
+      { slug:'canvas', title:'На холстах', image:'images/drawings/canvas/1/01' },
+      { slug:'wood', title:'По дереву', image:'images/drawings/wood/1/01' },
+    ];
+    drawingRail.innerHTML = categories.map(({slug,title,image}) =>
+      `<article class="archive-card" data-drawing-category="${slug}"><a class="archive-card-link" href="drawing.html?surface=${slug}"><div class="archive-image"><img src="${image}-600.webp" srcset="${image}-600.webp 600w, ${image}-1200.webp 1200w" sizes="250px" alt="${title}" loading="lazy" decoding="async"></div><div class="archive-caption"><strong>${title}</strong></div></a></article>`
+    ).join('');
+  }
   document.querySelectorAll('.rail').forEach(rail => {
     const viewport = rail.querySelector('.rail-scroll');
     const controller = window.CheshuyaCarousel.createCardCarousel(viewport);
@@ -78,6 +89,9 @@
     ['#merch .archive-caption span', 'Screen printing · S, M, L, XL'],
     ['#objects .section-description', 'Working with different materials and combinations of techniques. Their properties and methods of processing become the basis for experimentation and improvisation. Form emerges during the work, and the finished objects can exist in different spaces and contexts.'],
     ['#drawings .section-description', 'Graphics and painting: series of works on paper, canvas and wood.'],
+    ['#drawings [data-drawing-category="paper"] strong', 'On paper'],
+    ['#drawings [data-drawing-category="canvas"] strong', 'On canvas'],
+    ['#drawings [data-drawing-category="wood"] strong', 'On wood'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
     ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
     ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],

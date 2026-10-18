@@ -63,7 +63,9 @@
   if (!isHome) {
     const back = header.querySelector('.back-icon');
     const page = location.pathname;
-    if (back) back.href = page.endsWith('catalog-objects-ceramic.html') || page.endsWith('catalog-objects-metal.html')
+    if (back) back.href = page.endsWith('drawing.html')
+      ? 'catalog-drawings.html'
+      : page.endsWith('catalog-objects-ceramic.html') || page.endsWith('catalog-objects-metal.html')
       ? 'catalog-objects.html'
       : page.endsWith('object.html')
         ? `catalog-objects-${new URLSearchParams(location.search).get('id')?.startsWith('metal-') ? 'metal' : 'ceramic'}.html`

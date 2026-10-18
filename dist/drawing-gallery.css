@@ -1,0 +1,21 @@
+.drawing-category-grid .catalog-image{aspect-ratio:4/3}
+.drawing-category-grid .catalog-image img{object-fit:cover;transform:scale(1.06)}
+.drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.1)}
+.drawing-detail-page .catalog-header{margin-bottom:72px}
+.drawing-detail-page h1{margin-bottom:40px}
+#drawing-series-list{display:grid;gap:72px}
+.drawing-series{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;min-width:0}
+.drawing-series .zine-carousel{height:min(72svh,700px);min-height:420px;width:100%;overflow:hidden}
+.drawing-series .zine-slide{height:auto;min-height:0;width:100%;flex:1 1 0}
+.drawing-series .zine-slide img{object-fit:contain}
+.drawing-series .drawing-series-info h2{margin:0;font-size:26px;font-weight:600;line-height:1.2}
+.drawing-series .gallery-counter{font-size:12px;color:var(--muted);margin-top:10px}
+@media(max-width:700px){
+  .drawing-detail-page .catalog-header{margin-bottom:56px}
+  .drawing-detail-page h1{margin-bottom:28px}
+  #drawing-series-list{gap:56px}
+  .drawing-series{display:flex;flex-direction:column-reverse;gap:16px}
+  .drawing-series .zine-carousel{height:auto;min-height:0}
+  .drawing-series .zine-slide{height:auto;aspect-ratio:3/4;flex:none}
+  .drawing-series .drawing-series-info h2{font-size:20px}
+}

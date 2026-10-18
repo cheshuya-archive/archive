@@ -49,7 +49,7 @@ const initialize = () => {
   const objectTriggers = [...document.querySelectorAll("[data-object-index]")];
   connect(objectTriggers, objectTriggers.map(button => sourceFrom(button.querySelector("img"))), "Просмотр объектов");
 
-  const drawings = [...document.querySelectorAll("#drawings .archive-card, .catalog-page.art-catalog:not(:has([data-object-index])) .catalog-card")];
+  const drawings = [...document.querySelectorAll("#drawings .archive-card:not([data-drawing-category]), .catalog-page.art-catalog:not(.drawing-catalog):not(:has([data-object-index])) .catalog-card")];
   const drawingSources = drawings.map(card => sourceFrom(card.querySelector("img")));
   const drawingTriggers = drawings.map((card,index) => {
     const existing = card.querySelector(".archive-card-link");
