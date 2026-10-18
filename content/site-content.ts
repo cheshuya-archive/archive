@@ -48,7 +48,7 @@ export const exhibitions = [
   { title: "Уязвимое место", note: "KMSA, Kazan", year: "2026", image: "/media/001_IMG_6172-HDR.jpg" },
   { title: "Portal", note: "Off-site show at Protvino", year: "2024", image: "/media/SAVE_20240924_153051.jpg" },
   { title: "Black show", note: "Off-site show at Protvino", year: "2024", image: "/media/CHESHUYA_THE_NOSE_DIVE_PAPER_LASER_PRINTING_13X15_CM__2024_(2).jpg" },
-  { title: "Rusty box", note: "Off-site show at Almaty", year: "2023", image: "/media/001_IMG_6172-HDR.jpg" },
+  { title: "Rusty Box", note: "Групповая выставка, Алматы", year: "2023", image: "/media/001_IMG_6172-HDR.jpg" },
   { title: "Sleeppy stupor", note: "Off-site show at Almaty", year: "2023", image: "/media/DSCF3126-Recovered_1.png" },
   { title: "Реквием по ЖЭК-арту", note: "VMDPNI, Moscow", year: "2022", image: "/media/IMG_20200621_165755.jpg" },
   { title: "Deep Woods Cold Winters", note: "ISSMAG gallery, Moscow", year: "2022", image: "/media/001_IMG_6172-HDR.jpg" },
