@@ -16,7 +16,14 @@ await page.locator('#drawings [data-drawing-category="canvas"] a').click();
 await page.waitForURL('**/drawing.html?surface=canvas');
 
 await page.goto(`${origin}/catalog-drawings.html`);
+await page.screenshot({ path: join(tmpdir(), 'cheshuya-drawings-catalog-desktop.png') });
 assert.equal(await page.locator('.drawing-category-grid > a').count(), 3);
+const cardImage = await page.locator('.drawing-category-grid .catalog-image').first().evaluate(element => {
+  const image = element.querySelector('img');
+  const frame = element.getBoundingClientRect();
+  return { ratio: frame.width / frame.height, frameWidth: frame.width, photoWidth: image.offsetWidth };
+});
+assert.ok(Math.abs(cardImage.ratio - .75) < .01 && Math.abs(cardImage.frameWidth - cardImage.photoWidth) < 1, JSON.stringify(cardImage));
 for (const surface of ['paper', 'canvas', 'wood']) {
   assert.equal(await page.locator(`a[href="drawing.html?surface=${surface}"]`).count(), 1);
 }
@@ -27,6 +34,20 @@ for (const [surface, expected] of [['paper', 6], ['canvas', 2], ['wood', 2]]) {
   assert.equal(await page.locator('.drawing-series').count(), expected);
   assert.equal(await page.locator('.zine-carousel').count(), expected);
   assert.equal(await page.locator('.drawing-series .gallery-zoom').count(), expected);
+  const desktopLayout = await page.evaluate(() => {
+    const carousel = document.querySelector('.drawing-series .zine-carousel').getBoundingClientRect();
+    const title = document.querySelector('.drawing-series .drawing-series-info h2').getBoundingClientRect();
+    const heading = document.querySelector('#drawing-heading').getBoundingClientRect();
+    const container = document.querySelector('.drawing-detail-page').getBoundingClientRect();
+    return { centered: Math.abs((carousel.left + carousel.right) / 2 - (container.left + container.right) / 2) < 2, aligned: Math.abs(title.left - carousel.left) < 2 && Math.abs(heading.left - carousel.left) < 2 };
+  });
+  assert.ok(desktopLayout.centered && desktopLayout.aligned, JSON.stringify(desktopLayout));
+  if (surface === 'canvas') await page.screenshot({ path: join(tmpdir(), 'cheshuya-drawings-detail-desktop.png') });
+  await page.evaluate(() => scrollTo(0, 650));
+  await page.waitForTimeout(200);
+  const headerTop = await page.locator('.catalog-header').evaluate(element => element.getBoundingClientRect().top);
+  assert.ok(Math.abs(headerTop) < 2, `Sticky header top: ${headerTop}`);
+  await page.evaluate(() => scrollTo(0, 0));
   const stage = page.locator('.drawing-series').first().locator('.zine-slide');
   const initial = await stage.evaluate(element => element.scrollLeft);
   await page.locator('.drawing-series').first().locator('.next').click();
@@ -44,6 +65,11 @@ for (const [surface, expected] of [['paper', 6], ['canvas', 2], ['wood', 2]]) {
   });
   assert.ok(geometry.page <= geometry.viewport + 1, JSON.stringify(geometry));
   assert.ok(geometry.nextRight <= geometry.carouselRight + 1, JSON.stringify(geometry));
+  await page.evaluate(() => scrollTo(0, 500));
+  await page.waitForTimeout(200);
+  const mobileHeaderTop = await page.locator('.catalog-header').evaluate(element => element.getBoundingClientRect().top);
+  assert.ok(Math.abs(mobileHeaderTop) < 2, `Mobile sticky header top: ${mobileHeaderTop}`);
+  await page.evaluate(() => scrollTo(0, 0));
   if (surface === 'canvas') await page.screenshot({ path: join(tmpdir(), 'cheshuya-drawings-mobile.png') });
   await page.setViewportSize({ width: 1280, height: 900 });
 }
