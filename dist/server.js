@@ -14,7 +14,7 @@ http.createServer((request, response) => {
       ? Buffer.from((() => {
           let html = data.toString();
           if (!html.includes('menu-unified.css')) html = html.replace("</head>", '<link rel="stylesheet" href="menu-unified.css"></head>');
-          if (!html.includes('src="header.js"')) html = html.replace("</body>", '<script src="header.js"></script></body>');
+          if (!/src=["']header\.js(?:\?[^"']*)?["']/.test(html)) html = html.replace("</body>", '<script src="header.js"></script></body>');
           return html;
         })())
       : data;

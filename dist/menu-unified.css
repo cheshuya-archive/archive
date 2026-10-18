@@ -91,3 +91,7 @@ html[lang="en"] .object-page .zine-pagination>:first-child::after{content:"Previ
 html[lang="en"] .object-page .zine-pagination>:last-child::before{content:"Next"}
 @media(max-width:700px){.object-page .zine-pagination{margin-top:28px}}
 @media(prefers-reduced-motion:reduce){.object-detail-link img{transition:none}}
+.static-menu .menu-columns,.zine-menu .menu-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(12px,4vw,40px);padding-top:36px}
+.static-menu .menu-group,.zine-menu .menu-group{min-width:0}
+.static-menu .menu-group p,.zine-menu .menu-group p{margin:12px 0 4px}
+.static-menu .menu-group [data-target],.zine-menu .menu-group [data-target]{max-width:100%}

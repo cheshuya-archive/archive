@@ -96,17 +96,24 @@
     ];
     const closeClass = isHome ? 'static-menu-close' : 'zine-menu-close';
     menu.innerHTML = '<button type="button" class="' + closeClass + '" aria-label="Закрыть меню">×</button>';
+    const columns = document.createElement('div');
+    columns.className = 'menu-columns';
+    menu.append(columns);
+    let group;
     links.forEach(([target,label,href],index) => {
       if (index === 0 || index === 3) {
+        group = document.createElement('div');
+        group.className = 'menu-group';
         const heading = document.createElement('p');
         heading.textContent = index === 0 ? 'Работа в среде' : 'Работа с материалом';
-        menu.append(heading);
+        group.append(heading);
+        columns.append(group);
       }
       const item = document.createElement(isHome ? 'button' : 'a');
       item.dataset.target = target;
       item.textContent = label;
       if (isHome) item.type = 'button'; else item.href = href;
-      menu.append(item);
+      group.append(item);
     });
     const preferences = document.createElement("div");
     preferences.className = "menu-preferences";
