@@ -35,5 +35,5 @@ const cyanotype = {
   text: getCopy("ru").cyanotypeText,
 };
 export default function CyanotypePage() {
-  return <ZineDetailPage zine={cyanotype} kind="Цианотипия" backHref="/#cyanotype" />;
+  return <ZineDetailPage zine={cyanotype} kind="Цианотипия" backHref="/#cyanotype" videoId="7TaltIvQq9E" videoTitle="Портал, 2024 | Серия отпечатков на бумаге" />;
 }
