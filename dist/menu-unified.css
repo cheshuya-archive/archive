@@ -72,3 +72,18 @@ html.telegram-ios,.telegram-ios body{height:100%;min-height:100%;overscroll-beha
 .exhibition-video-frame iframe{display:block;width:100%;height:100%;border:0}
 .exhibition-video.is-short .exhibition-video-frame{width:min(100%,360px);aspect-ratio:9/16}
 @media(max-width:700px){.exhibition-page .zine-carousel,.exhibition-page .zine-info{height:auto;overflow:visible}.exhibition-copy{overflow:visible}.exhibition-page .zine-pagination{margin-top:28px}.exhibition-video{margin-top:48px}}
+.object-detail-link{display:block;width:100%;height:100%;color:inherit;text-decoration:none}
+.object-detail-link img,.object-catalog .catalog-image img{object-fit:contain}
+.object-detail-link img{transition:transform .35s ease}
+.object-detail-link:hover img{transform:scale(1.035)}
+.object-detail-link:active img{transform:scale(.98)}
+.object-detail-link:focus-visible{outline:2px solid var(--text);outline-offset:-2px}
+.object-material-group+.object-material-group{margin-top:48px}
+.object-material-group h2{font-size:19px;line-height:1.1;font-weight:650;margin:0 0 20px}
+.object-page .zine-pagination{margin-top:auto}
+.object-page .zine-pagination>:first-child::after{content:"Предыдущий"}
+.object-page .zine-pagination>:last-child::before{content:"Следующий"}
+html[lang="en"] .object-page .zine-pagination>:first-child::after{content:"Previous"}
+html[lang="en"] .object-page .zine-pagination>:last-child::before{content:"Next"}
+@media(max-width:700px){.object-page .zine-pagination{margin-top:28px}}
+@media(prefers-reduced-motion:reduce){.object-detail-link img{transition:none}}

@@ -3259,6 +3259,240 @@
           "file": "new-site-assets/objects/object-03-2000.webp"
         }
       ]
+    },
+    "objects/ceramic/1.1.png": {
+      "hash": "0e80fbb30b0a2b0a40ff4aa75a47eb59c284ed05a22da91d9d6b233d337eb370",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/1.1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/1.1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/1.1-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/1.2.png": {
+      "hash": "9507234bf9de15ab7afd4bc14fb75bc66661ac3e5e94a4bd96c19a3253f9ce1a",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/1.2-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/1.2-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/1.2-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/2.1.png": {
+      "hash": "c07d0d75521f7b472637a5c62ac2f429cece17b076583497106c5272852920af",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/2.1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/2.1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/2.1-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/2.2.png": {
+      "hash": "e9c81f56a947fde6deb8df7d3be39860158a6faeff545c5190a63733f5bdb98c",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/2.2-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/2.2-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/2.2-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/3.1.png": {
+      "hash": "733f3a0290dcce3e684ec0f89b9ec825cd8986345bddf06c8e84b7e8d93ca4f7",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/3.1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/3.1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/3.1-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/3.2.png": {
+      "hash": "bebffa5de567f3faf290ac520dae8a9255565d94477693c83883fec6117848d7",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/3.2-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/3.2-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/3.2-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/4.1.png": {
+      "hash": "da14ccda2d182909fcff65e3d68bc94152a009c61c4f03bfd6f1af4d4bd6f453",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/4.1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/4.1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/4.1-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/4.2.png": {
+      "hash": "a39dd979b5a2866ea01fe8a7d39d70fe421fb99474b852421ef2d5d628e1997c",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/4.2-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/4.2-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/4.2-2000.webp"
+        }
+      ]
+    },
+    "objects/ceramic/5.1.png": {
+      "hash": "8d0746c2a1b14031583ea755f2aafa81087ded0b6173c5d5199bb3e1528d1064",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/ceramic/5.1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/ceramic/5.1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/ceramic/5.1-2000.webp"
+        }
+      ]
+    },
+    "objects/metal/1.png": {
+      "hash": "33938adb5c823bc5b009c03d18b44614dced2c20edf5d77f468680fd7b0794a3",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/metal/1-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/metal/1-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/metal/1-2000.webp"
+        }
+      ]
+    },
+    "objects/metal/2.png": {
+      "hash": "fe808baefa054b615b47a5efea1fa5f06f5a55e9bd094f62dae6e3464e968edb",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/metal/2-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/metal/2-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/metal/2-2000.webp"
+        }
+      ]
+    },
+    "objects/metal/3.png": {
+      "hash": "fb3f820e5abf560d1fd585e2d91926fbcd8f9d8b93811b1291deaca5b25ae5b1",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/metal/3-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/metal/3-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/metal/3-2000.webp"
+        }
+      ]
+    },
+    "objects/metal/4.png": {
+      "hash": "83526b6ca5d7b4f096fdcde4da39b5fc063e43d301476bd2976459faae4eee71",
+      "quality": 82,
+      "outputs": [
+        {
+          "width": 600,
+          "file": "objects/metal/4-600.webp"
+        },
+        {
+          "width": 1200,
+          "file": "objects/metal/4-1200.webp"
+        },
+        {
+          "width": 2000,
+          "file": "objects/metal/4-2000.webp"
+        }
+      ]
     }
   }
 }
