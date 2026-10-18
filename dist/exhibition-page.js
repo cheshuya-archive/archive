@@ -1,5 +1,23 @@
 (() => {
   const details = {
+    'uyazvimoe-mesto': {
+      ru: {
+        place: 'KMSA, Казань · 2026',
+        paragraphs: [
+          'Это там, где точки ничем не защищены, где они оголены и чувствительнее всего ко внешнему.',
+          'Чтобы их найти, нужно полностью просканировать объект либо понимать интуитивно, где это.',
+          'Эти точки можно осознанно огибать или отмечать. А можно нажать как на кнопку, за которой обязательно последует реакция.',
+        ],
+      },
+      en: {
+        place: 'KMSA, Kazan · 2026',
+        paragraphs: [
+          'It is where points have no protection, where they are exposed and most sensitive to what comes from outside.',
+          'To find them, you need to scan the entire object or intuitively understand where they are.',
+          'You can deliberately avoid or mark these points. Or you can press one like a button, and a reaction will inevitably follow.',
+        ],
+      },
+    },
     'polya-prisutstviya': {
       ru: {
         place: 'Дуо-выставка (Эдуард Чешуя, Миша13) · ДНИ, Москва · 2026',
