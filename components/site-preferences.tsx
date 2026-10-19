@@ -38,7 +38,10 @@ export function SitePreferencesProvider({ children }: { children: React.ReactNod
     window.addEventListener("storage", storageChange);
     return () => { media.removeEventListener("change", systemChange); window.removeEventListener("storage", storageChange); };
   }, []);
-  useEffect(() => { document.documentElement.lang = locale; }, [locale]);
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.dispatchEvent(new CustomEvent("cheshuya:locale", { detail:locale }));
+  }, [locale]);
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     explicitTheme.current = next;

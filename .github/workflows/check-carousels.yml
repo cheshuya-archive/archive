@@ -40,6 +40,10 @@ jobs:
         env:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: node scripts/check-carousels.mjs
+      - name: Check English and Russian UX on Chromium and WebKit
+        env:
+          NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
+        run: node scripts/check-localization.mjs
       - name: Check logo interaction and reload stability
         env:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules

@@ -95,8 +95,6 @@
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
     ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
     ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],
-    ['.static-menu .menu-group:first-child p', 'Work in context'], ['.static-menu .menu-group:last-child p', 'Work with material'],
-    ...Object.entries({zines:'Printed editions',cyanotype:'Cyanotype',merch:'Merch',exhibitions:'Exhibitions',objects:'Objects',drawings:'Drawings'}).map(([key,label]) => ['.static-menu [data-target="'+key+'"]',label]),
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
   const applyLocale = locale => {
     const english = locale === "en";

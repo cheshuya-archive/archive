@@ -49,7 +49,7 @@
     first.alt = `${categories[surface].ru}, серия ${series.replace('-', '.')}`;
     first.src = `images/drawings/${surface}/${series}/01-600.webp`;
     first.srcset = `images/drawings/${surface}/${series}/01-600.webp 600w, images/drawings/${surface}/${series}/01-1200.webp 1200w, images/drawings/${surface}/${series}/01-2000.webp 2000w`;
-    first.sizes = '(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px';
+    first.sizes = '(max-width: 672px) calc(100vw - 32px), 640px';
     first.loading = series === categories[surface].series[0][0] ? 'eager' : 'lazy';
     if (first.loading === 'eager') first.fetchPriority = 'high';
     stage.append(first);

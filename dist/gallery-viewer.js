@@ -1,4 +1,25 @@
-import { createPhotoLightbox } from "./photo-lightbox.js";
+// The zoom viewer and gesture code load only when a photograph is opened.
+const createPhotoLightbox = (options, createGallery) => {
+  let viewer, pending;
+  return {
+    async open(index, trigger) {
+      if (pending) return;
+      trigger?.setAttribute("aria-busy", "true");
+      try {
+        pending = import("./photo-lightbox.js");
+        const module = await pending;
+        viewer ||= module.createPhotoLightbox(options, createGallery);
+        viewer.open(index, trigger);
+      } catch (error) {
+        // A second click retries a transient network failure.
+        console.error("Unable to open photo viewer", error);
+      } finally {
+        pending = null;
+        trigger?.removeAttribute("aria-busy");
+      }
+    }
+  };
+};
 
 const initialize = () => {
   const createGallery = window.CheshuyaCarousel?.createImageGallery;

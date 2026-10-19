@@ -43,3 +43,5 @@ await copyFile("public/site-theme.css", "dist/site-theme.css");
 await copyFile("lib/heading-typing.js", "dist/heading-typing.js");
 
 await copyFile("lib/logo-particles.js", "dist/logo-particles.js");
+
+await copyFile("lib/site-translations.js", "dist/site-translations.js");

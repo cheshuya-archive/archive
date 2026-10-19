@@ -243,15 +243,25 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     photo.loading = "eager";
   };
   let preloadVersion = 0;
+  let preparedIndex = -1;
+  let interacted = false;
+  const initialBounds = stage.getBoundingClientRect();
+  let nearViewport = initialBounds.bottom > -200 && initialBounds.top < innerHeight + 200;
+  const visibility = new IntersectionObserver(entries => {
+    nearViewport = entries.some(entry => entry.isIntersecting);
+    if (nearViewport) prepare(requested);
+  }, { rootMargin: "200px" });
+  visibility.observe(stage);
   const prepare = (index: number) => {
     const photo = photos[index];
-    if (!photo) return;
+    if (!photo || !nearViewport || preparedIndex === index) return;
+    preparedIndex = index;
     photo.fetchPriority = "high";
     loadPhoto(photo);
     const ticket = ++preloadVersion;
-    // The visible image gets the connection first; then warm its two neighbours.
+    // Warm neighbours after interaction; distant galleries never compete with the lead image.
     photo.decode().catch(() => {}).then(() => {
-      if (ticket !== preloadVersion) return;
+      if (ticket !== preloadVersion || !interacted) return;
       for (const candidate of [index - 1, index + 1]) {
         if (photos[candidate]) {
           photos[candidate].fetchPriority = "low";
@@ -285,6 +295,8 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   };
   const show = (index: number) => {
     if (!photos.length) return;
+    nearViewport = true;
+    interacted = true;
     requested = Math.max(0, Math.min(photos.length - 1, index));
     const current = requested;
     const ticket = ++version;
@@ -313,6 +325,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     move(event.key === "ArrowLeft" ? -1 : 1);
   };
   const onGesture = () => {
+    interacted = true;
     version++;
     pending = false;
     stage.setAttribute("aria-busy", "false");
@@ -336,6 +349,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     destroy() {
       version++;
       preloadVersion++;
+      visibility.disconnect();
       if (syncFrame !== null) cancelAnimationFrame(syncFrame);
       observer.disconnect();
       controller.destroy();

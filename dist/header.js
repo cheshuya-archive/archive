@@ -2,10 +2,10 @@
   const exhibitions = [
     { id: 'polya-prisutstviya', title: 'Поля присутствия', year: '2026', description: 'Дуо-выставка, ДНИ, Москва, 2026', count: 30 },
     { id: 'uyazvimoe-mesto', title: 'Уязвимое место', year: '2026', description: 'KMSA, Kazan 2026', count: 12 },
-    { id: 'portal', title: 'Portal', year: '2024', description: 'Оff-site show at Protvino, 2024', count: 13 },
-    { id: 'black-show', title: 'Black show', year: '2024', description: 'Оff-site show at Protvino, 2024', count: 12 },
+    { id: 'portal', title: 'Portal', year: '2024', description: 'Off-site show at Protvino, 2024', count: 13 },
+    { id: 'black-show', title: 'Black show', year: '2024', description: 'Off-site show at Protvino, 2024', count: 12 },
     { id: 'rusty-box', title: 'Rusty Box', year: '2023', description: 'Групповая выставка, Алматы, 2023', count: 10, extension: 'png' },
-    { id: 'sleepy-stupor', title: 'Sleeppy stupor', year: '2023', description: 'Оff-site show at Almaty, 2023', count: 8 },
+    { id: 'sleepy-stupor', title: 'Sleeppy stupor', year: '2023', description: 'Off-site show at Almaty, 2023', count: 8 },
     { id: 'deep-woods-cold-winters', title: 'Deep Woods Cold Winters', year: '2022', description: 'Групповая выставка, ISSMAG, Москва, 2022', count: 9 },
     { id: 'rekviem-po-zhek-artu', title: 'Реквием по ЖЭК-арту', year: '2022', description: 'Групповая выставка, Музей ДПИ, Москва, 2022', count: 9, extension: 'jpg' },
   ];
@@ -137,7 +137,7 @@
       document.documentElement.lang = locale;
       languageButton.textContent = locale === "ru" ? "En" : "Ru";
       languageButton.setAttribute("aria-label", locale === "ru" ? "Сменить язык" : "Switch language");
-      if (!isHome) innerTranslations.forEach(({node,ru,en}) => { node.textContent = locale === "en" ? en : ru; });
+      innerTranslations.forEach(({node,ru,en}) => { node.textContent = locale === "en" ? en : ru; });
       syncThemeButton();
       document.dispatchEvent(new CustomEvent("cheshuya:locale", { detail:locale }));
     };
