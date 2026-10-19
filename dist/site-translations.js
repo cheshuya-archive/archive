@@ -107,7 +107,6 @@ export function translateText(value, locale = "ru") {
     const rest = key.slice(from.length).replace(english ? /»$/ : /”$/, "");
     return to + translateText(rest, locale) + (from.includes("«") || from.includes("“") ? (english ? "”" : "»") : "");
   }
-  if (key.includes(" — ")) return key.split(" — ").map(part => part === "Чешуя" ? part : translateText(part, locale)).join(" — ");
 
   if (key.includes("\n\n")) return key.split("\n\n").map(part => translateText(part, locale)).join("\n\n");
   const photo = key.match(/^(.*?) — (?:фото|photo) (\d+) (?:из|of) (\d+)$/);
@@ -118,5 +117,8 @@ export function translateText(value, locale = "ru") {
   if (image) return translateText(image[1], locale) + (english ? ", image " : ", изображение ") + image[2];
   if (key === "Выставка" || key === "Exhibition") return english ? "Exhibition" : "Выставка";
   if (key === "Зин" || key === "Zine") return english ? "Zine" : "Зин";
+  const genericPhoto = key.match(/^(?:Работа Чешуи, фото|Artwork by Cheshuya, photo) (\d+)$/);
+  if (genericPhoto) return (english ? "Artwork by Cheshuya, photo " : "Работа Чешуи, фото ") + genericPhoto[1];
+  if (key.includes(" — ")) return key.split(" — ").map(part => part === "Чешуя" ? part : translateText(part, locale)).join(" — ");
   return text;
 }

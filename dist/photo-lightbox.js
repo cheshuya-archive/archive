@@ -125,6 +125,7 @@ export function createPhotoLightbox(options, createGallery) {
         clearTimeout(loading);
         if (ticket === openVersion) status.textContent = current.naturalWidth ? "" : text("Не удалось загрузить фотографию");
       });
+      syncLocale();
       dialog.querySelector(".object-lightbox-close").focus();
     },
     destroy() {
