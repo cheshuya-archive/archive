@@ -249,6 +249,7 @@ async function checkPhotoZoom(path) {
   await page.goto(origin + path);
   const opener = page.getByRole("button", { name: "Открыть изображение крупно", exact: true });
   await opener.click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   const stage = page.locator(".object-lightbox .lightbox-stage");
   const total = await stage.locator("img").count();
   assert.ok(total >= 3);

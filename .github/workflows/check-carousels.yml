@@ -41,6 +41,7 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: node scripts/check-carousels.mjs
       - name: Check English and Russian UX on Chromium and WebKit
+        if: success() || failure()
         env:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: |

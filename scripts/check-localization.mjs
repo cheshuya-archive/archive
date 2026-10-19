@@ -67,6 +67,7 @@ try {
         assert.deepEqual(dialogLabels.filter(cyrillic),[],"Untranslated viewer "+path);
         const altText = await dialog.locator("img").evaluateAll(nodes=>nodes.map(node=>node.alt));
         assert.deepEqual(altText.filter(cyrillic),[],"Untranslated image descriptions "+path);
+        await page.waitForFunction(()=>document.querySelector(".lightbox-stage img[data-active=true]")?.naturalWidth>0);
         await page.locator(".photo-zoom-toggle").click();
         assert.equal(await page.locator(".photo-zoom-toggle").getAttribute("aria-label"),"Reset zoom");
         await page.keyboard.press("Escape");
