@@ -27,7 +27,7 @@ try {
   for (const [name, engine] of [["chromium",chromium],["webkit",webkit]]) {
     const browser = await engine.launch();
     const context = await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true,isMobile:true,reducedMotion:"reduce"});
-    await context.addInitScript(()=>localStorage.setItem("cheshuya-locale","en"));
+    await context.addInitScript(()=>{ try { localStorage.setItem("cheshuya-locale","en"); } catch {} });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror",error=>errors.push(error.message));

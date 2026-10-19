@@ -6,7 +6,7 @@ const createPhotoLightbox = (options, createGallery) => {
       if (pending) return;
       trigger?.setAttribute("aria-busy", "true");
       try {
-        pending = import("./photo-lightbox.js");
+        pending = import("./photo-lightbox.js?v=ux-audit-1");
         const module = await pending;
         viewer ||= module.createPhotoLightbox(options, createGallery);
         viewer.open(index, trigger);
