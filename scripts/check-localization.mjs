@@ -46,6 +46,8 @@ try {
         assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),"Overflow "+path+" at "+width);
       }
       await page.setViewportSize({width:390,height:844});
+      const generatedLabels = await page.locator(".zine-pagination>a,.cyanotype-back").evaluateAll(nodes=>nodes.flatMap(node=>["::before","::after"].map(pseudo=>getComputedStyle(node,pseudo).content)));
+      assert.deepEqual(generatedLabels.filter(cyrillic),[],"Untranslated CSS labels "+path);
       const burger = page.locator(".header-controls button:last-child,.catalog-burger,.zine-burger");
       await burger.click();
       const menu = page.locator("#site-menu");

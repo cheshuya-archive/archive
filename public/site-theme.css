@@ -96,3 +96,6 @@ body{min-height:100vh;min-height:100svh}
 html[lang="en"] .exhibition-page .zine-pagination>:first-child::after{content:"Previous"}
 html[lang="en"] .exhibition-page .zine-pagination>:last-child::before{content:"Next"}
 html[lang="en"] .cyanotype-page .cyanotype-back::after{content:"Back"}
+
+html[lang="en"] .zine-pagination>:first-child::after{content:"Previous"}
+html[lang="en"] .zine-pagination>:last-child::before{content:"Next"}
