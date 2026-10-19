@@ -91,13 +91,12 @@ export function HomePage() {
     };
   }, []);
   useEffect(() => { const onScroll = () => setCompact(window.scrollY > 95); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  const scrollTo = (tab: string, id: string) => { setActiveTab(tab); window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }), 30); };
   const moveStreetImage = (event: React.PointerEvent<HTMLElement>) => { const rect = event.currentTarget.getBoundingClientRect(); const relativeX = (event.clientX - rect.left) / rect.width; const relativeY = (event.clientY - rect.top) / rect.height; event.currentTarget.style.setProperty("--street-x", `${(relativeX - .5) * 5}px`); event.currentTarget.style.setProperty("--street-y", `${(relativeY - .5) * 5}px`); event.currentTarget.style.setProperty("--halo-x", `${relativeX * 100}%`); event.currentTarget.style.setProperty("--halo-y", `${relativeY * 100}%`); };
   const resetStreetImage = (event: React.PointerEvent<HTMLElement>) => { event.currentTarget.style.setProperty("--street-x", "0px"); event.currentTarget.style.setProperty("--street-y", "0px"); };
   return <main className="archive-page">
     <header className={`archive-header ${compact ? "is-compact" : ""}`}>
       <Button className="header-logo" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Наверх"><ResponsiveImage src="/media/cheshuya-figma-logo.svg" alt="Чешуя" width={112} height={112} sizes="37px" priority /></Button>
-      <div className="header-controls"><ThemeToggle /><Sheet><SheetTrigger asChild><Button variant="outline" size="icon" aria-label="Открыть меню"><Menu size={18}/></Button></SheetTrigger><SiteMenu onNavigate={scrollTo} /></Sheet></div>
+      <div className="header-controls"><ThemeToggle /><Sheet><SheetTrigger asChild><Button variant="outline" size="icon" aria-label="Открыть меню"><Menu size={18}/></Button></SheetTrigger><SiteMenu /></Sheet></div>
     </header>
     <section className="logo-stage" onPointerMove={moveStreetImage} onPointerLeave={resetStreetImage}><ResponsiveImage src="/media/cheshuya-figma-logo.svg" alt="Чешуя" width={290} height={290} sizes="162px" priority role="button" tabIndex={0} aria-label={locale === "ru" ? "Зажмите, чтобы притянуть частицы" : "Hold to attract logo particles"} /></section>
     <Tabs value={activeTab} onValueChange={setActiveTab} className="archive-shell" id="outside">

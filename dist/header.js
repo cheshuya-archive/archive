@@ -70,8 +70,8 @@
       : page.endsWith('object.html')
         ? `catalog-objects-${new URLSearchParams(location.search).get('id')?.startsWith('metal-') ? 'metal' : 'ceramic'}.html`
         : header.classList.contains('catalog-header')
-          ? 'index.html#' + (page.includes('exhibitions') ? 'exhibitions' : page.includes('objects') ? 'objects' : page.includes('drawings') ? 'drawings' : 'zines')
-          : page.endsWith('exhibition.html') ? 'catalog-exhibitions.html' : page.endsWith('cyanotype.html') ? 'index.html#cyanotype' : 'catalog-prints.html';
+          ? 'index.html'
+          : page.endsWith('exhibition.html') ? 'catalog-exhibitions.html' : page.endsWith('cyanotype.html') ? 'index.html' : 'catalog-prints.html';
     const logo = document.createElement('a');
     logo.className = 'site-home-logo';
     logo.href = 'index.html';
@@ -91,7 +91,7 @@
     const links = [
       ['zines', 'Печатные издания', 'catalog-prints.html'],
       ['cyanotype', 'Цианотипия', 'cyanotype.html'],
-      ['merch', 'Мерч', 'index.html#merch'],
+      ['merch', 'Мерч', 'catalog-merch.html'],
       ['exhibitions', 'Выставки', 'catalog-exhibitions.html'],
       ['objects', 'Объекты', 'catalog-objects.html'],
       ['drawings', 'Рисунки', 'catalog-drawings.html'],
@@ -111,10 +111,10 @@
         group.append(heading);
         columns.append(group);
       }
-      const item = document.createElement(isHome ? 'button' : 'a');
+      const item = document.createElement('a');
       item.dataset.target = target;
       item.textContent = label;
-      if (isHome) item.type = 'button'; else item.href = href;
+      item.href = href;
       group.append(item);
     });
     const preferences = document.createElement("div");
@@ -125,9 +125,15 @@
     const innerTranslations = [...menu.querySelectorAll("[data-target]")].map(node => ({ node, ru:node.textContent, en:englishLabels[node.dataset.target] }));
     [...menu.querySelectorAll("p")].forEach((node,index) => innerTranslations.push({ node, ru:node.textContent, en:index === 0 ? "Work in context" : "Work with material" }));
     const heading = document.querySelector(".catalog-page h1, .cyanotype-page h1");
-    const headingNames = { "Печатные издания":"Printed editions", "Выставки":"Exhibitions", "Объекты":"Objects", "Рисунки":"Drawings", "Цианотипия":"Cyanotype" };
+    const headingNames = { "Печатные издания":"Printed editions", "Выставки":"Exhibitions", "Объекты":"Objects", "Рисунки":"Drawings", "Мерч":"Merch", "Цианотипия":"Cyanotype" };
     if (heading && headingNames[heading.textContent]) innerTranslations.push({ node:heading, ru:heading.textContent, en:headingNames[heading.textContent] });
+    const sectionLabels = { home:["Главная","Home"], prints:["Печатные издания","Printed editions"], exhibitions:["Выставки","Exhibitions"], objects:["Объекты","Objects"], drawings:["Рисунки","Drawings"], merch:["Мерч","Merch"], cyanotype:["Цианотипия","Cyanotype"], ceramic:["Керамика","Ceramics"], metal:["Металл","Metal"] };
     const applyLocale = () => {
+      document.querySelectorAll("[data-section-label]").forEach(node => {
+        const labels = sectionLabels[node.dataset.sectionLabel];
+        if (labels) node.textContent = labels[locale === "en" ? 1 : 0];
+      });
+      document.querySelectorAll(".section-breadcrumbs").forEach(nav => nav.setAttribute("aria-label", locale === "en" ? "Breadcrumb" : "Путь по разделам"));
       document.documentElement.lang = locale;
       languageButton.textContent = locale === "ru" ? "En" : "Ru";
       languageButton.setAttribute("aria-label", locale === "ru" ? "Сменить язык" : "Switch language");
@@ -193,11 +199,10 @@
     overlay.addEventListener('click', () => close());
     menu.querySelectorAll('[data-target]').forEach(item => item.addEventListener('click', event => {
       // Preserve native link behavior for a new tab or modified click.
-      if (!isHome && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       close(() => {
-        if (isHome) window.CheshuyaHome?.openSection(item.dataset.target);
-        else location.href = item.href;
+        location.href = item.href;
       });
     }));
     document.addEventListener('keydown', event => {

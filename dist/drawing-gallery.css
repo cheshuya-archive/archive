@@ -3,7 +3,7 @@
 .drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.24)}
 .drawing-category-grid .catalog-card-link:last-child .catalog-image img{object-fit:contain;transform:scale(1.4)}
 .drawing-category-grid .catalog-card-link:last-child .catalog-card:hover .catalog-image img{transform:scale(1.44)}
-.drawing-catalog .catalog-header,.drawing-detail-page .catalog-header{position:sticky;top:0;z-index:30;min-height:69px;margin-top:-16px;padding:16px 0;background:var(--surface)}
+.drawing-catalog .catalog-header,.drawing-detail-page .catalog-header{position:sticky;top:0;z-index:30;min-height:69px;margin-top:-16px;padding:16px 0;background:transparent}
 .drawing-catalog .catalog-header>.back-icon,.drawing-detail-page .catalog-header>.back-icon,.drawing-catalog .catalog-header .inner-header-controls,.drawing-detail-page .catalog-header .inner-header-controls{top:16px}
 .drawing-detail-page .catalog-header{margin-bottom:72px}
 .drawing-detail-page h1{width:min(100%,640px);margin:0 auto 40px}

@@ -127,11 +127,13 @@ try {
             assert.ok(response.ok(),"Missing image variant: "+url);
           }
           if(path==="catalog-objects.html"){
-            await page.locator("[data-object-index]").first().click();
+            await page.locator('a[href="catalog-objects-ceramic.html"]').click();
+            await page.locator('a[href="object.html?id=ceramic-1"]').click();
+            await page.locator(".gallery-zoom").click();
             await page.waitForFunction(()=>document.querySelector(".object-lightbox")?.open);
             await page.locator(".object-lightbox-next").click();
-            await page.waitForFunction(()=>document.querySelector(".object-lightbox-counter").textContent==="2 / 3");
-            assert.equal(await page.locator(".object-lightbox-counter").textContent(),"2 / 3");
+            await page.waitForFunction(()=>document.querySelector(".object-lightbox-counter").textContent==="2 / 2");
+            assert.equal(await page.locator(".object-lightbox-counter").textContent(),"2 / 2");
             await page.keyboard.press("Escape");
             await page.waitForFunction(()=>document.body.style.overflow==="");
           }
@@ -155,7 +157,7 @@ try {
             assert.equal(await page.locator(".header-controls button:last-child").evaluate(e=>e===document.activeElement),true);
             await page.locator(".header-controls button:last-child").click();
             await page.locator(".static-menu [data-target=objects]").click();
-            await page.waitForFunction(()=>!document.querySelector("#inside").hidden&&!document.querySelector("main").inert);
+            await page.waitForURL("**/catalog-objects.html");
             await page.goto(origin+"/index.html#exhibitions");
             assert.equal(await page.locator("#inside").isVisible(),true);
           }

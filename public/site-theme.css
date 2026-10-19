@@ -66,3 +66,28 @@ button,input,textarea,select{font-family:var(--site-font)}
 .logo-hit-area{-webkit-tap-highlight-color:transparent;outline:none}
 .logo-stage img[role=button]{outline:none;-webkit-tap-highlight-color:transparent;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .logo-stage img[role=button]:focus-visible:not([data-logo-input=pointer]){outline:2px solid var(--text);outline-offset:5px;border-radius:4px}
+
+/* Folder navigation keeps headings available to screen readers. */
+html{min-height:100%;background:var(--page)}
+body{min-height:100vh;min-height:100svh}
+.object-catalog{min-height:100vh;min-height:100svh}
+.section-heading-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+.section-breadcrumbs{min-width:0;margin:0 0 28px;font-size:14px;line-height:1.5}
+.section-breadcrumbs ol{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;margin:0;padding:0;list-style:none}
+.section-breadcrumbs li{display:inline-flex;align-items:baseline;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.section-breadcrumbs li+li::before{content:"/";flex:none;margin-right:6px;color:var(--muted)}
+.section-breadcrumbs a{position:relative;color:var(--text);text-decoration:none}
+.section-breadcrumbs a::after{content:"";position:absolute;inset:-11px -3px}
+.section-breadcrumbs a:hover{text-decoration:underline;text-underline-offset:3px}
+.section-breadcrumbs a:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+.section-breadcrumbs [aria-current=page]{color:var(--muted)}
+.zine-info .section-breadcrumbs{flex:none;margin-bottom:14px;font-size:12px}
+.drawing-detail-page .section-breadcrumbs{width:min(100%,640px);margin:0 auto 40px}
+.static-menu .menu-group>a{position:relative;display:block;width:max-content;padding:7px 0;background:transparent;color:var(--text);font-size:14px;text-decoration:none}
+.static-menu .menu-group>a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .22s ease}
+.static-menu .menu-group>a:hover::after{transform:scaleX(1);transform-origin:left}
+.static-menu .menu-group>a:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+.merch-catalog .catalog-image{aspect-ratio:3/4;background:var(--gallery-canvas)}
+.merch-catalog .catalog-image img,.merch-catalog .catalog-card:hover .catalog-image img{object-fit:contain;transform:none}
+@media(max-width:700px){.drawing-detail-page .section-breadcrumbs{margin-bottom:28px}}
+@media(prefers-reduced-motion:reduce){.static-menu .menu-group>a::after{transition:none}}
