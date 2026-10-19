@@ -33,6 +33,7 @@ jobs:
       - name: Build the Next.js site
         run: npm run build
       - name: Install browser check tools on the runner
+        id: browser_tools
         run: |
           npm install --prefix "$RUNNER_TEMP/carousel-check" --no-package-lock playwright axe-core
           node "$RUNNER_TEMP/carousel-check/node_modules/playwright/cli.js" install --with-deps chromium webkit
@@ -41,7 +42,7 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: node scripts/check-carousels.mjs
       - name: Check English and Russian UX on Chromium and WebKit
-        if: success() || failure()
+        if: (success() || failure()) && steps.browser_tools.outcome == 'success'
         env:
           NODE_PATH: ${{ runner.temp }}/carousel-check/node_modules
         run: |
