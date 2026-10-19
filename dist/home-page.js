@@ -93,8 +93,8 @@
     ['#drawings [data-drawing-category="canvas"] strong', 'On canvas'],
     ['#drawings [data-drawing-category="wood"] strong', 'On wood'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
-    ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
-    ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],
+    ['#zines .section-heading a .catalog-link-label', 'All zines'], ['#cyanotype .section-heading a .catalog-link-label', 'All prints'],
+    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All drawings'],
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
   const applyLocale = locale => {
     const english = locale === "en";

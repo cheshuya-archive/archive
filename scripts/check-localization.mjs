@@ -75,6 +75,7 @@ try {
         assert.equal(await page.locator(".gallery-zoom").first().evaluate(node=>node===document.activeElement),true);
       }
       if (path==="index.html") {
+        assert.equal(await page.locator(".section-heading .catalog-link svg[aria-hidden=true]").count(),5,"Catalog arrows survive locale changes");
         await page.locator("#inside-tab").click();
         assert.equal(cyrillic(await page.locator("main").innerText()),false,"Untranslated material tab");
         await page.locator("#outside-tab").click();
@@ -89,6 +90,7 @@ try {
     assert.equal(await page.locator("html").getAttribute("lang"),"en","Locale lost during navigation");
     assert.equal(await page.locator(".theme-toggle").count(),0,"Theme switch must stay on home");
     await page.emulateMedia({colorScheme:"dark"});
+    await page.waitForFunction(()=>document.documentElement.dataset.theme==="dark");
     assert.equal(await page.locator("html").getAttribute("data-theme"),"dark");
     assert.deepEqual(errors,[]);
     await context.close(); await browser.close();
