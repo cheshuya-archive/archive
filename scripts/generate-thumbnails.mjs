@@ -45,3 +45,7 @@ await copyFile("lib/heading-typing.js", "dist/heading-typing.js");
 await copyFile("lib/logo-particles.js", "dist/logo-particles.js");
 
 await copyFile("lib/site-translations.js", "dist/site-translations.js");
+
+await copyFile("lib/archive-path.js", "dist/archive-path.js");
+
+await copyFile("lib/back-to-top.js", "dist/back-to-top.js");

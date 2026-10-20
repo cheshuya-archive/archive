@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "../public/gallery-ui.css";
+import { BackToTop } from "@/components/back-to-top";
 import { SitePreferencesProvider } from "@/components/site-preferences";
 import { themeInitScript } from "@/lib/theme-init";
 import { homeEntryInitScript } from "@/lib/home-entry-init";
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ru" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: homeEntryInitScript }} /><script dangerouslySetInnerHTML={{ __html: themeInitScript }} /><link rel="stylesheet" href={`${basePath}/site-theme.css?v=logo-caption-1`} /></head><body><SitePreferencesProvider>{children}</SitePreferencesProvider></body></html>;
+  return <html lang="ru" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: homeEntryInitScript }} /><script dangerouslySetInnerHTML={{ __html: themeInitScript }} /><link rel="stylesheet" href={`${basePath}/site-theme.css?v=back-to-top-2`} /></head><body><SitePreferencesProvider>{children}<BackToTop /></SitePreferencesProvider></body></html>;
 }

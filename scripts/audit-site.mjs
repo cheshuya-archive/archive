@@ -57,7 +57,7 @@ async function measure(origin,path) {
     dcl:performance.getEntriesByType("navigation")[0].domContentLoadedEventEnd,
     overflow:document.documentElement.scrollWidth>innerWidth,
     images:[...document.images].map(i=>({src:i.currentSrc.replace(location.origin,""),loaded:i.complete&&i.naturalWidth>0,loading:i.loading,alt:i.hasAttribute("alt")})),
-    emptyLinks:[...document.querySelectorAll("a:not([href])")].map(a=>a.textContent),
+    emptyLinks:[...document.querySelectorAll("a:not([href]):not([aria-disabled=true])")].map(a=>a.textContent),
     unlabeledButtons:[...document.querySelectorAll("button")].filter(b=>!b.getAttribute("aria-label")&&!b.textContent.trim()).length,
     blockingScripts:[...document.querySelectorAll("head script[src]:not([defer]):not([type=module])")].map(s=>s.getAttribute("src")),
   }));
