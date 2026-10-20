@@ -82,7 +82,7 @@ body{min-height:100vh;min-height:100svh}
 .section-breadcrumbs a:focus-visible{outline:2px solid var(--text);outline-offset:4px}
 .section-breadcrumbs [aria-current=page]{color:var(--muted)}
 .zine-info .section-breadcrumbs{flex:none;margin-bottom:14px;font-size:12px}
-.drawing-detail-page .section-breadcrumbs{width:min(100%,640px);margin:0 auto 40px}
+.drawing-detail-page .section-breadcrumbs{margin:0 0 40px}
 .static-menu .menu-group>a{position:relative;display:block;width:max-content;padding:7px 0;background:transparent;color:var(--text);font-size:14px;text-decoration:none}
 .static-menu .menu-group>a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .22s ease}
 .static-menu .menu-group>a:hover::after{transform:scaleX(1);transform-origin:left}
