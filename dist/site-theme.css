@@ -27,11 +27,11 @@ button,input,textarea,select{font-family:var(--site-font)}
 .theme-toggle .theme-sun{display:none}
 [data-theme=dark] .theme-toggle .theme-sun{display:block}
 [data-theme=dark] .theme-toggle .theme-moon{display:none}
-.menu-preferences{display:flex;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.static-menu .menu-preferences .language-button,.zine-menu .menu-preferences .language-button,.top-drawer .menu-preferences .language-button{position:relative;display:grid;place-items:center;width:37px;min-width:37px;height:37px;padding:0!important;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--text)!important;font-size:14px;font-weight:600;line-height:1}
-.menu-preferences .language-button::after{content:"";position:absolute;inset:-3.5px;min-width:44px;min-height:44px;background:transparent!important;transform:none!important;border-radius:inherit;pointer-events:auto}
+.menu-preferences{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.static-menu .menu-preferences :is(.language-button,.theme-toggle),.zine-menu .menu-preferences :is(.language-button,.theme-toggle),.top-drawer .menu-preferences :is(.language-button,.theme-toggle){position:relative;display:grid!important;place-items:center;width:37px!important;min-width:37px!important;height:37px!important;min-height:37px!important;padding:0!important;border-radius:0;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--text)!important;font-size:14px;font-weight:600;line-height:1}
+.menu-preferences :is(.language-button,.theme-toggle)::after{content:"";position:absolute;inset:-3.5px;min-width:44px;min-height:44px;background:transparent!important;transform:none!important;border-radius:inherit;pointer-events:auto}
 .menu-preferences .language-button:focus-visible,.theme-toggle:focus-visible{outline:2px solid var(--text);outline-offset:2px}
-.static-menu,.zine-menu,.top-drawer{max-height:100dvh;overflow-y:auto;overscroll-behavior:contain}
+.static-menu,.zine-menu,.top-drawer{border-radius:0!important;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain}
 .section-heading{gap:12px}
 .section-heading h2{min-width:0;overflow-wrap:anywhere}
 .section-heading a,.section-heading span{flex:none}

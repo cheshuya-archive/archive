@@ -1,4 +1,4 @@
-.static-menu{top:0;right:0;bottom:auto;left:0;width:auto;padding:58px max(16px,calc((100vw - 640px)/2)) 18px;border:0;border-radius:0 0 16px 16px;background:var(--surface);box-shadow:0 10px 30px var(--shadow-8)}
+.static-menu{top:0;right:0;bottom:auto;left:0;width:auto;padding:58px max(16px,calc((100vw - 640px)/2)) 18px;border:0;border-radius:0;background:var(--surface);box-shadow:0 10px 30px var(--shadow-8)}
 .static-menu-overlay{background:var(--glass-38);backdrop-filter:blur(7px)}
 .static-menu p{margin:12px 0 4px;font-size:12px;color:var(--muted)}
 .static-menu button:not(.static-menu-close){display:block;width:max-content;padding:7px 0;background:transparent!important;font-size:14px}

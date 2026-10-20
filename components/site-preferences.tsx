@@ -65,7 +65,8 @@ export function ThemeToggle() {
   const label = locale === "en" ? (theme === "dark" ? "Use light theme" : "Use dark theme") : (theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему");
   return <Button className="theme-toggle" variant="outline" size="icon" aria-label={label} aria-pressed={theme === "dark"} title={label} onClick={toggleTheme}><Moon className="theme-moon" size={18}/><Sun className="theme-sun" size={18}/></Button>;
 }
-export function LanguageToggle() {
+export function LanguageToggle({ inline = false }: { inline?: boolean }) {
   const { locale, toggleLocale } = useSitePreferences();
-  return <div className="menu-preferences"><Button className="language-button" variant="outline" size="icon" aria-label={locale === "ru" ? "Сменить язык" : "Switch language"} onClick={toggleLocale}>{locale === "ru" ? "En" : "Ru"}</Button></div>;
+  const button = <Button className="language-button" variant="outline" size="icon" aria-label={locale === "ru" ? "Сменить язык" : "Switch language"} onClick={toggleLocale}>{locale === "ru" ? "En" : "Ru"}</Button>;
+  return inline ? button : <div className="menu-preferences">{button}</div>;
 }

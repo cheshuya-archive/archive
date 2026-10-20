@@ -89,7 +89,8 @@ try {
     await page.locator('[data-target="drawings"]').click();
     await page.waitForURL("**/catalog-drawings.html");
     assert.equal(await page.locator("html").getAttribute("lang"),"en","Locale lost during navigation");
-    assert.equal(await page.locator(".theme-toggle").count(),0,"Theme switch must stay on home");
+    assert.equal(await page.locator(".catalog-header .theme-toggle").count(),0,"Inner header stays unchanged");
+    assert.equal(await page.locator("#site-menu .menu-preferences .theme-toggle").count(),1,"Theme switch is available in the menu");
     await page.emulateMedia({colorScheme:"dark"});
     await page.waitForFunction(()=>document.documentElement.dataset.theme==="dark");
     assert.equal(await page.locator("html").getAttribute("data-theme"),"dark");
