@@ -108,9 +108,10 @@ html[lang="en"] .zine-pagination>:last-child::before{content:"Next"}
 .archive-page>.logo-caption{width:max-content;max-width:calc(100% - 32px);margin:0 auto 24px;color:var(--muted);font-size:12px;font-weight:400;line-height:18px;text-align:center}
 
 /* Stable path width: the caret follows the typed text inside a reserved slot. */
-.logo-path-toggle{display:block;margin:0;padding:0;border:0;border-radius:0;background:none;color:inherit;font:inherit;line-height:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.logo-path-toggle:disabled{color:inherit;cursor:default}
-.logo-path-toggle:focus-visible{outline:2px solid var(--text);outline-offset:5px}
+.logo-path-link{display:block;position:relative;margin:0;padding:0;border:0;border-radius:0;background:none;color:inherit;font:inherit;line-height:inherit;text-align:left;text-decoration:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.logo-path-link:not([href]){cursor:default}
+.logo-path-link[href]:hover{text-decoration:underline;text-underline-offset:3px}
+.logo-path-link:focus-visible{outline:2px solid var(--text);outline-offset:5px}
 .logo-path-visual{display:inline-flex;align-items:baseline;white-space:pre}
 .logo-path-slot{display:inline-block;width:12ch;text-align:left}
 .logo-path-cursor{display:inline-block;margin-left:1px;opacity:1}
