@@ -14,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ru" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: homeEntryInitScript }} /><script dangerouslySetInnerHTML={{ __html: themeInitScript }} /><link rel="stylesheet" href={`${basePath}/site-theme.css?v=catalog-arrows-1`} /></head><body><SitePreferencesProvider>{children}</SitePreferencesProvider></body></html>;
+  return <html lang="ru" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: homeEntryInitScript }} /><script dangerouslySetInnerHTML={{ __html: themeInitScript }} /><link rel="stylesheet" href={`${basePath}/site-theme.css?v=logo-caption-1`} /></head><body><SitePreferencesProvider>{children}</SitePreferencesProvider></body></html>;
 }

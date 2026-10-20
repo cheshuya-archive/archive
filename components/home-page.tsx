@@ -106,6 +106,7 @@ export function HomePage() {
       <div className="header-controls"><ThemeToggle /><Sheet><SheetTrigger asChild><Button variant="outline" size="icon" aria-label={tr("Открыть меню")}><Menu size={18}/></Button></SheetTrigger><SiteMenu /></Sheet></div>
     </header>
     <section className="logo-stage" onPointerMove={moveStreetImage} onPointerLeave={resetStreetImage}><ResponsiveImage src="/media/cheshuya-figma-logo.svg" alt="Чешуя" width={290} height={290} sizes="162px" priority role="button" tabIndex={0} aria-label={locale === "ru" ? "Зажмите, чтобы притянуть частицы" : "Hold to attract logo particles"} /></section>
+    <p className="logo-caption" data-heading-typing>{locale === "ru" ? "чешуя | архив" : "cheshuya | archive"}</p>
     <Tabs value={activeTab} onValueChange={setActiveTab} className="archive-shell" id="outside">
         <TabsList><TabsTrigger value="outside" onPointerDown={() => setActiveTab("outside")}>{t.outside.toLowerCase()}</TabsTrigger><TabsTrigger value="inside" onPointerDown={() => setActiveTab("inside")}>{t.inside.toLowerCase()}</TabsTrigger></TabsList>
       <TabsContent value="outside" className="tab-content">
