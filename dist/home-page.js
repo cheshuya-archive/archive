@@ -80,7 +80,6 @@
     rail.querySelector('.rail-next')?.addEventListener('click', () => controller.move(1));
   });
   const translations = [
-    [".logo-caption", "cheshuya | archive"],
     ['.static-tabs [data-tab="outside"]', 'work in context'],
     ['.static-tabs [data-tab="inside"]', 'work with material'],
     ['.street-feature h1', 'Street drawing'],

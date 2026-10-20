@@ -75,7 +75,7 @@ try {
         assert.equal(await page.locator(".gallery-zoom").first().evaluate(node=>node===document.activeElement),true);
       }
       if (path==="index.html") {
-        assert.equal(await page.locator(".logo-caption").innerText(),"cheshuya | archive");
+        assert.equal(await page.locator("[data-path-prefix]").textContent(),"cheshuya\\archive\\");
         assert.equal(await page.locator(".section-heading .catalog-link svg[aria-hidden=true]").count(),5,"Catalog arrows survive locale changes");
         await page.locator("#inside-tab").click();
         assert.equal(cyrillic(await page.locator("main").innerText()),false,"Untranslated material tab");

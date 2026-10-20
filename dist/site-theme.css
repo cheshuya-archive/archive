@@ -106,3 +106,14 @@ html[lang="en"] .zine-pagination>:last-child::before{content:"Next"}
 
 /* The caption occupies its own line, preserving the logo stage geometry. */
 .archive-page>.logo-caption{width:max-content;max-width:calc(100% - 32px);margin:0 auto 24px;color:var(--muted);font-size:12px;font-weight:400;line-height:18px;text-align:center}
+
+/* Stable path width: the caret follows the typed text inside a reserved slot. */
+.logo-path-toggle{display:block;margin:0;padding:0;border:0;border-radius:0;background:none;color:inherit;font:inherit;line-height:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.logo-path-toggle:disabled{color:inherit;cursor:default}
+.logo-path-toggle:focus-visible{outline:2px solid var(--text);outline-offset:5px}
+.logo-path-visual{display:inline-flex;align-items:baseline;white-space:pre}
+.logo-path-slot{display:inline-block;width:12ch;text-align:left}
+.logo-path-cursor{display:inline-block;margin-left:1px;opacity:1}
+.logo-caption.is-running .logo-path-cursor{animation:archive-path-caret 1s step-end infinite}
+@keyframes archive-path-caret{0%,45%{opacity:1}55%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.logo-caption .logo-path-cursor{animation:none!important}}
