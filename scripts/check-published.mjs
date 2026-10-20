@@ -12,7 +12,7 @@ let home;
 for (let attempt=0;attempt<10;attempt++) {
   try {
     home = await get("index.html");
-    assert.ok(home.includes('site-localization.js?v=ux-audit-1'),"Waiting for new Pages release");
+    assert.ok(home.includes('site-localization.js?v=graphics-merch-1'),"Waiting for new Pages release");
     break;
   } catch (error) {
     if (attempt===9) throw error;
