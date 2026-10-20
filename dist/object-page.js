@@ -20,6 +20,8 @@
       ? (locale === 'en' ? 'Metal' : 'Металл')
       : (locale === 'en' ? 'Ceramics' : 'Керамика');
     heading.textContent = `${material} ${locale === 'en' ? '#' : '№'} ${object.number}`;
+    const materialLink = document.getElementById('object-material-breadcrumb');
+    if (materialLink) { materialLink.textContent = material; materialLink.href = `catalog-objects-${object.material}.html`; }
     meta.textContent = locale === 'en' ? `Object · ${material}` : `Объект · ${material}`;
     document.title = `${heading.textContent} — Чешуя`;
   };

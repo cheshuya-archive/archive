@@ -80,6 +80,7 @@
     rail.querySelector('.rail-next')?.addEventListener('click', () => controller.move(1));
   });
   const translations = [
+    [".logo-caption", "cheshuya | archive"],
     ['.static-tabs [data-tab="outside"]', 'work in context'],
     ['.static-tabs [data-tab="inside"]', 'work with material'],
     ['.street-feature h1', 'Street drawing'],
@@ -93,10 +94,8 @@
     ['#drawings [data-drawing-category="canvas"] strong', 'On canvas'],
     ['#drawings [data-drawing-category="wood"] strong', 'On wood'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
-    ['#zines .section-heading a', 'All zines'], ['#cyanotype .section-heading a', 'All prints'],
-    ['#exhibitions .section-heading a', 'All exhibitions'], ['#objects .section-heading a', 'All objects'], ['#drawings .section-heading a', 'All drawings'],
-    ['.static-menu .menu-group:first-child p', 'Work in context'], ['.static-menu .menu-group:last-child p', 'Work with material'],
-    ...Object.entries({zines:'Printed editions',cyanotype:'Cyanotype',merch:'Merch',exhibitions:'Exhibitions',objects:'Objects',drawings:'Drawings'}).map(([key,label]) => ['.static-menu [data-target="'+key+'"]',label]),
+    ['#zines .section-heading a .catalog-link-label', 'All zines'], ['#cyanotype .section-heading a .catalog-link-label', 'All prints'],
+    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All drawings'],
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
   const applyLocale = locale => {
     const english = locale === "en";

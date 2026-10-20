@@ -17,6 +17,7 @@
     if (!list || !categories[surface]) return;
     const category = categories[surface];
     document.querySelector('#drawing-heading').textContent = category[language];
+    document.querySelector('#drawing-breadcrumb-current').textContent = category[language];
     document.title = `${category[language]} — Чешуя`;
     list.querySelectorAll('[data-series-title]').forEach(title => {
       title.textContent = `${language === 'en' ? 'Series' : 'Серия'} ${title.dataset.seriesTitle.replace('-', '.')}`;

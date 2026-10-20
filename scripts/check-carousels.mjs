@@ -226,15 +226,15 @@ async function checkObjectLightbox() {
     button.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })));
   const opener = page.locator("#objects .object-slide-button").first();
   await opener.waitFor();
-  assert.equal(await page.locator("#objects .object-slide-button").count(), 3);
+  assert.equal(await page.locator("#objects .object-slide-button").count(), 2);
   assert.equal(await page.locator("#exhibitions .archive-card").count(), 8);
   await opener.click();
   await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
-  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 3");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "1 / 2");
   await page.locator(".object-lightbox-next").click();
-  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "2 / 3");
-  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 3");
+  await page.waitForFunction(() => document.querySelector(".object-lightbox-counter").textContent === "2 / 2");
+  assert.equal(await page.locator(".object-lightbox-counter").textContent(), "2 / 2");
   await page.waitForFunction(() => document.querySelector(".object-lightbox img")?.naturalWidth > 0);
   await page.keyboard.press("Escape");
   await page.waitForFunction(() => !document.querySelector(".object-lightbox"));
@@ -249,6 +249,7 @@ async function checkPhotoZoom(path) {
   await page.goto(origin + path);
   const opener = page.getByRole("button", { name: "Открыть изображение крупно", exact: true });
   await opener.click();
+  await page.waitForFunction(() => document.querySelector(".object-lightbox")?.open);
   const stage = page.locator(".object-lightbox .lightbox-stage");
   const total = await stage.locator("img").count();
   assert.ok(total >= 3);

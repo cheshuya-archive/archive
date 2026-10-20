@@ -37,3 +37,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published pages and shared assets
+        env:
+          PUBLISHED_SITE: ${{ steps.deployment.outputs.page_url }}
+        run: node scripts/check-published.mjs

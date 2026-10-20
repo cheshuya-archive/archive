@@ -125,6 +125,7 @@
   copy.className = 'exhibition-copy';
   place.after(copy);
   const renderCopy = locale => {
+    document.querySelector(".zine-meta").textContent = `${locale === "en" ? "Exhibition" : "Выставка"} · ${item.year}`;
     const translated = detail?.[locale === 'en' ? 'en' : 'ru'];
     place.textContent = translated?.place || item.description;
     copy.replaceChildren(...(translated?.paragraphs || []).map(text => {
