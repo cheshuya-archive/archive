@@ -33,6 +33,7 @@ for (const [surface, expected] of [['paper', 6], ['canvas', 2], ['wood', 2]]) {
   await page.waitForFunction(() => document.querySelector('.drawing-series .zine-slide')?.scrollLeft > 10);
   assert.ok(await stage.evaluate(element => element.scrollLeft) > initial);
   await page.locator('.drawing-series').first().locator('.gallery-zoom').click();
+  await page.waitForFunction(() => document.querySelector('.object-lightbox[open]'), null, { timeout: 5000 });
   assert.equal(await page.locator('.object-lightbox[open]').count(), 1);
   await page.keyboard.press('Escape');
   await page.setViewportSize({ width: 390, height: 844 });

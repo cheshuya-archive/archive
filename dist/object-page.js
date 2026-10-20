@@ -1,10 +1,9 @@
 (() => {
   const objects = [
-    ...[1, 2, 3, 4].map(number => ({ id: `metal-${number}`, material: 'metal', number, photos: [`${number}`] })),
-    ...[1, 2, 3, 4, 5].map(number => ({
-      id: `ceramic-${number}`, material: 'ceramic', number,
-      photos: number === 5 ? ['5.1'] : [`${number}.1`, `${number}.2`],
-    })),
+    ...[['001', '18,5 × 25 см', 3], ['002', '26,5 × 35 см', 4], ['003', '18,5 × 22 см', 2], ['004', '18 × 25 см', 3]]
+      .map(([number, size, count], index) => ({ id: `metal-${index + 1}`, material: 'metal', number, size, count })),
+    ...[['001', '15 × 15 × 18 см', 2], ['002', '15 × 15 × 15 см', 2], ['003', '15 × 15 × 15 см', 2], ['004', '15 × 15 × 19 см', 2], ['005', '15 × 15 × 19 см', 1]]
+      .map(([number, size, count], index) => ({ id: `ceramic-${index + 1}`, material: 'ceramic', number, size, count })),
   ];
   const id = new URLSearchParams(location.search).get('id');
   const currentIndex = objects.findIndex(object => object.id === id);
@@ -15,28 +14,28 @@
   const object = objects[currentIndex];
   const heading = document.querySelector('.zine-info h1');
   const meta = document.querySelector('.zine-meta');
+  const description = document.querySelector('.object-description');
   const renderCopy = locale => {
     const material = object.material === 'metal'
       ? (locale === 'en' ? 'Metal' : 'Металл')
       : (locale === 'en' ? 'Ceramics' : 'Керамика');
-    heading.textContent = `${material} ${locale === 'en' ? '#' : '№'} ${object.number}`;
+    heading.textContent = object.material === 'metal'
+      ? `${locale === 'en' ? 'Untitled (from the Vodrov series)' : 'Без названия (из серии «Водровь»)'} ${object.number}`
+      : `${material} ${object.number}`;
     const materialLink = document.getElementById('object-material-breadcrumb');
     if (materialLink) { materialLink.textContent = material; materialLink.href = `catalog-objects-${object.material}.html`; }
     meta.textContent = locale === 'en' ? `Object · ${material}` : `Объект · ${material}`;
+    description.textContent = object.material === 'metal'
+      ? `${object.size} · ${locale === 'en' ? 'metal coating on wood' : 'металлическое покрытие по дереву'}`
+      : `${object.size} · ${locale === 'en' ? 'clay, glaze · 2021' : 'глина, глазурь · 2021'}`;
     document.title = `${heading.textContent} — Чешуя`;
   };
   document.addEventListener('cheshuya:locale', event => renderCopy(event.detail));
   renderCopy(window.CheshuyaLocale?.get() || 'ru');
 
-  const images = object.photos.map(photo => {
-    const base = `images/objects/${object.material}/${photo}`;
-    const largeWidth = object.material === 'metal' ? 1024 : 2000;
-    return {
-      src: `${base}-1200.webp`,
-      srcset: object.material === 'metal'
-        ? `${base}-600.webp 600w, ${base}-1200.webp ${largeWidth}w`
-        : `${base}-600.webp 600w, ${base}-1200.webp 1200w, ${base}-2000.webp 2000w`,
-    };
+  const images = Array.from({ length: object.count }, (_, index) => {
+    const base = `images/objects/${object.material}/${object.number}/${String(index + 1).padStart(2, '0')}`;
+    return { src: `${base}-1200.webp`, srcset: `${base}-600.webp 600w, ${base}-1200.webp 1200w, ${base}-2000.webp 2000w` };
   });
   const slide = document.querySelector('.zine-slide');
   const gallery = window.CheshuyaCarousel.mountImageGallery(slide, images, index => {

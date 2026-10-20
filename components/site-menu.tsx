@@ -12,7 +12,7 @@ const groups = [
   { title:["Работа с материалом","Work with material"], items:[
     ["/catalog/exhibitions","Выставки","Exhibitions"],
     ["/catalog/objects","Объекты","Objects"],
-    ["/catalog/drawings","Рисунки","Drawings"],
+    ["/catalog/drawings","Графика","Graphics"],
   ] },
 ];
 export function SiteMenu() {

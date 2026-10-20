@@ -98,7 +98,7 @@
       ['merch', 'Мерч', 'catalog-merch.html'],
       ['exhibitions', 'Выставки', 'catalog-exhibitions.html'],
       ['objects', 'Объекты', 'catalog-objects.html'],
-      ['drawings', 'Рисунки', 'catalog-drawings.html'],
+      ['drawings', 'Графика', 'catalog-drawings.html'],
     ];
     const closeClass = isHome ? 'static-menu-close' : 'zine-menu-close';
     menu.innerHTML = '<button type="button" class="' + closeClass + '" aria-label="Закрыть меню">×</button>';
@@ -128,13 +128,13 @@
     themeButtons.push(menuThemeButton);
     preferences.append(languageButton, menuThemeButton);
     menu.append(preferences);
-    const englishLabels = { zines:"Printed editions", cyanotype:"Cyanotype", merch:"Merch", exhibitions:"Exhibitions", objects:"Objects", drawings:"Drawings" };
+    const englishLabels = { zines:"Printed editions", cyanotype:"Cyanotype", merch:"Merch", exhibitions:"Exhibitions", objects:"Objects", drawings:"Graphics" };
     const innerTranslations = [...menu.querySelectorAll("[data-target]")].map(node => ({ node, ru:node.textContent, en:englishLabels[node.dataset.target] }));
     [...menu.querySelectorAll("p")].forEach((node,index) => innerTranslations.push({ node, ru:node.textContent, en:index === 0 ? "Work in context" : "Work with material" }));
     const heading = document.querySelector(".catalog-page h1, .cyanotype-page h1");
-    const headingNames = { "Печатные издания":"Printed editions", "Выставки":"Exhibitions", "Объекты":"Objects", "Рисунки":"Drawings", "Мерч":"Merch", "Цианотипия":"Cyanotype" };
+    const headingNames = { "Печатные издания":"Printed editions", "Выставки":"Exhibitions", "Объекты":"Objects", "Рисунки":"Graphics", "Графика":"Graphics", "Мерч":"Merch", "Цианотипия":"Cyanotype" };
     if (heading && headingNames[heading.textContent]) innerTranslations.push({ node:heading, ru:heading.textContent, en:headingNames[heading.textContent] });
-    const sectionLabels = { home:["Главная","Home"], prints:["Печатные издания","Printed editions"], exhibitions:["Выставки","Exhibitions"], objects:["Объекты","Objects"], drawings:["Рисунки","Drawings"], merch:["Мерч","Merch"], cyanotype:["Цианотипия","Cyanotype"], ceramic:["Керамика","Ceramics"], metal:["Металл","Metal"] };
+    const sectionLabels = { home:["Главная","Home"], prints:["Печатные издания","Printed editions"], exhibitions:["Выставки","Exhibitions"], objects:["Объекты","Objects"], drawings:["Графика","Graphics"], merch:["Мерч","Merch"], cyanotype:["Цианотипия","Cyanotype"], ceramic:["Керамика","Ceramics"], metal:["Металл","Metal"] };
     const applyLocale = () => {
       document.querySelectorAll("[data-section-label]").forEach(node => {
         const labels = sectionLabels[node.dataset.sectionLabel];

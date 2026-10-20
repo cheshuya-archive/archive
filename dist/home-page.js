@@ -92,9 +92,9 @@
     ['#drawings [data-drawing-category="paper"] strong', 'On paper'],
     ['#drawings [data-drawing-category="canvas"] strong', 'On canvas'],
     ['#drawings [data-drawing-category="wood"] strong', 'On wood'],
-    ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Drawings'],
+    ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Graphics'],
     ['#zines .section-heading a .catalog-link-label', 'All zines'], ['#cyanotype .section-heading a .catalog-link-label', 'All prints'],
-    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All drawings'],
+    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All graphics'], ['#merch .section-heading a .catalog-link-label', 'View all'],
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
   const applyLocale = locale => {
     const english = locale === "en";

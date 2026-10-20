@@ -3,14 +3,14 @@ const routes = ["catalog-exhibitions.html", "catalog-merch.html", "cyanotype.htm
 const copy = {
   ru: {
     prefix: "чешуя\\архив\\",
-    words: ["выставки", "мерч", "цианотипия", "зины", "объекты", "рисунки"],
-    description: "Чешуя — архив: выставки, мерч, цианотипия, зины, объекты и рисунки.",
+    words: ["выставки", "мерч", "цианотипия", "зины", "объекты", "графика"],
+    description: "Чешуя — архив: выставки, мерч, цианотипия, зины, объекты и графика.",
     open: "Открыть раздел", empty: "Чешуя — архив",
   },
   en: {
     prefix: "cheshuya\\archive\\",
-    words: ["exhibitions", "merch", "cyanotype", "zines", "objects", "drawings"],
-    description: "Cheshuya archive: exhibitions, merch, cyanotype, zines, objects and drawings.",
+    words: ["exhibitions", "merch", "cyanotype", "zines", "objects", "graphics"],
+    description: "Cheshuya archive: exhibitions, merch, cyanotype, zines, objects and graphics.",
     open: "Open section", empty: "Cheshuya archive",
   },
 };

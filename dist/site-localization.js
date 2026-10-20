@@ -1,4 +1,4 @@
-import { translateText } from "./site-translations.js";
+import { translateText } from "./site-translations.js?v=graphics-1";
 const attributes = ["aria-label", "alt", "title"];
 const ignored = "script,style,noscript,template";
 let locale = window.CheshuyaLocale?.get() || "ru";

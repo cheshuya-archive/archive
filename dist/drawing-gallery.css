@@ -1,6 +1,10 @@
 .drawing-category-grid .catalog-image{aspect-ratio:4/3}
 .drawing-category-grid .catalog-image img{object-fit:cover;transform:scale(1.06)}
 .drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.1)}
+.drawing-category-grid .catalog-card{transition:transform .22s ease,box-shadow .22s ease}
+.drawing-category-grid .catalog-card:active{transform:scale(.975)}
+.drawing-catalog .drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.1)}
+.drawing-catalog .drawing-category-grid .catalog-card:active .catalog-image img{transform:scale(1.06)}
 .drawing-detail-page .catalog-header{margin-bottom:72px}
 .drawing-detail-page h1{margin-bottom:40px}
 #drawing-series-list{display:grid;gap:72px}

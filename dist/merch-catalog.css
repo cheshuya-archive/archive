@@ -1,0 +1,2 @@
+.merch-catalog .catalog-caption{display:grid;gap:5px}
+.merch-catalog .catalog-caption [data-merch-material],.merch-catalog .catalog-caption [data-merch-sizes]{display:block;line-height:1.35}
