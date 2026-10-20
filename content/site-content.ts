@@ -29,14 +29,14 @@ export const getCopy = (locale: Locale) => copy[locale];
 
 export const zines = [
   { title: "Недостаточно памяти", year: "2026", image: "/media/nedostatochno-pamyati-2026.webp", slug: "nedostatochno-pamyati" },
-  { title: "Убежище", year: "2020", image: "/media/IMG_20200621_165755.jpg", slug: "ubezhishche" },
   { title: "Слои", year: "2021", image: "/images/new-site-assets/zines/sloi/xjsg8vQO7rI-1200.webp", slug: "sloi" },
+  { title: "Убежище", year: "2020", image: "/media/IMG_20200621_165755.jpg", slug: "ubezhishche" },
 ];
 
 export const zineDetails = {
-  "nedostatochno-pamyati": { ...zines[0], images: [zines[0].image, "/media/nedostatochno-pamyati-01.png", "/media/nedostatochno-pamyati-02.png"], text: "Зин о практике уличного рисования. В издании собраны фотографии работ, созданных с 2018 по 2025 год, и описаны основные принципы работы с городским пространством.\n\nФормат А5, 50 страниц, цветная печать. Тираж 50 экземпляров.", previous: "sloi", next: "ubezhishche" },
-  ubezhishche: { ...zines[1], images: ["/media/ubezhishche-01.png", "/media/ubezhishche-02.png", "/media/ubezhishche-03.png"], text: "Зин посвящён одному месту, где создавались рисунки с 2014 по 2019 год. Фотографии показывают, как за это время менялся стиль, а само пространство постепенно становилось архивом этих изменений.\n\nФормат 210 × 210 мм. Тираж 50 экземпляров.", previous: "nedostatochno-pamyati", next: "sloi" },
-  sloi: { ...zines[2], images: ["/media/sloi-01.png", "/media/sloi-02.png", "/media/sloi-03.png"], text: "Фотоальбом с подборкой уличных работ, созданных за два года. Издание документирует очередной этап практики и изменения в рисунках.\n\nФормат 210 × 210 мм. Тираж 35 экземпляров.", previous: "ubezhishche", next: "nedostatochno-pamyati" },
+  "nedostatochno-pamyati": { ...zines[0], images: [zines[0].image, "/media/nedostatochno-pamyati-01.png", "/media/nedostatochno-pamyati-02.png"], text: "Зин о практике уличного рисования. В издании собраны фотографии работ, созданных с 2018 по 2025 год, и описаны основные принципы работы с городским пространством.\n\nФормат А5, 50 страниц, цветная печать. Тираж 50 экземпляров.", previous: "ubezhishche", next: "sloi" },
+  sloi: { ...zines[1], images: ["/media/sloi-01.png", "/media/sloi-02.png", "/media/sloi-03.png"], text: "Фотоальбом с подборкой уличных работ, созданных за два года. Издание документирует очередной этап практики и изменения в рисунках.\n\nФормат 210 × 210 мм. Тираж 35 экземпляров.", previous: "nedostatochno-pamyati", next: "ubezhishche" },
+  ubezhishche: { ...zines[2], images: ["/media/ubezhishche-01.png", "/media/ubezhishche-02.png", "/media/ubezhishche-03.png"], text: "Зин посвящён одному месту, где создавались рисунки с 2014 по 2019 год. Фотографии показывают, как за это время менялся стиль, а само пространство постепенно становилось архивом этих изменений.\n\nФормат 210 × 210 мм. Тираж 50 экземпляров.", previous: "sloi", next: "nedostatochno-pamyati" },
 } as const;
 
 export const cyanotypes = [
