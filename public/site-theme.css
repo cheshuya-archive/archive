@@ -118,3 +118,6 @@ html[lang="en"] .zine-pagination>:last-child::before{content:"Next"}
 .logo-caption.is-running .logo-path-cursor{animation:archive-path-caret 1s step-end infinite}
 @keyframes archive-path-caret{0%,45%{opacity:1}55%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.logo-caption .logo-path-cursor{animation:none!important}}
+
+/* Outline follows the existing active indicator without affecting tab dimensions. */
+.archive-page .static-tabs::before,.archive-page [role=tablist]:not(.static-tabs)>[role=tab][data-state=active]{box-shadow:inset 0 0 0 1px var(--border-strong),0 1px 3px var(--shadow-9)}
