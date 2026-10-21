@@ -24,10 +24,10 @@
       : `${material} ${object.number}`;
     const materialLink = document.getElementById('object-material-breadcrumb');
     if (materialLink) { materialLink.textContent = material; materialLink.href = `catalog-objects-${object.material}.html`; }
-    meta.textContent = locale === 'en' ? `Object · ${material}` : `Объект · ${material}`;
+    meta.textContent = locale === 'en' ? `Object · ${material} · 2021` : `Объект · ${material} · 2021`;
     description.textContent = object.material === 'metal'
       ? `${object.size} · ${locale === 'en' ? 'metal coating on wood' : 'металлическое покрытие по дереву'}`
-      : `${object.size} · ${locale === 'en' ? 'clay, glaze · 2021' : 'глина, глазурь · 2021'}`;
+      : `${object.size} · ${locale === 'en' ? 'clay, glaze' : 'глина, глазурь'}`;
     document.title = `${heading.textContent} — Чешуя`;
   };
   document.addEventListener('cheshuya:locale', event => renderCopy(event.detail));

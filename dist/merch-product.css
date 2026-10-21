@@ -1,0 +1,14 @@
+.merch-product-page .merch-product-description{margin:0 0 20px}
+.merch-product-page .merch-specifications{margin:0 0 20px;display:grid;gap:9px;max-width:380px}
+.merch-product-page .merch-specifications>div{display:flex;justify-content:space-between;gap:16px}
+.merch-product-page .merch-specifications dt{color:var(--muted)}
+.merch-product-page .merch-specifications dd{margin:0;text-align:right}
+.merch-product-page .merch-sizes h2{font-size:16px;margin:0 0 10px}
+.merch-product-page .merch-size-list{display:flex;flex-wrap:wrap;gap:8px}
+.merch-product-page .merch-size-list span{padding:7px 10px;border:1px solid var(--border-card);font-size:13px}
+.merch-product-page .zine-pagination .merch-next::after,.merch-product-page .zine-pagination .merch-prev::before{content:none}
+.merch-product-page .zine-pagination .merch-next::before{content:"Следующий"}
+.merch-product-page .zine-pagination .merch-prev::after{content:"Предыдущий"}
+html[lang="en"] .merch-product-page .zine-pagination .merch-next::before{content:"Next"}
+html[lang="en"] .merch-product-page .zine-pagination .merch-prev::after{content:"Previous"}
+@media(max-width:700px){.merch-product-page .merch-specifications{gap:7px}.merch-product-page .zine-pagination{margin-top:24px}}

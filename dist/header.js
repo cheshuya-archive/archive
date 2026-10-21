@@ -71,6 +71,8 @@
       ? 'catalog-drawings.html'
       : page.endsWith('catalog-objects-ceramic.html') || page.endsWith('catalog-objects-metal.html')
       ? 'catalog-objects.html'
+      : page.endsWith('merch-dom-white.html') || page.endsWith('merch-dom-black.html')
+        ? 'catalog-merch.html'
       : page.endsWith('object.html')
         ? `catalog-objects-${new URLSearchParams(location.search).get('id')?.startsWith('metal-') ? 'metal' : 'ceramic'}.html`
         : header.classList.contains('catalog-header')

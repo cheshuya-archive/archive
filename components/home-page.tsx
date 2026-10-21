@@ -8,7 +8,6 @@ import Link from "next/link";
 import { ArrowDownRight, ChevronLeft, ChevronRight, Instagram, Menu, Youtube } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createLogoParticles } from "@/lib/logo-particles";
-import { mountHeadingTyping } from "@/lib/heading-typing";
 import { usePhotoLightbox } from "@/components/use-photo-lightbox";
 import { useCardCarousel } from "@/components/use-card-carousel";
 import { Button } from "@/components/ui/button";
@@ -34,11 +33,11 @@ function Rail({ children, art = false }: { children: React.ReactNode; art?: bool
   return <div className={`rail ${art ? "rail-art" : ""}`}><div className="rail-scroll" ref={rail} tabIndex={0} aria-label={translateText("Галерея работ", locale)}>{children}</div><Button className="rail-arrow rail-prev" variant="outline" size="icon" aria-label={translateText("Назад", locale)} onClick={() => move(-1)}><ChevronLeft size={17}/></Button><Button className="rail-arrow rail-next" variant="outline" size="icon" aria-label={translateText("Вперёд", locale)} onClick={() => move(1)}><ChevronRight size={17}/></Button></div>;
 }
 
-function Card({ image, title, note, href, merch = false, onOpen }: { image: string; title: string; note: string; href?: string; merch?: boolean; onOpen?: (opener: HTMLButtonElement) => void }) {
+function Card({ image, title, note, href, merch = false, onOpen }: { image: string; title: string; note?: string; href?: string; merch?: boolean; onOpen?: (opener: HTMLButtonElement) => void }) {
   const { locale } = useSitePreferences();
   title = translateText(title, locale);
-  note = translateText(note, locale);
-  const card = <article className="archive-card"><div className="archive-image"><ResponsiveImage src={image} alt={title} fill sizes={merch ? "(max-width: 672px) calc(100vw - 32px), 640px" : "235px"} /></div><div className="archive-caption"><strong>{title}</strong><span>{note}</span></div></article>;
+  note = note ? translateText(note, locale) : undefined;
+  const card = <article className="archive-card"><div className="archive-image"><ResponsiveImage src={image} alt={title} fill sizes={merch ? "(max-width: 672px) calc(100vw - 32px), 640px" : "235px"} /></div><div className="archive-caption"><strong>{title}</strong>{note && <span>{note}</span>}</div></article>;
   if (onOpen) return <button type="button" className="archive-card-link artwork-trigger" aria-label={translateText("Открыть: " + title, locale)} onClick={event => onOpen(event.currentTarget)}>{card}</button>;
   return href ? <Link className="archive-card-link" href={href}>{card}</Link> : card;
 }
@@ -49,10 +48,6 @@ export function HomePage() {
   const openDrawing = usePhotoLightbox(drawingPhotos, "Просмотр рисунков");
   const { locale } = useSitePreferences();
   const tr = (text: string) => translateText(text, locale);
-  useEffect(() => {
-    const root = document.querySelector<HTMLElement>(".archive-page");
-    if (root) return mountHeadingTyping(root);
-  }, []);
   useEffect(() => {
     const image = document.querySelector<HTMLImageElement>(".logo-stage img");
     if (!image) return;
@@ -114,7 +109,7 @@ export function HomePage() {
         <section className="street-feature"><div className="feature-image"><ResponsiveImage src="/images/new-site-assets/environment/street-feature-1200.webp" alt="Уличная работа Чешуи" fill sizes="(max-width: 539px) calc(100vw - 32px), 308px" priority /></div><h1>{t.streetTitle}</h1><p>{t.streetText}</p><div className="social-links"><a href="https://www.instagram.com/cheshu_ya/" target="_blank" rel="noreferrer"><Instagram size={15}/> Instagram</a><a href="https://www.youtube.com/@cheshu_ya" target="_blank" rel="noreferrer"><Youtube size={15}/> YouTube</a></div></section>
         <section className="archive-section" id="zines"><div className="section-heading"><h2>{t.zines}</h2><Link className="catalog-link" href="/catalog/prints"><span className="catalog-link-label">{locale === "ru" ? "Все зины" : "All zines"}</span><ArrowDownRight className="catalog-link-icon" size={14} strokeWidth={1.5} aria-hidden="true" focusable="false" /></Link></div><Rail>{zines.map((zine) => <Card key={zine.title} image={zine.image} title={zine.title} note={zine.year} href={`/zines/${zine.slug}`} />)}</Rail></section>
         <section className="archive-section" id="cyanotype"><div className="section-heading"><h2>{t.cyanotype}</h2><Link className="catalog-link" href="/cyanotype"><span className="catalog-link-label">{locale === "ru" ? "Все отпечатки" : "All prints"}</span><ArrowDownRight className="catalog-link-icon" size={14} strokeWidth={1.5} aria-hidden="true" focusable="false" /></Link></div><Rail art>{homeCyanotypes.map((image, i) => <article className="cyanotype-slide" key={image}><button className="object-slide-button" type="button" aria-label={tr(`Открыть цианотипию ${i + 1}`)} onClick={event => openCyanotype(i, event.currentTarget)}><ResponsiveImage src={image} alt={tr(`Цианотипия ${i + 1}`)} fill sizes="(max-width: 640px) 100vw, 600px" /></button></article>)}</Rail></section>
-        <section className="archive-section merch-section" id="merch"><div className="section-heading"><h2>{t.shirts}</h2><Link className="catalog-link" href="/catalog/merch"><span className="catalog-link-label">{locale === "ru" ? "Смотреть все" : "View all"}</span><ArrowDownRight className="catalog-link-icon" size={14} strokeWidth={1.5} aria-hidden="true" focusable="false" /></Link></div><p className="section-description">{tr("Принт отсылает к уличной работе 2020 года, сделанной в Казани.")}</p><Card merch image="/media/image%202.png" title="Футболка «Дом»" note={locale === "ru" ? "Шелкография · S, M, L, XL" : "Screen printing · S, M, L, XL"} /></section>
+        <section className="archive-section merch-section" id="merch"><div className="section-heading"><h2>{t.shirts}</h2><Link className="catalog-link" href="/catalog/merch"><span className="catalog-link-label">{locale === "ru" ? "Смотреть все" : "View all"}</span><ArrowDownRight className="catalog-link-icon" size={14} strokeWidth={1.5} aria-hidden="true" focusable="false" /></Link></div><p className="section-description">{tr("Принт отсылает к уличной работе 2020 года, сделанной в Казани.")}</p><Rail art><Card merch image="/images/merch/dom/white/01-1200.webp" title="Футболка «Дом» — белая" /><Card merch image="/images/merch/dom/black/01-1200.webp" title="Футболка «Дом» — чёрная" /></Rail></section>
       </TabsContent>
         <TabsContent value="inside" id="inside" className="tab-content inside-preview">
         <section className="archive-section" id="exhibitions"><div className="section-heading"><h2>{t.exhibitions}</h2><Link className="catalog-link" href="/catalog/exhibitions"><span className="catalog-link-label">{locale === "ru" ? "Все выставки" : "All exhibitions"}</span><ArrowDownRight className="catalog-link-icon" size={14} strokeWidth={1.5} aria-hidden="true" focusable="false" /></Link></div><Rail>{exhibitions.map((item) => <Card key={item.title} image={item.image} title={item.title} note={item.year} />)}</Rail></section>
