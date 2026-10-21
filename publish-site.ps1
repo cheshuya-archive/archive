@@ -114,7 +114,7 @@ try {
     }
 
     Write-Host 'Uploading to the NEW repository...'
-    Run-Git -GitArgs @('push', 'publish', 'HEAD:refs/heads/main')
+    Run-Git -GitArgs @('-c', "credential.username=$owner", 'push', 'publish', 'HEAD:refs/heads/main')
     $siteUrl = if ($repository -ieq "$owner.github.io") {
         "https://$owner.github.io/"
     } else {
