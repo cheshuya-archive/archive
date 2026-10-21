@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
-const base = new URL(process.env.PUBLISHED_SITE || "https://xamidulline.github.io/cheshuya/");
+const [owner, repository] = (process.env.GITHUB_REPOSITORY || "").split("/");
+const fallback = owner && repository
+  ? `https://${owner}.github.io/${repository.toLowerCase() === `${owner.toLowerCase()}.github.io` ? "" : `${repository}/`}`
+  : "https://xamidulline.github.io/cheshuya/";
+const base = new URL(process.env.PUBLISHED_SITE || fallback);
 const revision = process.env.GITHUB_SHA || Date.now().toString();
 async function get(path) {
   const url = new URL(path,base);
