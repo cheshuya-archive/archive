@@ -12,7 +12,7 @@ let home;
 for (let attempt=0;attempt<10;attempt++) {
   try {
     home = await get("index.html");
-    assert.ok(home.includes('site-localization.js?v=merch-products-1'),"Waiting for new Pages release");
+    assert.ok(home.includes('release product-specs-color-1'),"Waiting for new Pages release");
     break;
   } catch (error) {
     if (attempt===9) throw error;
@@ -24,6 +24,8 @@ const routes = ["index.html","catalog-prints.html","catalog-exhibitions.html","c
 for (const path of routes) {
   const html = path==="index.html" ? home : await get(path);
   assert.ok(html.includes("site-localization.js"),"Missing localization on "+path);
+  if (path==="merch-dom-white.html" || path==="merch-dom-black.html") assert.ok(html.includes('data-spec-label="color"'),"Missing T-shirt colour on "+path);
+  if (path==="object.html?id=ceramic-1") assert.ok(html.includes('data-object-spec-label="size"'),"Missing object specifications");
   for (const match of html.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+)"/g)) {
     if (!/^(https?:|data:)/.test(match[1])) assets.add(match[1]);
   }

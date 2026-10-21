@@ -13,8 +13,8 @@ export default async function Page({ params }: { params: Promise<{ section: stri
   if (section === "objects") return <CatalogPage title="Объекты" items={objects} />;
   if (section === "drawings") return <CatalogPage title="Графика" items={drawings} />;
   if (section === "merch") return <CatalogPage title="Мерч" items={[
-    { title: "Футболка «Дом» — белая", year: "", image: "/images/merch/dom/white/01-1200.webp" },
-    { title: "Футболка «Дом» — чёрная", year: "", image: "/images/merch/dom/black/01-1200.webp" },
+    { title: "Футболка «Дом»", year: "", image: "/images/merch/dom/white/01-1200.webp" },
+    { title: "Футболка «Дом»", year: "", image: "/images/merch/dom/black/01-1200.webp" },
   ]} />;
   notFound();
 }

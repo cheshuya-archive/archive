@@ -14,7 +14,7 @@
   const object = objects[currentIndex];
   const heading = document.querySelector('.zine-info h1');
   const meta = document.querySelector('.zine-meta');
-  const description = document.querySelector('.object-description');
+  const specs = document.querySelector('.object-specifications');
   const renderCopy = locale => {
     const material = object.material === 'metal'
       ? (locale === 'en' ? 'Metal' : 'Металл')
@@ -24,10 +24,21 @@
       : `${material} ${object.number}`;
     const materialLink = document.getElementById('object-material-breadcrumb');
     if (materialLink) { materialLink.textContent = material; materialLink.href = `catalog-objects-${object.material}.html`; }
-    meta.textContent = locale === 'en' ? `Object · ${material} · 2021` : `Объект · ${material} · 2021`;
-    description.textContent = object.material === 'metal'
-      ? `${object.size} · ${locale === 'en' ? 'metal coating on wood' : 'металлическое покрытие по дереву'}`
-      : `${object.size} · ${locale === 'en' ? 'clay, glaze' : 'глина, глазурь'}`;
+    meta.textContent = locale === 'en' ? 'Object' : 'Объект';
+    const values = {
+      material: locale === 'en'
+        ? (object.material === 'metal' ? 'Metal coating on wood' : 'Clay, glaze')
+        : (object.material === 'metal' ? 'Металлическое покрытие по дереву' : 'Глина, глазурь'),
+      year: '2021',
+      size: object.size.replace('см', locale === 'en' ? 'cm' : 'см'),
+    };
+    const labels = locale === 'en'
+      ? { material: 'Material', year: 'Year', size: 'Size' }
+      : { material: 'Материал', year: 'Год', size: 'Размер' };
+    for (const key of Object.keys(values)) {
+      specs.querySelector(`[data-object-spec-label="${key}"]`).textContent = labels[key];
+      specs.querySelector(`[data-object-spec-value="${key}"]`).textContent = values[key];
+    }
     document.title = `${heading.textContent} — Чешуя`;
   };
   document.addEventListener('cheshuya:locale', event => renderCopy(event.detail));

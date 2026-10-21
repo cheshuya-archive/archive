@@ -15,6 +15,7 @@ assert.match(await page.locator('#objects .object-slide-button').first().getAttr
 assert.equal(await page.locator('#merch .section-heading a').getAttribute('href'), 'catalog-merch.html');
 assert.equal(await page.locator('#merch .archive-card-link').count(), 2);
 assert.equal(await page.locator('#merch .archive-caption span').count(), 0);
+assert.deepEqual(await page.locator('#merch .archive-caption strong').allTextContents(), ['Футболка «Дом»', 'Футболка «Дом»']);
 assert.equal(await page.locator('.heading-type-visual').count(), 0);
 await page.locator('.archive-header button[aria-label="Открыть меню"]').click();
 assert.equal(await page.getByRole('link', { name: 'Графика', exact: true }).count(), 1);
@@ -33,7 +34,7 @@ assert.ok(motion.transition !== '0s');
 
 await page.goto(`${base}/catalog-merch.html`);
 assert.equal(await page.locator('.catalog-card').count(), 2);
-assert.match(await page.locator('.catalog-card').first().innerText(), /Футболка «Дом» — белая/);
+assert.deepEqual(await page.locator('.catalog-card strong').allTextContents(), ['Футболка «Дом»', 'Футболка «Дом»']);
 assert.doesNotMatch(await page.locator('.catalog-card').first().innerText(), /180 г\/м²|51\/71/);
 for (const image of await page.locator('.catalog-card img').all()) {
   await image.scrollIntoViewIfNeeded();
@@ -44,6 +45,7 @@ for (const image of await page.locator('.catalog-card img').all()) {
 await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'en'));
 await page.reload();
 await page.waitForFunction(() => document.querySelector('[data-merch-title]')?.textContent?.includes('Home T-shirt'));
+assert.deepEqual(await page.locator('.catalog-card strong').allTextContents(), ['Home T-shirt', 'Home T-shirt']);
 assert.doesNotMatch(await page.locator('.catalog-card').first().innerText(), /100% cotton/);
 await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'ru'));
 
@@ -53,6 +55,9 @@ for (const [color, count, sizes] of [['white', 2, 'XL — 63/75'], ['black', 3, 
   assert.equal(await page.locator('.zine-slide img').count(), count);
   assert.match(await page.locator('.merch-size-list').innerText(), new RegExp(sizes));
   assert.match(await page.locator('.merch-specifications').innerText(), /100% хлопок/);
+  assert.equal(await page.locator('[data-product-title]').textContent(), 'Футболка «Дом»');
+  assert.equal(await page.locator('[data-spec-label="color"]').textContent(), 'Цвет');
+  assert.equal(await page.locator('[data-spec-value="color"]').textContent(), color === 'white' ? 'Белый' : 'Чёрный');
   assert.equal(await page.locator('.zine-header .back-icon').getAttribute('href'), 'catalog-merch.html');
   await page.locator('.zine-controls .next').click();
   await page.waitForFunction(() => document.querySelector('.counter')?.textContent?.startsWith('2 /'));
@@ -61,6 +66,8 @@ await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'en'));
 await page.goto(`${base}/merch-dom-white.html`);
 await page.waitForFunction(() => document.querySelector('[data-product-title]')?.textContent?.includes('Home T-shirt'));
 assert.match(await page.locator('.merch-specifications').innerText(), /100% cotton/);
+assert.equal(await page.locator('[data-spec-label="color"]').textContent(), 'Colour');
+assert.equal(await page.locator('[data-spec-value="color"]').textContent(), 'White');
 await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'ru'));
 
 for (const material of ['metal', 'ceramic']) {
@@ -71,8 +78,10 @@ for (const material of ['metal', 'ceramic']) {
   await page.locator('.catalog-card').first().click();
   await page.waitForURL(new RegExp(`object\\.html\\?id=${material}-1`));
   await page.waitForFunction(() => document.querySelector('.zine-photo[data-active="true"]')?.naturalWidth > 0);
-  assert.match(await page.locator('.object-description').textContent(), material === 'metal' ? /покрытие по дереву/ : /глина, глазурь/);
-  assert.match(await page.locator('.zine-meta').textContent(), /2021/);
+  assert.deepEqual(await page.locator('.object-specifications dt').allTextContents(), ['Материал', 'Год', 'Размер']);
+  assert.match(await page.locator('[data-object-spec-value="material"]').textContent(), material === 'metal' ? /покрытие по дереву/ : /Глина, глазурь/);
+  assert.equal(await page.locator('[data-object-spec-value="year"]').textContent(), '2021');
+  assert.match(await page.locator('[data-object-spec-value="size"]').textContent(), /см/);
   const count = material === 'metal' ? 3 : 2;
   assert.equal(await page.locator('.zine-slide img').count(), count);
   await page.locator('.zine-controls .next').click();
@@ -82,7 +91,8 @@ for (const material of ['metal', 'ceramic']) {
 await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'en'));
 await page.goto(`${base}/object.html?id=metal-2`);
 await page.waitForFunction(() => document.querySelector('.zine-info h1')?.textContent?.includes('Untitled'));
-assert.match(await page.locator('.object-description').textContent(), /metal coating on wood/);
+assert.match(await page.locator('[data-object-spec-value="material"]').textContent(), /Metal coating on wood/);
+assert.deepEqual(await page.locator('.object-specifications dt').allTextContents(), ['Material', 'Year', 'Size']);
 await page.evaluate(() => localStorage.setItem('cheshuya-locale', 'ru'));
 
 await page.setViewportSize({ width: 390, height: 844 });
