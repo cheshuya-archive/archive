@@ -290,7 +290,15 @@ function createImageGallery(stage, onChange = () => {}, initialIndex = 0) {
     });
     if (!pending && !stage.hasAttribute("data-animating")) requested = current;
     syncControls(pending || stage.hasAttribute("data-animating") ? requested : current);
-    if (announced !== current) { announced = current; onChange(current); }
+    if (announced !== current) {
+      announced = current;
+      onChange(current);
+      if (!stage.classList.contains("lightbox-stage")) {
+        document.dispatchEvent(new CustomEvent("cheshuya:gallery-change", {
+          detail: { stage, index: current, total: photos.length },
+        }));
+      }
+    }
   };
   const onScroll = () => {
     if (syncFrame === null) syncFrame = requestAnimationFrame(sync);

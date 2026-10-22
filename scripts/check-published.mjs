@@ -16,18 +16,19 @@ let home;
 for (let attempt=0;attempt<10;attempt++) {
   try {
     home = await get("index.html");
-    assert.ok(home.includes('release product-specs-color-1'),"Waiting for new Pages release");
+    assert.ok(home.includes('src="analytics.js"'),"Waiting for analytics release");
     break;
   } catch (error) {
     if (attempt===9) throw error;
     await new Promise(done=>setTimeout(done,5000));
   }
 }
-const assets = new Set(["site-localization.js","site-translations.js","photo-lightbox.js","photo-zoom.js","fonts/IBMPlexMono-Regular.woff2"]);
-const routes = ["index.html","catalog-prints.html","catalog-exhibitions.html","catalog-objects.html","catalog-objects-ceramic.html","catalog-objects-metal.html","catalog-drawings.html","catalog-merch.html","merch-dom-white.html","merch-dom-black.html","cyanotype.html","zine-nedostatochno-pamyati.html","zine-ubezhishche.html","zine-sloi.html","drawing.html?surface=paper","object.html?id=ceramic-1","exhibition.html?id=polya-prisutstviya"];
+const assets = new Set(["site-localization.js","site-translations.js","photo-lightbox.js","photo-zoom.js","analytics.js","analytics.css","site-version.js","fonts/IBMPlexMono-Regular.woff2"]);
+const routes = ["index.html","catalog-prints.html","catalog-exhibitions.html","catalog-objects.html","catalog-objects-ceramic.html","catalog-objects-metal.html","catalog-drawings.html","catalog-merch.html","merch-dom-white.html","merch-dom-black.html","cyanotype.html","zine-nedostatochno-pamyati.html","zine-ubezhishche.html","zine-sloi.html","drawing.html?surface=paper","object.html?id=ceramic-1","exhibition.html?id=polya-prisutstviya","privacy.html"];
 for (const path of routes) {
   const html = path==="index.html" ? home : await get(path);
-  assert.ok(html.includes("site-localization.js"),"Missing localization on "+path);
+  if (path!=="privacy.html") assert.ok(html.includes("site-localization.js"),"Missing localization on "+path);
+  assert.ok(html.includes('src="analytics.js"'),"Missing analytics consent layer on "+path);
   if (path==="merch-dom-white.html" || path==="merch-dom-black.html") assert.ok(html.includes('data-spec-label="color"'),"Missing T-shirt colour on "+path);
   if (path==="object.html?id=ceramic-1") assert.ok(html.includes('data-object-spec-label="size"'),"Missing object specifications");
   for (const match of html.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+)"/g)) {

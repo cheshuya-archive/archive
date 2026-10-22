@@ -3,7 +3,7 @@
   const tabs = [...document.querySelectorAll('.static-tabs [data-tab]')];
   const panels = [...document.querySelectorAll('.tab-content')];
   const timers = new WeakMap();
-  const select = tab => {
+  const select = (tab, userInitiated = false) => {
     const next = document.getElementById(tab.dataset.tab);
     if (!next) return;
     const changed = next.hidden;
@@ -14,6 +14,9 @@
       item.tabIndex = active ? 0 : -1;
     });
     panels.forEach(panel => { panel.hidden = panel !== next; });
+    if (changed && userInitiated) {
+      document.dispatchEvent(new CustomEvent('cheshuya:tab-open', { detail: { tabId: tab.dataset.tab } }));
+    }
     if (changed && !reduced.matches) {
       clearTimeout(timers.get(next));
       next.classList.remove('tab-enter-left', 'tab-enter-right');
@@ -23,15 +26,15 @@
     }
   };
   tabs.forEach((tab,index) => {
-    tab.addEventListener('pointerdown', event => { if (event.button === 0) select(tab); });
-    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('pointerdown', event => { if (event.button === 0) select(tab, true); });
+    tab.addEventListener('click', () => select(tab, true));
     tab.addEventListener('keydown', event => {
       const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
       if (!keys.includes(event.key)) return;
       event.preventDefault();
       const target = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
         : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-      select(tabs[target]); tabs[target].focus();
+      select(tabs[target], true); tabs[target].focus();
     });
   });
   const openSection = target => {

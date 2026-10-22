@@ -1,0 +1,1 @@
+window.CHESHUYA_SITE_VERSION = "121938a";

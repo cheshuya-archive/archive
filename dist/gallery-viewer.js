@@ -29,9 +29,9 @@ const initialize = () => {
     srcSet: image.dataset.gallerySrcset || image.dataset.srcset || image.getAttribute("srcset") || "",
     alt: image.alt,
   });
-  const connect = (triggers, images, label) => {
+  const connect = (triggers, images, label, galleryId) => {
     if (!triggers.length || !images.length) return;
-    const viewer = createPhotoLightbox({ images, label }, createGallery);
+    const viewer = createPhotoLightbox({ images, label, galleryId }, createGallery);
     triggers.forEach((trigger, index) => trigger.addEventListener("click", () => viewer.open(index, trigger)));
     return viewer;
   };
@@ -48,6 +48,7 @@ const initialize = () => {
     const viewer = createPhotoLightbox({
       images: photos.map(sourceFrom),
       label: document.querySelector(".zine-info h1")?.textContent || "Просмотр работ",
+      originStage: stage,
       onClose: index => stage.dispatchEvent(new CustomEvent("gallery:select", { detail: index })),
     }, createGallery);
     const open = () => viewer.open(Math.max(0, photos.findIndex(photo => photo.dataset.active === "true")), zoom);
@@ -66,9 +67,9 @@ const initialize = () => {
     slide.append(trigger);
     return trigger;
   });
-  connect(cyanotypeTriggers, cyanotypeSources, "Просмотр цианотипий");
+  connect(cyanotypeTriggers, cyanotypeSources, "Просмотр цианотипий", "home:cyanotype");
   const objectTriggers = [...document.querySelectorAll("[data-object-index]")];
-  connect(objectTriggers, objectTriggers.map(button => sourceFrom(button.querySelector("img"))), "Просмотр объектов");
+  connect(objectTriggers, objectTriggers.map(button => sourceFrom(button.querySelector("img"))), "Просмотр объектов", "home:objects");
 
   const drawings = [...document.querySelectorAll("#drawings .archive-card:not([data-drawing-category]), .catalog-page.art-catalog:not(.drawing-catalog):not(:has([data-object-index])) .catalog-card")];
   const drawingSources = drawings.map(card => sourceFrom(card.querySelector("img")));
@@ -82,7 +83,7 @@ const initialize = () => {
     else { trigger.append(...card.childNodes); card.append(trigger); }
     return trigger;
   });
-  connect(drawingTriggers, drawingSources, "Просмотр рисунков");
+  connect(drawingTriggers, drawingSources, "Просмотр рисунков", "home:drawings");
 };
 if (document.readyState === "complete") initialize();
 else document.addEventListener("DOMContentLoaded", () => setTimeout(initialize, 0), { once: true });

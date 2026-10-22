@@ -97,11 +97,17 @@ export function createPhotoLightbox(options, createGallery) {
       document.body.append(dialog);
       syncLocale();
       dialog.showModal();
+      document.dispatchEvent(new CustomEvent("cheshuya:lightbox-open", {
+        detail: { stage: options.originStage, id: options.galleryId, index: active, total: sources.length },
+      }));
       status.textContent = "";
       gallery = createGallery(stage, index => {
         if (index !== active) zoom?.reset(true);
         active = index;
         counter.textContent = (active + 1) + " / " + sources.length;
+        document.dispatchEvent(new CustomEvent("cheshuya:lightbox-change", {
+          detail: { stage: options.originStage, id: options.galleryId, index: active, total: sources.length },
+        }));
         if (photos[index]?.complete && photos[index]?.naturalWidth) status.textContent = "";
       }, active);
       zoom = createPhotoZoom(stage, {

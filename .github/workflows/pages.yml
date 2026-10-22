@@ -30,6 +30,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Generate light gallery previews
         run: node scripts/generate-thumbnails.mjs
+      - name: Stamp analytics site version
+        run: node scripts/stamp-site-version.mjs
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
