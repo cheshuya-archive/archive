@@ -54,14 +54,6 @@ button,input,textarea,select{font-family:var(--site-font)}
 .catalog-header>a:not(.site-home-logo),.zine-return>a{display:grid;place-items:center;width:37px;height:37px;padding:0}
 .top-drawer>.menu-preferences{width:min(640px,100%);margin:12px auto 0}
 
-/* Reveal letters once on first appearance; invisible letters still reserve space. */
-.heading-type-pending .heading-type-char{opacity:0}
-.heading-type-running .heading-type-char{animation:heading-letter 1ms step-end both;animation-delay:calc(var(--letter-index) * var(--typing-step))}
-@keyframes heading-letter{from{opacity:0}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.heading-type-pending .heading-type-char,.heading-type-running .heading-type-char{opacity:1;animation:none!important}}
-
-.archive-page :is(h1,h2,[data-heading-typing]) .heading-type-visual,.archive-page :is(h1,h2,[data-heading-typing]) .heading-type-char{display:inline;font:inherit;color:inherit;line-height:inherit}
-
 .logo-stage{-webkit-tap-highlight-color:transparent}
 .logo-hit-area{-webkit-tap-highlight-color:transparent;outline:none}
 .logo-stage img[role=button]{outline:none;-webkit-tap-highlight-color:transparent;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
@@ -129,3 +121,15 @@ html[lang="en"] .zine-pagination>:last-child::before{content:"Next"}
 .back-to-top:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .back-to-top:hover{background:var(--hover)}
 body:has(#site-menu:not([hidden])) .back-to-top,body:has([role=dialog][data-state=open]) .back-to-top,body:has(.photo-lightbox[open]) .back-to-top{visibility:hidden;pointer-events:none}
+
+.archive-page .static-tabs button{word-spacing:-.14em}
+.zine-info>.zine-meta{display:none}
+.cyanotype-page .section-breadcrumbs li[aria-current=page]{display:none}
+.static-menu .menu-home-link,.zine-menu .menu-home-link{display:block;width:max-content;max-width:100%;padding:7px 0;color:var(--text);font-size:14px;text-decoration:none}
+.static-menu .menu-home-link:hover,.zine-menu .menu-home-link:hover{text-decoration:underline;text-underline-offset:3px}
+.static-menu .menu-columns,.zine-menu .menu-columns{padding-top:12px}
+.archive-header .header-controls button,.catalog-burger,.zine-burger,.zine-controls button{position:relative}
+.archive-header .header-controls button::before,.catalog-burger::before,.zine-burger::before,.rail-arrow::before,.zine-controls button::before{content:"";position:absolute;inset:-4px;background:transparent}
+.back-to-top{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+.back-to-top.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity .25s ease,transform .25s ease,visibility 0s}
+@media(prefers-reduced-motion:reduce){.back-to-top,.back-to-top.is-visible{transition:none;transform:none}}

@@ -63,6 +63,8 @@
   if (location.hash) openHash();
   else if (freshEntry) startAtTop();
   const drawingRail = document.querySelector('#drawings .rail-scroll');
+  const drawingCatalogLabel = document.querySelector('#drawings .catalog-link-label');
+  if (drawingCatalogLabel) drawingCatalogLabel.textContent = 'Все рисунки';
   if (drawingRail) {
     const categories = [
       { slug:'paper', title:'На бумаге', image:'images/drawings/paper/1/01' },
@@ -94,7 +96,7 @@
     ['#drawings [data-drawing-category="wood"] strong', 'On wood'],
     ['#exhibitions h2', 'Exhibitions'], ['#objects h2', 'Objects'], ['#drawings h2', 'Graphics'],
     ['#zines .section-heading a .catalog-link-label', 'All zines'], ['#cyanotype .section-heading a .catalog-link-label', 'All prints'],
-    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All graphics'], ['#merch .section-heading a .catalog-link-label', 'View all'],
+    ['#exhibitions .section-heading a .catalog-link-label', 'All exhibitions'], ['#objects .section-heading a .catalog-link-label', 'All objects'], ['#drawings .section-heading a .catalog-link-label', 'All drawings'], ['#merch .section-heading a .catalog-link-label', 'View all'],
   ].flatMap(([selector,en]) => [...document.querySelectorAll(selector)].map(node => ({node,ru:node.textContent,en})));
   const applyLocale = locale => {
     const english = locale === "en";

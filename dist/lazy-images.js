@@ -1,22 +1,23 @@
 (() => {
   const images = [...document.querySelectorAll('img[data-src]')];
   if (!images.length) return;
-  let activated = false;
-  const events = ['pointerdown', 'touchstart', 'keydown', 'scroll'];
-  const activate = () => {
-    if (activated) return;
-    activated = true;
-    clearTimeout(fallback);
-    events.forEach(name => window.removeEventListener(name, activate));
-    for (const image of images) {
-      if (image.dataset.srcset) image.srcset = image.dataset.srcset;
-      image.src = image.dataset.src;
-      delete image.dataset.src;
-      delete image.dataset.srcset;
-    }
+  const activate = image => {
+    if (!image.dataset.src) return;
+    if (image.dataset.srcset) image.srcset = image.dataset.srcset;
+    image.src = image.dataset.src;
+    delete image.dataset.src;
+    delete image.dataset.srcset;
   };
-  const fallback = setTimeout(activate, 4000);
-  events.forEach(name => window.addEventListener(name, activate, { once: true, passive: true }));
-  const lead = document.querySelector('.street-feature img');
-  if (lead) lead.decode().then(activate, activate); else activate();
+  if (!('IntersectionObserver' in window)) {
+    images.forEach(activate);
+    return;
+  }
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      observer.unobserve(entry.target);
+      activate(entry.target);
+    }
+  }, { rootMargin: '300px' });
+  images.forEach(image => observer.observe(image));
 })();

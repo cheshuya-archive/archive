@@ -15,6 +15,12 @@
 
   const header = document.querySelector('.archive-header, .catalog-header, .zine-header');
   if (!header) return;
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a.catalog-card-link:not([aria-label])').forEach(link => {
+      const label = link.querySelector('img[alt]')?.alt || link.querySelector('strong')?.textContent?.trim();
+      if (label) link.setAttribute('aria-label', label);
+    });
+  }, { once: true });
   const isHome = header.classList.contains('archive-header');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const behavior = () => motion.matches ? 'instant' : 'smooth';
@@ -104,6 +110,12 @@
     ];
     const closeClass = isHome ? 'static-menu-close' : 'zine-menu-close';
     menu.innerHTML = '<button type="button" class="' + closeClass + '" aria-label="Закрыть меню">×</button>';
+    const homeLink = document.createElement('a');
+    homeLink.className = 'menu-home-link';
+    homeLink.dataset.target = 'home';
+    homeLink.href = 'index.html';
+    homeLink.textContent = 'Главная';
+    menu.append(homeLink);
     const columns = document.createElement('div');
     columns.className = 'menu-columns';
     menu.append(columns);
@@ -130,7 +142,7 @@
     themeButtons.push(menuThemeButton);
     preferences.append(languageButton, menuThemeButton);
     menu.append(preferences);
-    const englishLabels = { zines:"Printed editions", cyanotype:"Cyanotype", merch:"Merch", exhibitions:"Exhibitions", objects:"Objects", drawings:"Graphics" };
+    const englishLabels = { home:"Home", zines:"Printed editions", cyanotype:"Cyanotype", merch:"Merch", exhibitions:"Exhibitions", objects:"Objects", drawings:"Graphics" };
     const innerTranslations = [...menu.querySelectorAll("[data-target]")].map(node => ({ node, ru:node.textContent, en:englishLabels[node.dataset.target] }));
     [...menu.querySelectorAll("p")].forEach((node,index) => innerTranslations.push({ node, ru:node.textContent, en:index === 0 ? "Work in context" : "Work with material" }));
     const heading = document.querySelector(".catalog-page h1, .cyanotype-page h1");
@@ -177,7 +189,17 @@
     burger.setAttribute('aria-expanded', 'false');
     let overflow = '';
     let closing = null;
+    let openingTimer = null;
+    const finishOpen = () => {
+      clearTimeout(openingTimer);
+      openingTimer = null;
+      menu.classList.remove('is-opening');
+    };
+    menu.addEventListener('animationend', event => {
+      if (event.target === menu && event.animationName === 'drawer-in') finishOpen();
+    });
     const finishClose = (after) => {
+      finishOpen();
       menu.hidden = true;
       menu.classList.remove('is-closing');
       main.inert = false;
@@ -189,6 +211,7 @@
     };
     const close = (after) => {
       if (menu.hidden || closing !== null) return;
+      finishOpen();
       overlay.hidden = true;
       if (motion.matches) return finishClose(after);
       menu.classList.add('is-closing');
@@ -199,10 +222,12 @@
       overflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       main.inert = true;
+      menu.classList.add('is-opening');
       menu.hidden = false;
       overlay.hidden = false;
       burger.setAttribute('aria-expanded', 'true');
       menu.querySelector('button').focus();
+      openingTimer = setTimeout(finishOpen, 320);
     });
     menu.querySelector('.' + closeClass).addEventListener('click', () => close());
     overlay.addEventListener('click', () => close());

@@ -4,6 +4,29 @@
     canvas: { ru: 'На холстах', en: 'On canvas', series: [['1', 2], ['2', 3]] },
     wood: { ru: 'По дереву', en: 'On wood', series: [['1', 8], ['2', 8]] },
   };
+  const seriesCopy = {
+    paper: {
+      titles: [
+        ['Без названия', 'Untitled'], ['Полуденный сон', 'Midday Dream'],
+        ['Без названия', 'Untitled'], ['Без названия', 'Untitled'],
+        ['Без названия', 'Untitled'], ['Медь', 'Copper'],
+      ],
+      size: ['21 × 29,7 см — А4', '21 × 29.7 cm — A4'],
+      technique: ['Аэрозоль, акрил на бумаге', 'Spray paint, acrylic on paper'],
+      year: '2019',
+    },
+    canvas: {
+      titles: [['Без названия', 'Untitled'], ['Отскок', 'Rebound']],
+      size: ['29,7 × 42 см — А3', '29.7 × 42 cm — A3'],
+      technique: ['Акрил, маркеры, аэрозоль; холст на картоне', 'Acrylic, markers, spray paint; canvas on board'],
+      year: '2018',
+    },
+    wood: {
+      titles: [['Без названия', 'Untitled'], ['Ускользающий свет', 'Elusive Light']],
+      technique: ['Морилка, лак на фанере', 'Wood stain, varnish on plywood'],
+      year: '2020',
+    },
+  };
   const locale = () => window.CheshuyaLocale?.get() || 'ru';
   const surface = new URLSearchParams(location.search).get('surface');
   const list = document.querySelector('#drawing-series-list');
@@ -19,15 +42,27 @@
     document.querySelector('#drawing-heading').textContent = category[language];
     document.querySelector('#drawing-breadcrumb-current').textContent = category[language];
     document.title = `${category[language]} — Чешуя`;
-    list.querySelectorAll('[data-series-title]').forEach(title => {
-      title.textContent = `${language === 'en' ? 'Series' : 'Серия'} ${title.dataset.seriesTitle.replace('-', '.')}`;
-    });
+    const copy = seriesCopy[surface];
+    const languageIndex = language === 'en' ? 1 : 0;
     list.querySelectorAll('.zine-carousel').forEach(carousel => {
-      carousel.setAttribute('aria-label', `${language === 'en' ? 'Gallery' : 'Галерея'} ${carousel.dataset.series.replace('-', '.')}`);
+      const seriesIndex = Number(carousel.dataset.seriesIndex);
+      const title = copy.titles[seriesIndex][languageIndex];
+      const info = carousel.parentElement.querySelector('.drawing-series-info');
+      info.querySelector('[data-series-title]').textContent = title;
+      info.querySelectorAll('[data-series-spec]').forEach(value => {
+        const key = value.dataset.seriesSpec;
+        value.textContent = key === 'year' ? copy.year : copy[key][languageIndex];
+      });
+      info.querySelectorAll('[data-series-label]').forEach(label => {
+        label.textContent = (language === 'en'
+          ? { size:'Size', technique:'Technique', year:'Year' }
+          : { size:'Размер', technique:'Техника', year:'Год' })[label.dataset.seriesLabel];
+      });
+      carousel.setAttribute('aria-label', `${language === 'en' ? 'Gallery' : 'Галерея'}: ${title}`);
       carousel.querySelector('.prev')?.setAttribute('aria-label', language === 'en' ? 'Previous image' : 'Предыдущее фото');
       carousel.querySelector('.next')?.setAttribute('aria-label', language === 'en' ? 'Next image' : 'Следующее фото');
       carousel.querySelectorAll('.zine-photo').forEach((photo, index) => {
-        photo.alt = `${category[language]}, ${language === 'en' ? 'series' : 'серия'} ${carousel.dataset.series.replace('-', '.')}, ${language === 'en' ? 'work' : 'работа'} ${index + 1}`;
+        photo.alt = `${title}, ${category[language]} — ${language === 'en' ? 'photo' : 'фото'} ${index + 1}`;
       });
     });
   };
@@ -35,13 +70,14 @@
   if (!list) { translate(locale()); return; }
   if (!categories[surface]) { location.replace('catalog-drawings.html'); return; }
 
-  for (const [series, count] of categories[surface].series) {
+  for (const [seriesIndex, [series, count]] of categories[surface].series.entries()) {
     const section = document.createElement('section');
     section.className = 'drawing-series';
     section.id = `series-${series}`;
     const carousel = document.createElement('div');
     carousel.className = 'zine-carousel';
     carousel.dataset.series = series;
+    carousel.dataset.seriesIndex = String(seriesIndex);
     const stage = document.createElement('div');
     stage.className = 'zine-slide';
     const first = document.createElement('img');
@@ -62,6 +98,19 @@
     const title = document.createElement('h2');
     title.dataset.seriesTitle = series;
     info.append(title);
+    const specs = document.createElement('dl');
+    specs.className = 'drawing-series-specs';
+    for (const key of ['size', 'technique', 'year']) {
+      if (!seriesCopy[surface][key]) continue;
+      const row = document.createElement('div');
+      const label = document.createElement('dt');
+      label.dataset.seriesLabel = key;
+      const value = document.createElement('dd');
+      value.dataset.seriesSpec = key;
+      row.append(label, value);
+      specs.append(row);
+    }
+    info.append(specs);
     section.append(carousel, info);
     list.append(section);
 
