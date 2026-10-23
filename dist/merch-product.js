@@ -22,9 +22,6 @@
     const title = english ? 'Home T-shirt' : 'Футболка «Дом»';
     page.querySelector('[data-product-title]').textContent = title;
     page.querySelector('[data-product-meta]').textContent = english ? 'T-shirt · Screen printing' : 'Футболка · Шелкография';
-    page.querySelector('[data-product-description]').textContent = english
-      ? 'The print refers to a street work made in Kazan in 2020.'
-      : 'Принт отсылает к уличной работе 2020 года, сделанной в Казани.';
     const words = english
       ? { color: ['Colour', color === 'white' ? 'White' : 'Black'], material: ['Material', '100% cotton'], weight: ['Fabric weight', '180 g/m²'], technique: ['Technique', 'Screen printing'] }
       : { color: ['Цвет', color === 'white' ? 'Белый' : 'Чёрный'], material: ['Материал', '100% хлопок'], weight: ['Плотность ткани', '180 г/м²'], technique: ['Техника', 'Шелкография'] };

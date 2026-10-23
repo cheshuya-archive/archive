@@ -6,3 +6,17 @@
 .analytics-primary{color:var(--surface,#fff)!important}
 .analytics-consent-bottom{flex-wrap:wrap;gap:12px}.analytics-consent-bottom .analytics-actions{flex:0 0 auto;justify-content:flex-start;align-self:auto}.analytics-consent-bottom>a{flex:0 0 auto;margin-left:auto;text-align:right}.archive-footer .analytics-footer-privacy{margin-top:24px}
 @media(max-width:380px){.analytics-consent-bottom{flex-direction:row}}
+.analytics-privacy nav{justify-content:space-between;align-items:center}
+.analytics-banner.analytics-consent{left:0;right:0;bottom:0;width:100%;max-height:calc(100dvh - 16px);display:block;overflow:auto;transform:translateY(calc(100% + 16px));padding:12px max(20px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));border:0;border-top:1px solid var(--border-strong,#d2d2d2);box-shadow:0 -4px 24px var(--shadow-12,rgba(0,0,0,.12))}
+.analytics-banner.analytics-consent.is-visible{transform:translateY(0)}
+.analytics-consent-inner{display:flex;align-items:center;gap:24px;width:min(640px,100%);margin:0 auto}
+.analytics-consent-copy{display:flex;align-items:center;gap:12px;min-width:0;margin-right:auto}
+.analytics-consent-copy img{display:block;width:24px;height:32px;object-fit:contain;flex:none}
+.analytics-consent-text{display:grid;gap:2px;min-width:0}
+.analytics-consent-text p,.analytics-banner .analytics-consent-text p{margin:0;line-height:1.35}
+.analytics-consent-text p:first-child{font-size:14px;font-weight:600}
+.analytics-consent-text .analytics-consent-detail{color:var(--muted,#737373)}
+.analytics-banner .analytics-consent-text .analytics-consent-detail{margin:0!important}
+.analytics-banner.analytics-consent .analytics-actions{flex:none;justify-content:flex-start;flex-wrap:nowrap}
+:root[data-theme=dark] .analytics-consent-copy img{filter:invert(1)}
+@media(max-width:620px){.analytics-banner.analytics-consent{padding:12px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}.analytics-consent-inner{flex-wrap:wrap;gap:10px}.analytics-consent-copy{flex:0 0 100%;margin-right:0}.analytics-banner.analytics-consent .analytics-actions{flex:0 0 100%;width:100%;min-width:0}.analytics-banner.analytics-consent .analytics-action{flex:1 1 0;min-width:0}}

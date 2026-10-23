@@ -24,6 +24,21 @@
   const isHome = header.classList.contains('archive-header');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const behavior = () => motion.matches ? 'instant' : 'smooth';
+  document.addEventListener('DOMContentLoaded', () => {
+    if (motion.matches || !('IntersectionObserver' in window)) return;
+    const groups = document.querySelectorAll('.street-feature, .inside-intro, .archive-section, .catalog-grid, .zine-layout, .drawing-series, .exhibition-video, .cyanotype-video');
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    }, { rootMargin: '0px 0px 48px 0px', threshold: 0.05 });
+    groups.forEach(group => {
+      group.classList.add('page-reveal-pending');
+      observer.observe(group);
+    });
+  }, { once: true });
   if (/iP(hone|ad|od)/.test(navigator.userAgent) && (/Telegram/i.test(navigator.userAgent) || /t\.me\//i.test(document.referrer))) {
     document.documentElement.classList.add('telegram-ios');
   }
@@ -288,12 +303,16 @@
     };
     addEventListener('scroll', () => { if (frame === null) frame = requestAnimationFrame(render); }, { passive: true });
     let viewportWidth = innerWidth;
-    addEventListener('resize', () => {
-      // The mobile browser chrome changes height on entry; the stage layout does not.
-      if (innerWidth === viewportWidth) return;
+    const remeasureIfNeeded = () => {
+      const rect = stage.getBoundingClientRect(), style = getComputedStyle(stage);
+      const top = parseFloat(style.paddingTop) || 0, bottom = parseFloat(style.paddingBottom) || 0;
+      const nextCenter = rect.top + Math.max(0, scrollY) + top + (rect.height - top - bottom) / 2;
+      if (innerWidth === viewportWidth && Math.abs(nextCenter - center) < .5) return;
       viewportWidth = innerWidth;
       measure();
-    });
+    };
+    addEventListener('resize', remeasureIfNeeded);
+    window.visualViewport?.addEventListener('resize', remeasureIfNeeded, { passive: true });
     addEventListener('pageshow', measure);
     motion.addEventListener('change', measure);
     const top = () => scrollTo({ top: 0, behavior: behavior() });

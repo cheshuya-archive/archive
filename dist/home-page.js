@@ -90,7 +90,6 @@
     ['.street-feature h1', 'Street drawing'],
     ['.street-feature p', 'Searching for new places and structures beyond familiar routes. The work begins with getting to know the space and its particular features. The drawing is created on site, without a preliminary sketch, and changes in response to the surface and surrounding conditions.'],
     ['#zines h2', 'Printed editions'], ['#cyanotype h2', 'Cyanotype'], ['#merch h2', 'Merch'],
-    ['#merch .section-description', 'The print refers to a street work made in Kazan in 2020.'],
     ['#merch .archive-caption span', 'Screen printing · S, M, L, XL'],
     ['#objects .section-description', 'Working with different materials and combinations of techniques. Their properties and methods of processing become the basis for experimentation and improvisation. Form emerges during the work, and the finished objects can exist in different spaces and contexts.'],
     ['#drawings .section-description', 'Graphics and painting: series of works on paper, canvas and wood.'],

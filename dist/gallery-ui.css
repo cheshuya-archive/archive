@@ -14,7 +14,7 @@
 .site-home-logo::after{display:block!important}
 .cyanotype-page .cyanotype-back::before{content:none}
 .cyanotype-page .cyanotype-back::after{content:"Назад";display:inline}
-.home-moving-logo{box-sizing:content-box;padding:3.5px}
+.home-moving-logo{box-sizing:border-box;padding:0}
 .gallery-zoom{position:absolute;z-index:3;top:8px;right:8px;display:grid;place-items:center;width:37px;height:37px;padding:0;border:1px solid var(--placeholder);border-radius:50%;background:var(--surface);color:var(--text);cursor:zoom-in}
 .gallery-zoom:hover{background:var(--hover)}
 .gallery-zoom:focus-visible,.object-lightbox button:focus-visible{outline:2px solid var(--text);outline-offset:2px}

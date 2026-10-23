@@ -81,6 +81,9 @@ body{min-height:100vh;min-height:100svh}
 .static-menu .menu-group>a:focus-visible{outline:2px solid var(--text);outline-offset:4px}
 .merch-catalog .catalog-image{aspect-ratio:3/4;background:var(--gallery-canvas)}
 .merch-catalog .catalog-image img,.merch-catalog .catalog-card:hover .catalog-image img{object-fit:contain;transform:none}
+#drawings .archive-image img{transition:transform .7s cubic-bezier(.22,.7,.2,1)}
+#drawings .archive-card:hover .archive-image img{transform:scale(1.025)}
+@media(prefers-reduced-motion:reduce){#drawings .archive-image img{transition:none}}
 @media(max-width:700px){.drawing-detail-page .section-breadcrumbs{margin-bottom:28px}}
 @media(prefers-reduced-motion:reduce){.static-menu .menu-group>a::after{transition:none}}
 
@@ -133,3 +136,10 @@ body:has(#site-menu:not([hidden])) .back-to-top,body:has([role=dialog][data-stat
 .back-to-top{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
 .back-to-top.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity .25s ease,transform .25s ease,visibility 0s}
 @media(prefers-reduced-motion:reduce){.back-to-top,.back-to-top.is-visible{transition:none;transform:none}}
+
+/* The page and its content groups appear without moving their layout boxes. */
+@keyframes page-opacity-in{from{opacity:0}to{opacity:1}}
+body{animation:page-opacity-in .58s .12s both}
+.page-reveal-pending{opacity:0;transition:opacity 1.15s cubic-bezier(.2,.65,.2,1)}
+.page-reveal-pending.is-visible{opacity:1}
+@media(prefers-reduced-motion:reduce){body{animation:none}.page-reveal-pending{opacity:1;transition:none}}

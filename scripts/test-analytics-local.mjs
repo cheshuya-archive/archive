@@ -60,12 +60,23 @@ try {
   await waitFor('document.readyState === "complete" && !!window.CheshuyaAnalytics');
   assert.equal((await state()).consent, null);
   assert.deepEqual(await vendorScripts(), []);
+  assert.ok(await evaluate('document.querySelector(".street-feature img").naturalWidth > 0'), 'First-screen photo should load');
+  assert.equal(await evaluate('document.querySelector(".logo-stage img")?.getAttribute("src")'), 'media/cheshuya-figma-logo.svg');
+  assert.ok(await evaluate('document.querySelector(".logo-stage img").naturalWidth > 0'), 'Home logo should load');
   assert.equal(await evaluate('!!document.querySelector(".analytics-consent")'), false);
   await waitFor('!!document.querySelector(".analytics-consent.is-visible")');
-  assert.equal(await evaluate('document.querySelector(".analytics-consent-header p")?.textContent'), 'Разрешить Чешуе использовать аналитику?');
-  assert.equal(await evaluate('document.querySelector(".analytics-consent-header img")?.getAttribute("src")'), 'media/cheshuya-figma-logo.svg');
-  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-actions").getBoundingClientRect().left-document.querySelector(".analytics-consent").getBoundingClientRect().left)<40'), true);
-  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-consent-bottom>a").getBoundingClientRect().right-document.querySelector(".analytics-consent").getBoundingClientRect().right)<40'), true);
+  assert.equal(await evaluate('document.querySelector(".analytics-consent-text p:first-child")?.textContent'), 'Разрешить использовать аналитику?');
+  assert.equal(await evaluate('document.querySelector(".analytics-consent-detail")?.textContent'), 'Это поможет улучшать сайт.');
+  assert.equal(await evaluate('document.querySelector(".analytics-consent-copy img")?.getAttribute("src")'), 'media/cheshuya-figma-logo-outline.svg');
+  assert.deepEqual(await evaluate('[...document.querySelectorAll(".analytics-consent .analytics-action")].map(button=>button.textContent)'), ['Отклонить', 'Разрешить']);
+  assert.equal(await evaluate('!!document.querySelector(".analytics-consent a")'), false);
+  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-consent").getBoundingClientRect().width-document.documentElement.clientWidth)<2'), true);
+  assert.equal(await evaluate(`(() => {
+    const inner=document.querySelector('.analytics-consent-inner').getBoundingClientRect();
+    const copy=document.querySelector('.analytics-consent-copy').getBoundingClientRect();
+    const actions=document.querySelector('.analytics-consent .analytics-actions').getBoundingClientRect();
+    return inner.width<=640 && Math.abs((inner.left+inner.right)/2-document.documentElement.clientWidth/2)<2 && Math.abs((copy.top+copy.bottom)/2-(actions.top+actions.bottom)/2)<2;
+  })()`), true);
   await click('.analytics-banner .analytics-action:not(.analytics-primary)');
   assert.equal((await state()).consent, 'denied');
   assert.deepEqual(await vendorScripts(), []);
@@ -75,7 +86,10 @@ try {
   assert.equal((await state()).consent, 'denied');
   assert.deepEqual(await vendorScripts(), []);
   assert.equal(await evaluate('!!document.querySelector("footer .analytics-settings-link")'), false);
-  await click('footer .analytics-footer-privacy a');
+  assert.equal(await evaluate('!!document.querySelector(".analytics-footer-privacy")'), false);
+  await navigate('/catalog-drawings.html');
+  assert.equal(await evaluate('!!document.querySelector(".analytics-footer")'), false);
+  await navigate('/privacy.html');
   await waitFor('location.pathname.endsWith("privacy.html") && !!document.querySelector(".analytics-settings-link")');
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-primary');
@@ -133,8 +147,20 @@ try {
   await waitFor('window.CheshuyaAnalytics && window.CheshuyaAnalytics.getState().consent === "denied"');
   assert.deepEqual(await vendorScripts(), []);
 
+  await navigate('/drawing.html?surface=paper');
+  assert.equal(await evaluate('document.querySelector(".drawing-prev")?.getAttribute("href")'), 'drawing.html?surface=wood');
+  assert.equal(await evaluate('document.querySelector(".drawing-next")?.getAttribute("href")'), 'drawing.html?surface=canvas');
+  await click('.drawing-next');
+  await waitFor('location.search === "?surface=canvas" && document.querySelector("#drawing-breadcrumb-current")?.textContent === "На холстах"');
+  assert.equal(await evaluate('document.querySelector("#drawing-breadcrumb-current")?.textContent'), 'На холстах');
+  await navigate('/merch-dom-white.html');
+  assert.equal(await evaluate('!!document.querySelector("[data-product-description]")'), false);
+
   await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true, screenWidth: 390, screenHeight: 844 });
   await navigate('/index.html');
+  assert.equal(await evaluate('getComputedStyle(document.body).animationName'), 'page-opacity-in');
+  await waitFor('document.querySelector(".street-feature")?.classList.contains("is-visible")');
+  assert.equal(await evaluate('Math.abs(document.querySelector(".logo-stage img").getBoundingClientRect().width-parseFloat(getComputedStyle(document.querySelector(".logo-stage img")).width))<1'), true);
   const mobile = await evaluate(`(() => {
     const footer=document.querySelector('.analytics-footer,.archive-footer');
     return {width:innerWidth,footerRight:footer?.getBoundingClientRect().right,privacy:!!footer?.querySelector('.analytics-footer-privacy a'),settings:!!footer?.querySelector('.analytics-settings-link')};
@@ -152,7 +178,15 @@ try {
   })()`);
   assert.ok(mobileBanner.left >= 0 && mobileBanner.right <= mobileBanner.width + 1);
   assert.ok(mobileBanner.bottom <= mobileBanner.height + 1);
-  console.log('PASS: delayed consent, slide-out, privacy settings, denial, opt-in, no duplicate core events, preview persistence, withdrawal, mobile layout');
+  assert.ok(Math.abs(mobileBanner.right-mobileBanner.width) < 2);
+  assert.equal(await evaluate(`(() => {
+    const inner=document.querySelector('.analytics-consent-inner').getBoundingClientRect();
+    const copy=document.querySelector('.analytics-consent-copy').getBoundingClientRect();
+    const actions=document.querySelector('.analytics-consent .analytics-actions').getBoundingClientRect();
+    const buttons=[...document.querySelectorAll('.analytics-consent .analytics-action')].map(button=>button.getBoundingClientRect());
+    return Math.abs((inner.left+inner.right)/2-innerWidth/2)<2 && actions.top>=copy.bottom && Math.abs(actions.width-inner.width)<2 && buttons.length===2 && Math.abs(buttons[0].width-buttons[1].width)<2 && Math.abs(buttons[0].top-buttons[1].top)<2;
+  })()`), true);
+  console.log('PASS: consent and preview, no duplicate events, graphics navigation, image loading, page reveal, mobile logo and layout');
 } finally {
   socket.close();
 }

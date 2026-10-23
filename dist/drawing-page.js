@@ -28,6 +28,7 @@
     },
   };
   const locale = () => window.CheshuyaLocale?.get() || 'ru';
+  const categoryOrder = Object.keys(categories);
   const surface = new URLSearchParams(location.search).get('surface');
   const list = document.querySelector('#drawing-series-list');
 
@@ -42,6 +43,10 @@
     document.querySelector('#drawing-heading').textContent = category[language];
     document.querySelector('#drawing-breadcrumb-current').textContent = category[language];
     document.title = `${category[language]} — Чешуя`;
+    const pagination = document.querySelector('.drawing-pagination');
+    pagination.setAttribute('aria-label', language === 'en' ? 'Other graphics categories' : 'Другие разделы графики');
+    pagination.querySelector('.drawing-prev').setAttribute('aria-label', `${language === 'en' ? 'Previous category' : 'Предыдущий раздел'}: ${categories[categoryOrder[(categoryOrder.indexOf(surface) + categoryOrder.length - 1) % categoryOrder.length]][language]}`);
+    pagination.querySelector('.drawing-next').setAttribute('aria-label', `${language === 'en' ? 'Next category' : 'Следующий раздел'}: ${categories[categoryOrder[(categoryOrder.indexOf(surface) + 1) % categoryOrder.length]][language]}`);
     const copy = seriesCopy[surface];
     const languageIndex = language === 'en' ? 1 : 0;
     list.querySelectorAll('.zine-carousel').forEach(carousel => {
@@ -69,6 +74,9 @@
   document.addEventListener('cheshuya:locale', event => translate(event.detail));
   if (!list) { translate(locale()); return; }
   if (!categories[surface]) { location.replace('catalog-drawings.html'); return; }
+  const currentCategoryIndex = categoryOrder.indexOf(surface);
+  document.querySelector('.drawing-prev').href = `drawing.html?surface=${categoryOrder[(currentCategoryIndex + categoryOrder.length - 1) % categoryOrder.length]}`;
+  document.querySelector('.drawing-next').href = `drawing.html?surface=${categoryOrder[(currentCategoryIndex + 1) % categoryOrder.length]}`;
 
   for (const [seriesIndex, [series, count]] of categories[surface].series.entries()) {
     const section = document.createElement('section');

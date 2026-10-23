@@ -213,37 +213,37 @@
     prompt.className = "analytics-banner analytics-consent";
     prompt.setAttribute("aria-label", copy("Настройки аналитики", "Analytics choices"));
     const header = document.createElement("div");
-    header.className = "analytics-consent-header";
+    header.className = "analytics-consent-copy";
     const logo = document.createElement("img");
-    logo.src = "media/cheshuya-figma-logo.svg";
+    logo.src = "media/cheshuya-figma-logo-outline.svg";
     logo.alt = "";
     logo.width = 24;
     logo.height = 32;
+    const text = document.createElement("div");
+    text.className = "analytics-consent-text";
     const message = document.createElement("p");
     message.textContent = copy(
-      "Разрешить Чешуе использовать аналитику?",
-      "Allow Cheshuya to use analytics?"
+      "Разрешить использовать аналитику?",
+      "Allow analytics?"
     );
-    header.append(logo, message);
     const detail = document.createElement("p");
     detail.className = "analytics-consent-detail";
     detail.textContent = copy(
-      "Это включает статистику посещений и записи сессий. До согласия аналитика не загружается.",
-      "This includes visit statistics and session recordings. No analytics loads before consent."
+      "Это поможет улучшать сайт.",
+      "This will help improve the site."
     );
-    const bottom = document.createElement("div");
-    bottom.className = "analytics-consent-bottom";
+    text.append(message, detail);
+    header.append(logo, text);
     const actions = document.createElement("div");
     actions.className = "analytics-actions";
     actions.append(
-      makeButton(copy("Разрешить", "Allow"), () => updateConsent("granted"), true),
       makeButton(copy("Отклонить", "Decline"), () => updateConsent("denied")),
+      makeButton(copy("Разрешить", "Allow"), () => updateConsent("granted"), true),
     );
-    const privacy = document.createElement("a");
-    privacy.href = "privacy.html";
-    privacy.textContent = copy("О конфиденциальности", "Privacy information");
-    bottom.append(actions, privacy);
-    prompt.append(header, detail, bottom);
+    const inner = document.createElement("div");
+    inner.className = "analytics-consent-inner";
+    inner.append(header, actions);
+    prompt.append(inner);
     revealPanel(prompt);
   }
 
@@ -310,6 +310,7 @@
       document.querySelectorAll(".analytics-settings-link").forEach(button => button.addEventListener("click", showSettings));
       return;
     }
+    if (file !== "index.html" && file !== "") return;
     let footer = document.querySelector(".archive-footer, .analytics-footer");
     if (!footer) {
       footer = document.createElement("footer"); footer.className = "analytics-footer";

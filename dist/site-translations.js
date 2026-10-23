@@ -85,7 +85,6 @@ const pairs = {
   "Групповая выставка, ISSMAG, Москва, 2022": "Group exhibition, ISSMAG, Moscow, 2022",
   "Групповая выставка, Музей ДПИ, Москва, 2022": "Group exhibition, Museum of Decorative Arts, Moscow, 2022",
   "Портал, 2024 | Серия отпечатков на бумаге": "Portal, 2024 | Series of prints on paper",
-  "Принт отсылает к уличной работе 2020 года, сделанной в Казани.": "The print refers to a street work made in Kazan in 2020.",
   "Графика и живопись: серии работ на бумаге, холстах и дереве.": "Graphics and painting: series of works on paper, canvas and wood.",
   "Серия рельефов «Водровь»": "Vodrov relief series",
   "Коллекция керамики": "Ceramics collection"
