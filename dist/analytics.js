@@ -242,7 +242,7 @@
     const privacy = document.createElement("a");
     privacy.href = "privacy.html";
     privacy.textContent = copy("О конфиденциальности", "Privacy information");
-    bottom.append(privacy, actions);
+    bottom.append(actions, privacy);
     prompt.append(header, detail, bottom);
     revealPanel(prompt);
   }

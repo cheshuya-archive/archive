@@ -64,7 +64,8 @@ try {
   await waitFor('!!document.querySelector(".analytics-consent.is-visible")');
   assert.equal(await evaluate('document.querySelector(".analytics-consent-header p")?.textContent'), 'Разрешить Чешуе использовать аналитику?');
   assert.equal(await evaluate('document.querySelector(".analytics-consent-header img")?.getAttribute("src")'), 'media/cheshuya-figma-logo.svg');
-  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-actions").getBoundingClientRect().right-document.querySelector(".analytics-consent").getBoundingClientRect().right)<40'), true);
+  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-actions").getBoundingClientRect().left-document.querySelector(".analytics-consent").getBoundingClientRect().left)<40'), true);
+  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-consent-bottom>a").getBoundingClientRect().right-document.querySelector(".analytics-consent").getBoundingClientRect().right)<40'), true);
   await click('.analytics-banner .analytics-action:not(.analytics-primary)');
   assert.equal((await state()).consent, 'denied');
   assert.deepEqual(await vendorScripts(), []);
