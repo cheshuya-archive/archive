@@ -6,7 +6,7 @@
     ga4MeasurementId: "G-4RV13D7DNW",
     // Fill these only with identifiers copied from the owner's free accounts.
     clarityProjectId: "",
-    cloudflareToken: "",
+    cloudflareToken: "ed4b042d40ec46debdb07d1da629b625",
   });
   const consentKey = "cheshuya-analytics-consent-v1";
   const previewKey = "cheshuya-analytics-preview-v1";
@@ -77,6 +77,7 @@
     }
     if (config.cloudflareToken) {
       loadScript("https://static.cloudflareinsights.com/beacon.min.js", {
+        type: "module",
         "data-cf-beacon": JSON.stringify({ token: config.cloudflareToken }),
       });
     }

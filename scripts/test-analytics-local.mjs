@@ -69,7 +69,9 @@ try {
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-primary');
   assert.equal((await state()).consent, 'granted');
-  assert.equal((await vendorScripts()).length, 1); // Clarity/Cloudflare have no IDs yet.
+  assert.equal((await vendorScripts()).length, 2); // Clarity has no Project ID yet.
+  assert.equal(await evaluate('document.querySelector("script[src*=cloudflareinsights]")?.type'), 'module');
+  assert.equal(await evaluate('JSON.parse(document.querySelector("script[src*=cloudflareinsights]").dataset.cfBeacon).token'), 'ed4b042d40ec46debdb07d1da629b625');
   const events = await evaluate('window.dataLayer.filter(x=>x[0]==="event").map(x=>x[1])');
   for (const name of ['page_view', 'section_view', 'project_open', 'gallery_open']) {
     assert.equal(events.filter(event => event === name).length, 1, `${name} should fire once`);
@@ -108,7 +110,7 @@ try {
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-action');
   assert.equal((await state()).preview, false);
-  assert.equal((await vendorScripts()).length, 1);
+  assert.equal((await vendorScripts()).length, 2);
 
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-action');
