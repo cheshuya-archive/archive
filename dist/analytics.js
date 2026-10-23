@@ -5,7 +5,7 @@
   const config = Object.freeze({
     ga4MeasurementId: "G-4RV13D7DNW",
     // Fill these only with identifiers copied from the owner's free accounts.
-    clarityProjectId: "",
+    clarityProjectId: "z1s34rbr10",
     cloudflareToken: "ed4b042d40ec46debdb07d1da629b625",
   });
   const consentKey = "cheshuya-analytics-consent-v1";

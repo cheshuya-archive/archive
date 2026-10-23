@@ -5,7 +5,9 @@ import assert from 'node:assert/strict';
 const endpoint = process.env.CHESHUYA_CDP || 'http://127.0.0.1:9223';
 const site = process.env.CHESHUYA_TEST_SITE || 'http://127.0.0.1:3104';
 const pages = await fetch(`${endpoint}/json`).then(response => response.json());
-const socket = new WebSocket(pages[0].webSocketDebuggerUrl);
+const pageTarget = pages.find(page => page.type === 'page' && page.webSocketDebuggerUrl);
+if (!pageTarget) throw new Error('No Chrome page target available for local analytics test');
+const socket = new WebSocket(pageTarget.webSocketDebuggerUrl);
 await new Promise((resolve, reject) => {
   socket.addEventListener('open', resolve, { once: true });
   socket.addEventListener('error', reject, { once: true });
@@ -69,7 +71,9 @@ try {
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-primary');
   assert.equal((await state()).consent, 'granted');
-  assert.equal((await vendorScripts()).length, 2); // Clarity has no Project ID yet.
+  assert.equal((await vendorScripts()).length, 3);
+  assert.equal(await evaluate('[...document.scripts].some(script => script.src.endsWith("/z1s34rbr10"))'), true);
+  assert.equal(await evaluate('window.clarity.q.some(args=>args[0]==="consentv2"&&args[1].analytics_Storage==="granted"&&args[1].ad_Storage==="denied")'), true);
   assert.equal(await evaluate('document.querySelector("script[src*=cloudflareinsights]")?.type'), 'module');
   assert.equal(await evaluate('JSON.parse(document.querySelector("script[src*=cloudflareinsights]").dataset.cfBeacon).token'), 'ed4b042d40ec46debdb07d1da629b625');
   const events = await evaluate('window.dataLayer.filter(x=>x[0]==="event").map(x=>x[1])');
@@ -110,7 +114,7 @@ try {
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-action');
   assert.equal((await state()).preview, false);
-  assert.equal((await vendorScripts()).length, 2);
+  assert.equal((await vendorScripts()).length, 3);
 
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-action');
