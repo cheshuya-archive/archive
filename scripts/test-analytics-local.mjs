@@ -60,14 +60,22 @@ try {
   await waitFor('document.readyState === "complete" && !!window.CheshuyaAnalytics');
   assert.equal((await state()).consent, null);
   assert.deepEqual(await vendorScripts(), []);
-  assert.equal(await evaluate('!!document.querySelector(".analytics-banner")'), true);
+  assert.equal(await evaluate('!!document.querySelector(".analytics-consent")'), false);
+  await waitFor('!!document.querySelector(".analytics-consent.is-visible")');
+  assert.equal(await evaluate('document.querySelector(".analytics-consent-header p")?.textContent'), 'Разрешить Чешуе использовать аналитику?');
+  assert.equal(await evaluate('document.querySelector(".analytics-consent-header img")?.getAttribute("src")'), 'media/cheshuya-figma-logo.svg');
+  assert.equal(await evaluate('Math.abs(document.querySelector(".analytics-actions").getBoundingClientRect().right-document.querySelector(".analytics-consent").getBoundingClientRect().right)<40'), true);
   await click('.analytics-banner .analytics-action:not(.analytics-primary)');
   assert.equal((await state()).consent, 'denied');
   assert.deepEqual(await vendorScripts(), []);
+  assert.equal(await evaluate('document.querySelector(".analytics-consent")?.classList.contains("is-leaving")'), true);
 
   await navigate('/zine-sloi.html');
   assert.equal((await state()).consent, 'denied');
   assert.deepEqual(await vendorScripts(), []);
+  assert.equal(await evaluate('!!document.querySelector("footer .analytics-settings-link")'), false);
+  await click('footer .analytics-footer-privacy a');
+  await waitFor('location.pathname.endsWith("privacy.html") && !!document.querySelector(".analytics-settings-link")');
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-primary');
   assert.equal((await state()).consent, 'granted');
@@ -76,6 +84,8 @@ try {
   assert.equal(await evaluate('window.clarity.q.some(args=>args[0]==="consentv2"&&args[1].analytics_Storage==="granted"&&args[1].ad_Storage==="denied")'), true);
   assert.equal(await evaluate('document.querySelector("script[src*=cloudflareinsights]")?.type'), 'module');
   assert.equal(await evaluate('JSON.parse(document.querySelector("script[src*=cloudflareinsights]").dataset.cfBeacon).token'), 'ed4b042d40ec46debdb07d1da629b625');
+  await navigate('/zine-sloi.html');
+  await waitFor('window.dataLayer?.some(x=>x[0]==="event"&&x[1]==="gallery_open")');
   const events = await evaluate('window.dataLayer.filter(x=>x[0]==="event").map(x=>x[1])');
   for (const name of ['page_view', 'section_view', 'project_open', 'gallery_open']) {
     assert.equal(events.filter(event => event === name).length, 1, `${name} should fire once`);
@@ -111,6 +121,7 @@ try {
   await navigate('/zine-sloi.html');
   assert.equal((await state()).preview, true);
   assert.deepEqual(await vendorScripts(), []);
+  await navigate('/privacy.html');
   await click('.analytics-settings-link');
   await click('.analytics-settings .analytics-action');
   assert.equal((await state()).preview, false);
@@ -125,11 +136,22 @@ try {
   await navigate('/index.html');
   const mobile = await evaluate(`(() => {
     const footer=document.querySelector('.analytics-footer,.archive-footer');
-    return {width:innerWidth,footerRight:footer?.getBoundingClientRect().right,settings:!!document.querySelector('.analytics-settings-link')};
+    return {width:innerWidth,footerRight:footer?.getBoundingClientRect().right,privacy:!!footer?.querySelector('.analytics-footer-privacy a'),settings:!!footer?.querySelector('.analytics-settings-link')};
   })()`);
-  assert.equal(mobile.settings, true);
+  assert.equal(mobile.privacy, true);
+  assert.equal(mobile.settings, false);
   assert.ok(mobile.footerRight <= mobile.width + 2);
-  console.log('PASS: denial, opt-in, no duplicate core events, preview persistence, withdrawal, mobile settings');
+  await evaluate('localStorage.removeItem("cheshuya-analytics-consent-v1")');
+  await cdp('Page.reload', { ignoreCache: true });
+  await waitFor('!!document.querySelector(".analytics-consent.is-visible")');
+  await waitFor('document.querySelector(".analytics-consent").getBoundingClientRect().bottom <= innerHeight + 1');
+  const mobileBanner = await evaluate(`(() => {
+    const rect=document.querySelector('.analytics-consent').getBoundingClientRect();
+    return {left:rect.left,right:rect.right,bottom:rect.bottom,width:innerWidth,height:innerHeight};
+  })()`);
+  assert.ok(mobileBanner.left >= 0 && mobileBanner.right <= mobileBanner.width + 1);
+  assert.ok(mobileBanner.bottom <= mobileBanner.height + 1);
+  console.log('PASS: delayed consent, slide-out, privacy settings, denial, opt-in, no duplicate core events, preview persistence, withdrawal, mobile layout');
 } finally {
   socket.close();
 }

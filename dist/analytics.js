@@ -22,6 +22,7 @@
   let clarityReady = false;
   let settingsPanel;
   let prompt;
+  let consentTimer;
   const viewedSections = new Set();
   const galleries = new Map();
   const siteVersion = window.CHESHUYA_SITE_VERSION || "local-unversioned";
@@ -86,7 +87,7 @@
   }
 
   function track(name, details = {}) {
-    if (!allowed()) return;
+    if (!started || !allowed()) return;
     const payload = { site_version: siteVersion, section_id: pageSection, ...details };
     if (projectId && !payload.project_id) payload.project_id = projectId;
     if (gaReady) window.gtag("event", name, payload);
@@ -98,7 +99,7 @@
   }
 
   function sectionView(id) {
-    if (!id || viewedSections.has(id) || !allowed()) return;
+    if (!started || !id || viewedSections.has(id) || !allowed()) return;
     viewedSections.add(id);
     track("section_view", { section_id: id });
   }
@@ -109,7 +110,7 @@
   }
 
   function galleryChange(detail) {
-    if (!allowed()) return;
+    if (!started || !allowed()) return;
     const { stage, index, total } = detail;
     const id = detail.id || (stage ? galleryId(stage) : null);
     if (!id || !Number.isInteger(index) || !Number.isInteger(total) || total < 1) return;
@@ -154,8 +155,9 @@
   function updateConsent(value) {
     consent = value;
     write(consentKey, value);
-    prompt?.remove(); prompt = null;
-    settingsPanel?.remove(); settingsPanel = null;
+    if (consentTimer) clearTimeout(consentTimer);
+    closePanel(prompt); prompt = null;
+    closePanel(settingsPanel); settingsPanel = null;
     if (value === "granted") startVendors();
     else if (started) {
       // A loaded beacon cannot be unloaded reliably. Stop events and reload with
@@ -183,16 +185,54 @@
     return button;
   }
 
+  function revealPanel(panel) {
+    document.body.append(panel);
+    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add("is-visible")));
+  }
+
+  function closePanel(panel, onClosed) {
+    if (!panel?.isConnected) { onClosed?.(); return; }
+    panel.classList.remove("is-visible");
+    panel.classList.add("is-leaving");
+    let removed = false;
+    const remove = () => {
+      if (removed) return;
+      removed = true;
+      panel.remove();
+      onClosed?.();
+    };
+    panel.addEventListener("transitionend", event => {
+      if (event.target === panel && event.propertyName === "transform") remove();
+    }, { once: true });
+    setTimeout(remove, 500);
+  }
+
   function showConsent() {
     if (prompt || preview || pendingPreview || consent) return;
     prompt = document.createElement("aside");
-    prompt.className = "analytics-banner";
+    prompt.className = "analytics-banner analytics-consent";
     prompt.setAttribute("aria-label", copy("Настройки аналитики", "Analytics choices"));
+    const header = document.createElement("div");
+    header.className = "analytics-consent-header";
+    const logo = document.createElement("img");
+    logo.src = "media/cheshuya-figma-logo.svg";
+    logo.alt = "";
+    logo.width = 24;
+    logo.height = 32;
     const message = document.createElement("p");
     message.textContent = copy(
-      "Можно разрешить анализ посещений и просмотр записей сессий. До согласия аналитика не загружается.",
-      "You can allow visit analytics and session recordings. No analytics loads before your choice."
+      "Разрешить Чешуе использовать аналитику?",
+      "Allow Cheshuya to use analytics?"
     );
+    header.append(logo, message);
+    const detail = document.createElement("p");
+    detail.className = "analytics-consent-detail";
+    detail.textContent = copy(
+      "Это включает статистику посещений и записи сессий. До согласия аналитика не загружается.",
+      "This includes visit statistics and session recordings. No analytics loads before consent."
+    );
+    const bottom = document.createElement("div");
+    bottom.className = "analytics-consent-bottom";
     const actions = document.createElement("div");
     actions.className = "analytics-actions";
     actions.append(
@@ -202,8 +242,9 @@
     const privacy = document.createElement("a");
     privacy.href = "privacy.html";
     privacy.textContent = copy("О конфиденциальности", "Privacy information");
-    prompt.append(message, actions, privacy);
-    document.body.append(prompt);
+    bottom.append(privacy, actions);
+    prompt.append(header, detail, bottom);
+    revealPanel(prompt);
   }
 
   function showPreviewPrompt() {
@@ -222,18 +263,19 @@
     actions.append(
       makeButton(copy("Включить", "Enable"), () => {
         preview = true; pendingPreview = false; write(previewKey, "on");
-        panel.remove(); showSettings();
+        closePanel(panel, showSettings);
       }, true),
       makeButton(copy("Не сейчас", "Not now"), () => {
         pendingPreview = false;
-        panel.remove();
-        const url = new URL(location.href); url.searchParams.delete("preview");
-        history.replaceState(history.state, "", url);
-        if (consent === "granted") startVendors(); else showConsent();
+        closePanel(panel, () => {
+          const url = new URL(location.href); url.searchParams.delete("preview");
+          history.replaceState(history.state, "", url);
+          if (consent === "granted") startVendors(); else showConsent();
+        });
       }),
     );
     panel.append(message, actions);
-    document.body.append(panel);
+    revealPanel(panel);
     panel.querySelector("button")?.focus();
   }
 
@@ -257,30 +299,30 @@
       if (consent !== "granted") actions.append(makeButton(copy("Разрешить", "Allow"), () => updateConsent("granted"), true));
       if (consent !== "denied") actions.append(makeButton(copy(consent === "granted" ? "Отозвать согласие" : "Отклонить", consent === "granted" ? "Withdraw consent" : "Decline"), () => updateConsent("denied")));
     }
-    actions.append(makeButton(copy("Закрыть", "Close"), () => { settingsPanel.remove(); settingsPanel = null; }));
-    const privacy = document.createElement("a"); privacy.href = "privacy.html";
-    privacy.textContent = copy("О конфиденциальности", "Privacy information");
-    settingsPanel.append(message, actions, privacy);
-    document.body.append(settingsPanel);
+    actions.append(makeButton(copy("Закрыть", "Close"), () => { closePanel(settingsPanel); settingsPanel = null; }));
+    settingsPanel.append(message, actions);
+    revealPanel(settingsPanel);
     settingsPanel.querySelector("button")?.focus();
   }
 
   function addFooterLinks() {
+    if (file === "privacy.html") {
+      document.querySelectorAll(".analytics-settings-link").forEach(button => button.addEventListener("click", showSettings));
+      return;
+    }
     let footer = document.querySelector(".archive-footer, .analytics-footer");
     if (!footer) {
       footer = document.createElement("footer"); footer.className = "analytics-footer";
       document.querySelector("main")?.after(footer);
     }
+    const row = document.createElement("div");
+    row.className = "analytics-footer-privacy";
     const privacy = document.createElement("a"); privacy.href = "privacy.html";
     privacy.dataset.analyticsLabel = "privacy";
-    const settings = document.createElement("button"); settings.type = "button";
-    settings.className = "analytics-settings-link";
-    settings.dataset.analyticsLabel = "settings";
-    settings.addEventListener("click", showSettings);
-    footer.append(privacy, settings);
+    row.append(privacy);
+    footer.append(row);
     const translate = () => {
       privacy.textContent = copy("Конфиденциальность", "Privacy");
-      settings.textContent = copy("Настройки аналитики", "Analytics settings");
     };
     translate();
     document.addEventListener("cheshuya:locale", translate);
@@ -318,7 +360,7 @@
     if (pendingPreview) showPreviewPrompt();
     else if (preview) { /* Deliberately load no vendor code. */ }
     else if (consent === "granted") startVendors();
-    else showConsent();
+    else if (!consent) consentTimer = setTimeout(showConsent, 3000);
   }, { once: true });
 
   window.CheshuyaAnalytics = Object.freeze({
