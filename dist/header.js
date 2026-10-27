@@ -86,6 +86,27 @@
   header.querySelector('.catalog-language, .zine-language')?.remove();
   header.querySelector('.catalog-global-controls, .zine-global-controls')?.classList.add('inner-header-controls');
   if (!isHome) {
+    // Keep the inner-page header available on upward scroll without changing its layout.
+    let previousScroll = Math.max(0, window.scrollY);
+    let scrollDirection = 0;
+    let directionDistance = 0;
+    let scrollFrame = null;
+    const syncHeaderVisibility = () => {
+      scrollFrame = null;
+      const currentScroll = Math.max(0, window.scrollY);
+      const delta = currentScroll - previousScroll;
+      const nextDirection = Math.sign(delta);
+      if (nextDirection) {
+        directionDistance = nextDirection === scrollDirection ? directionDistance + Math.abs(delta) : Math.abs(delta);
+        scrollDirection = nextDirection;
+      }
+      if (currentScroll < 80 || (scrollDirection < 0 && directionDistance > 8)) header.classList.remove('site-header-hidden');
+      else if (scrollDirection > 0 && directionDistance > 8 && currentScroll > 120 && document.querySelector('#site-menu[hidden]')) header.classList.add('site-header-hidden');
+      previousScroll = currentScroll;
+    };
+    window.addEventListener('scroll', () => {
+      if (scrollFrame === null) scrollFrame = requestAnimationFrame(syncHeaderVisibility);
+    }, { passive: true });
     const back = header.querySelector('.back-icon');
     const page = location.pathname;
     if (back) back.href = page.endsWith('drawing.html')
@@ -93,7 +114,7 @@
       : page.endsWith('catalog-objects-ceramic.html') || page.endsWith('catalog-objects-metal.html')
       ? 'catalog-objects.html'
       : page.endsWith('merch-dom-white.html') || page.endsWith('merch-dom-black.html')
-        ? 'catalog-merch.html'
+        ? 'index.html#merch'
       : page.endsWith('object.html')
         ? `catalog-objects-${new URLSearchParams(location.search).get('id')?.startsWith('metal-') ? 'metal' : 'ceramic'}.html`
         : header.classList.contains('catalog-header')
@@ -118,13 +139,13 @@
     const links = [
       ['zines', 'Печатные издания', 'catalog-prints.html'],
       ['cyanotype', 'Цианотипия', 'cyanotype.html'],
-      ['merch', 'Мерч', 'catalog-merch.html'],
+      ['merch', 'Мерч', 'index.html#merch'],
       ['exhibitions', 'Выставки', 'catalog-exhibitions.html'],
       ['objects', 'Объекты', 'catalog-objects.html'],
       ['drawings', 'Графика', 'catalog-drawings.html'],
     ];
     const closeClass = isHome ? 'static-menu-close' : 'zine-menu-close';
-    menu.innerHTML = '<button type="button" class="' + closeClass + '" aria-label="Закрыть меню">×</button>';
+    menu.innerHTML = '<button type="button" class="' + closeClass + '" aria-label="Закрыть меню"><span aria-hidden="true">×</span></button>';
     const homeLink = document.createElement('a');
     homeLink.className = 'menu-home-link';
     homeLink.dataset.target = 'home';
@@ -234,6 +255,7 @@
     };
     burger.addEventListener('click', () => {
       if (!menu.hidden) return close();
+      header.classList.remove('site-header-hidden');
       overflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       main.inert = true;
@@ -244,7 +266,13 @@
       menu.querySelector('button').focus();
       openingTimer = setTimeout(finishOpen, 320);
     });
-    menu.querySelector('.' + closeClass).addEventListener('click', () => close());
+    menu.querySelector('.' + closeClass).addEventListener('click', event => {
+      event.currentTarget.classList.add('is-pressed');
+      close();
+    });
+    menu.querySelector('.' + closeClass).addEventListener('animationend', event => {
+      if (event.target === event.currentTarget.querySelector('span')) event.currentTarget.classList.remove('is-pressed');
+    });
     overlay.addEventListener('click', () => close());
     menu.querySelectorAll('[data-target]').forEach(item => item.addEventListener('click', event => {
       // Preserve native link behavior for a new tab or modified click.

@@ -143,3 +143,35 @@ body{animation:page-opacity-in .58s .12s both}
 .page-reveal-pending{opacity:0;transition:opacity 1.15s cubic-bezier(.2,.65,.2,1)}
 .page-reveal-pending.is-visible{opacity:1}
 @media(prefers-reduced-motion:reduce){body{animation:none}.page-reveal-pending{opacity:1;transition:none}}
+
+/* Match the back button's subtle hover across header and drawer controls. */
+.archive-header .header-controls>button,
+.catalog-header .inner-header-controls>button,
+.zine-header .inner-header-controls>button,
+.static-menu :is(.static-menu-close,.menu-preferences .theme-toggle),
+.zine-menu :is(.zine-menu-close,.menu-preferences .theme-toggle){transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.archive-header .header-controls>button:hover,
+.catalog-header .inner-header-controls>button:hover,
+.zine-header .inner-header-controls>button:hover,
+.static-menu :is(.static-menu-close,.menu-preferences .theme-toggle):hover,
+.zine-menu :is(.zine-menu-close,.menu-preferences .theme-toggle):hover{background:var(--hover)!important;border-color:var(--border-mid)!important;color:var(--text)!important}
+@media(prefers-reduced-motion:reduce){
+  .archive-header .header-controls>button,
+  .catalog-header .inner-header-controls>button,
+  .zine-header .inner-header-controls>button,
+  .static-menu :is(.static-menu-close,.menu-preferences .theme-toggle),
+  .zine-menu :is(.zine-menu-close,.menu-preferences .theme-toggle){transition:none}
+}
+
+/* Inner pages: reveal the unchanged header when the visitor scrolls back up. */
+.catalog-header,.zine-header{position:sticky;top:max(32px,calc(env(safe-area-inset-top) + 12px));z-index:30;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.catalog-header.site-header-hidden,.zine-header.site-header-hidden{transform:translateY(calc(-100% - 44px))}
+#zines .archive-card:first-child .archive-image img{object-position:center 65%}
+
+/* The drawer's close glyph, rather than its button surface, responds to hover. */
+.static-menu .static-menu-close,.zine-menu .zine-menu-close{background:transparent!important;color:var(--muted)!important;box-shadow:none!important;transition:color .2s ease!important}
+.static-menu .static-menu-close:hover,.zine-menu .zine-menu-close:hover{background:transparent!important;border-color:transparent!important;color:var(--text)!important}
+.static-menu .static-menu-close span,.zine-menu .zine-menu-close span{display:block;transform-origin:center}
+.static-menu .static-menu-close.is-pressed span,.zine-menu .zine-menu-close.is-pressed span{animation:menu-close-press .24s ease-out both}
+@keyframes menu-close-press{50%{transform:rotate(45deg) scale(.72)}to{transform:rotate(90deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.catalog-header,.zine-header{transition:none}.static-menu .static-menu-close.is-pressed span,.zine-menu .zine-menu-close.is-pressed span{animation:none}}

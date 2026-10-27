@@ -1,5 +1,5 @@
 // A lightweight, stable navigation target during each typewriter word.
-const routes = ["catalog-exhibitions.html", "catalog-merch.html", "cyanotype.html", "catalog-prints.html", "catalog-objects.html", "catalog-drawings.html"];
+const routes = ["catalog-exhibitions.html", "index.html#merch", "cyanotype.html", "catalog-prints.html", "catalog-objects.html", "catalog-drawings.html"];
 const copy = {
   ru: {
     prefix: "чешуя\\архив\\",
