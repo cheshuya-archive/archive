@@ -1,3 +1,5 @@
+import { enableInlinePhotoPinch } from "./inline-photo-pinch.js";
+
 // The larger photograph loads only when the visitor opens one.
 const createPhotoViewer = options => {
   let viewer, pending;
@@ -6,7 +8,7 @@ const createPhotoViewer = options => {
       if (pending) return;
       trigger?.setAttribute("aria-busy", "true");
       try {
-        pending = import("./photo-expand.js?v=direct-expand-3");
+        pending = import("./photo-expand.js?v=touch-gallery-1");
         const module = await pending;
         viewer ||= module.createPhotoExpand(options);
         viewer.open(index, trigger);
@@ -22,6 +24,7 @@ const createPhotoViewer = options => {
 };
 
 const initialize = () => {
+  enableInlinePhotoPinch();
   const sourceFrom = image => ({
     src: image.dataset.gallerySrc || image.dataset.src || image.getAttribute("src") || image.currentSrc,
     srcSet: image.dataset.gallerySrcset || image.dataset.srcset || image.getAttribute("srcset") || "",
@@ -83,8 +86,34 @@ const initialize = () => {
     return trigger;
   });
   connect(cyanotypeTriggers, cyanotypeSources, "Просмотр цианотипий", "home:cyanotype");
-  const objectTriggers = [...document.querySelectorAll("[data-object-index]")];
-  connect(objectTriggers, objectTriggers.map(button => sourceFrom(button.querySelector("img"))), "Просмотр объектов", "home:objects");
+  // The home objects remain a swipeable rail, without an enlargement action.
+  document.querySelectorAll("#objects .object-slide-button").forEach(button => {
+    const display = document.createElement("div");
+    display.className = button.className;
+    display.append(...button.childNodes);
+    button.replaceWith(display);
+  });
+
+  const merchTrack = document.querySelector("#merch .merch-photo-track");
+  merchTrack?.addEventListener("click", event => {
+    if (!(event.target instanceof HTMLImageElement)) return;
+    const photos = [...merchTrack.querySelectorAll(".merch-photo-slide img")];
+    const index = photos.indexOf(event.target);
+    if (index < 0) return;
+    const viewer = createPhotoViewer({
+      images: photos.map(sourceFrom),
+      origins: photos,
+      label: document.querySelector("#merch .merch-product-link")?.textContent || "Футболка «Дом»",
+      galleryId: "home:merch",
+      originStage: merchTrack,
+      onBeforeClose: selected => {
+        merchTrack.setAttribute("data-animating", "");
+        merchTrack.scrollLeft = photos[selected].offsetLeft - photos[0].offsetLeft;
+        requestAnimationFrame(() => merchTrack.removeAttribute("data-animating"));
+      },
+    });
+    viewer.open(index, event.target);
+  });
 
   const drawings = [...document.querySelectorAll("#drawings .archive-card:not([data-drawing-category]), .catalog-page.art-catalog:not(.drawing-catalog):not(:has([data-object-index])) .catalog-card")];
   const drawingSources = drawings.map(card => sourceFrom(card.querySelector("img")));

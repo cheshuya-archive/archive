@@ -47,6 +47,13 @@ export function createPhotoExpand(options) {
       let closing = false;
       let suppressClickUntil = 0;
       let touchStart = null;
+      let pinch = null;
+      let pan = null;
+      let lastTap = null;
+      let tapTimer = null;
+      let zoomScale = 1;
+      let zoomX = 0;
+      let zoomY = 0;
       let navigation = null;
       const dialog = document.createElement("dialog");
       dialog.className = "direct-photo-viewer";
@@ -89,9 +96,32 @@ export function createPhotoExpand(options) {
         detail: { stage: options.originStage, id: options.galleryId, index, total: options.images.length },
       }));
       const currentOrigin = () => options.origins?.[activeIndex] || initialOrigin;
+      const setZoom = (scale, x = 0, y = 0) => {
+        zoomScale = Math.max(1, Math.min(4, scale));
+        const bounds = destination(enlarged);
+        zoomX = Math.max(-bounds.width * (zoomScale - 1) / 2, Math.min(bounds.width * (zoomScale - 1) / 2, x));
+        zoomY = Math.max(-bounds.height * (zoomScale - 1) / 2, Math.min(bounds.height * (zoomScale - 1) / 2, y));
+        enlarged.style.scale = zoomScale === 1 ? "" : String(zoomScale);
+        enlarged.style.translate = zoomScale === 1 ? "" : `${zoomX}px ${zoomY}px`;
+        enlarged.style.cursor = zoomScale === 1 ? "" : "grab";
+      };
+      const registerTap = point => {
+        const now = Date.now();
+        suppressClickUntil = now + 500;
+        if (lastTap && now - lastTap.time < 320 && Math.hypot(point.clientX - lastTap.x, point.clientY - lastTap.y) < 48) {
+          clearTimeout(tapTimer);
+          lastTap = null;
+          setZoom(zoomScale > 1 ? 1 : 2);
+        } else {
+          lastTap = { time: now, x: point.clientX, y: point.clientY };
+          clearTimeout(tapTimer);
+          if (zoomScale === 1) tapTimer = setTimeout(() => { lastTap = null; close(); }, 340);
+        }
+      };
       const finish = () => {
         if (!opened) return;
         opened = false;
+        clearTimeout(tapTimer);
         dialog.close();
         dialog.remove();
         document.body.style.overflow = overflow;
@@ -103,6 +133,7 @@ export function createPhotoExpand(options) {
         closing = true;
         changeId++;
         navigation?.finish();
+        setZoom(1);
         options.onBeforeClose?.(activeIndex);
         dialog.classList.remove("is-open");
         requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -130,6 +161,9 @@ export function createPhotoExpand(options) {
       };
       const navigate = direction => {
         if (closing || navigation || !hasMultiple) return;
+        clearTimeout(tapTimer);
+        lastTap = null;
+        setZoom(1);
         const nextIndex = (activeIndex + direction + options.images.length) % options.images.length;
         const target = options.images[nextIndex];
         const request = ++changeId;
@@ -198,16 +232,70 @@ export function createPhotoExpand(options) {
         }
       });
       dialog.addEventListener("touchstart", event => {
-        if (event.touches.length === 1) touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
-      }, { passive: true });
+        if (event.touches.length === 2) {
+          const [a, b] = event.touches;
+          pinch = { distance: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)), scale: zoomScale,
+            x: zoomX, y: zoomY, centerX: (a.clientX + b.clientX) / 2, centerY: (a.clientY + b.clientY) / 2 };
+          touchStart = pan = null;
+          enlarged.style.transition = "none";
+          event.preventDefault();
+        } else if (event.touches.length === 1) {
+          const point = event.touches[0];
+          if (zoomScale > 1 && event.target === enlarged) {
+            pan = { x: point.clientX, y: point.clientY, left: zoomX, top: zoomY };
+            touchStart = null;
+            enlarged.style.transition = "none";
+          } else touchStart = { x: point.clientX, y: point.clientY, target: event.target };
+        }
+      }, { passive: false });
+      dialog.addEventListener("touchmove", event => {
+        if (pinch && event.touches.length === 2) {
+          const [a, b] = event.touches;
+          const ratio = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) / pinch.distance;
+          setZoom(pinch.scale * ratio, pinch.x + (a.clientX + b.clientX) / 2 - pinch.centerX,
+            pinch.y + (a.clientY + b.clientY) / 2 - pinch.centerY);
+          event.preventDefault();
+        } else if (pan && event.touches.length === 1) {
+          setZoom(zoomScale, pan.left + event.touches[0].clientX - pan.x, pan.top + event.touches[0].clientY - pan.y);
+          event.preventDefault();
+        }
+      }, { passive: false });
       dialog.addEventListener("touchend", event => {
-        if (!touchStart || !event.changedTouches.length) return;
-        const dx = event.changedTouches[0].clientX - touchStart.x;
-        const dy = event.changedTouches[0].clientY - touchStart.y;
+        if (pinch && event.touches.length < 2) {
+          pinch = null;
+          enlarged.style.transition = "";
+          suppressClickUntil = Date.now() + 500;
+          return;
+        }
+        if (pan && event.touches.length === 0) {
+          const point = event.changedTouches[0];
+          const wasTap = point && Math.hypot(point.clientX - pan.x, point.clientY - pan.y) < 12;
+          pan = null;
+          enlarged.style.transition = "";
+          suppressClickUntil = Date.now() + 500;
+          if (wasTap) registerTap(point);
+          else lastTap = null;
+          return;
+        }
+        if (!touchStart || !event.changedTouches.length || event.touches.length) return;
+        const point = event.changedTouches[0];
+        const dx = point.clientX - touchStart.x;
+        const dy = point.clientY - touchStart.y;
+        const target = touchStart.target;
         touchStart = null;
-        if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
-        suppressClickUntil = Date.now() + 500;
-        navigate(dx < 0 ? 1 : -1);
+        if (dy < -70 && Math.abs(dy) > Math.abs(dx) * 1.3 && zoomScale === 1) {
+          suppressClickUntil = Date.now() + 500;
+          close();
+        } else if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+          suppressClickUntil = Date.now() + 500;
+          navigate(dx < 0 ? 1 : -1);
+        } else if (target === enlarged && Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+          registerTap(point);
+        }
+      }, { passive: true });
+      dialog.addEventListener("touchcancel", () => {
+        pinch = pan = touchStart = null;
+        enlarged.style.transition = "";
       }, { passive: true });
       requestAnimationFrame(() => {
         if (closing) return;

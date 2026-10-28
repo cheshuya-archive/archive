@@ -3,7 +3,7 @@
 #merch .merch-gallery{position:relative;aspect-ratio:1;overflow:hidden;background:var(--gallery-canvas)}
 #merch .merch-photo-track{display:flex;width:100%;height:100%;gap:0;scroll-padding-left:0}
 #merch .merch-photo-slide{position:relative;display:block;flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;overflow:hidden}
-#merch .merch-photo-slide img{display:block;width:100%;height:100%;object-fit:contain}
+#merch .merch-photo-slide img{display:block;width:100%;height:100%;object-fit:contain;cursor:zoom-in}
 #merch .merch-motion-visible .merch-photo-slide:first-child img{transform-origin:50% 42%;animation:merch-shirt-sway 9s ease-in-out infinite alternate;will-change:transform}
 @keyframes merch-shirt-sway{0%{transform:translate3d(-2px,1px,0) rotate(-.3deg) scale(1.002)}50%{transform:translate3d(1px,-2px,0) rotate(.2deg) scale(1.005)}100%{transform:translate3d(2px,1px,0) rotate(.35deg) scale(1.002)}}
 #merch .merch-gallery .rail-arrow{top:50%;transform:translateY(-50%)}
