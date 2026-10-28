@@ -1,10 +1,10 @@
 .drawing-category-grid .catalog-image{aspect-ratio:3/4}
-.drawing-category-grid .catalog-image img{object-fit:cover;transform:scale(1.02);transition:transform .7s cubic-bezier(.22,.7,.2,1)}
-.drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.045)}
+.drawing-category-grid .catalog-image img{object-fit:cover;transform:scale(1.01);transition:transform .75s cubic-bezier(.22,.7,.2,1)}
+.drawing-category-grid .catalog-card:hover .catalog-image img{object-fit:cover;transform:scale(1.035)}
 .drawing-category-grid .catalog-card{transition:transform .22s ease,box-shadow .22s ease}
 .drawing-category-grid .catalog-card:active{transform:scale(.975)}
-.drawing-catalog .drawing-category-grid .catalog-card:hover .catalog-image img{transform:scale(1.045)}
-.drawing-catalog .drawing-category-grid .catalog-card:active .catalog-image img{transform:scale(1.02)}
+.drawing-catalog .drawing-category-grid .catalog-card:hover .catalog-image img{object-fit:cover;transform:scale(1.035)}
+.drawing-catalog .drawing-category-grid .catalog-card:active .catalog-image img{transform:scale(1.01)}
 .drawing-detail-page .catalog-header{margin-bottom:72px}
 .drawing-detail-page h1{margin-bottom:40px}
 #drawing-series-list{display:grid;gap:72px}

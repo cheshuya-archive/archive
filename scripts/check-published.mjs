@@ -17,13 +17,17 @@ for (let attempt=0;attempt<10;attempt++) {
   try {
     home = await get("index.html");
     assert.ok(home.includes('src="analytics.js"'),"Waiting for analytics release");
+    const version = await get("site-version.js");
+    if (process.env.GITHUB_SHA) {
+      assert.ok(version.includes(process.env.GITHUB_SHA.slice(0, 7)),"Waiting for current release");
+    }
     break;
   } catch (error) {
     if (attempt===9) throw error;
     await new Promise(done=>setTimeout(done,5000));
   }
 }
-const assets = new Set(["site-localization.js","site-translations.js","photo-lightbox.js","photo-zoom.js","analytics.js","analytics.css","site-version.js","fonts/IBMPlexMono-Regular.woff2"]);
+const assets = new Set(["site-localization.js","site-translations.js","photo-lightbox.js","photo-zoom.js","gallery-viewer.js","photo-expand.js","gallery-ui.css","site-theme.css","home-layout-preview.css","analytics.js","analytics.css","site-version.js","fonts/IBMPlexMono-Regular.woff2"]);
 const routes = ["index.html","catalog-prints.html","catalog-exhibitions.html","catalog-objects.html","catalog-objects-ceramic.html","catalog-objects-metal.html","catalog-drawings.html","catalog-merch.html","merch-dom-white.html","merch-dom-black.html","cyanotype.html","zine-nedostatochno-pamyati.html","zine-ubezhishche.html","zine-sloi.html","drawing.html?surface=paper","object.html?id=ceramic-1","exhibition.html?id=polya-prisutstviya","privacy.html"];
 for (const path of routes) {
   const html = path==="index.html" ? home : await get(path);

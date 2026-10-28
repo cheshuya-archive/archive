@@ -1,14 +1,14 @@
-// The zoom viewer and gesture code load only when a photograph is opened.
-const createPhotoLightbox = (options, createGallery) => {
+// The larger photograph loads only when the visitor opens one.
+const createPhotoViewer = options => {
   let viewer, pending;
   return {
     async open(index, trigger) {
       if (pending) return;
       trigger?.setAttribute("aria-busy", "true");
       try {
-        pending = import("./photo-lightbox.js?v=ux-audit-1");
+        pending = import("./photo-expand.js?v=direct-expand-3");
         const module = await pending;
-        viewer ||= module.createPhotoLightbox(options, createGallery);
+        viewer ||= module.createPhotoExpand(options);
         viewer.open(index, trigger);
       } catch (error) {
         // A second click retries a transient network failure.
@@ -22,8 +22,6 @@ const createPhotoLightbox = (options, createGallery) => {
 };
 
 const initialize = () => {
-  const createGallery = window.CheshuyaCarousel?.createImageGallery;
-  if (!createGallery) return;
   const sourceFrom = image => ({
     src: image.dataset.gallerySrc || image.dataset.src || image.getAttribute("src") || image.currentSrc,
     srcSet: image.dataset.gallerySrcset || image.dataset.srcset || image.getAttribute("srcset") || "",
@@ -31,7 +29,18 @@ const initialize = () => {
   });
   const connect = (triggers, images, label, galleryId) => {
     if (!triggers.length || !images.length) return;
-    const viewer = createPhotoLightbox({ images, label, galleryId }, createGallery);
+    const rail = triggers[0].closest(".rail-scroll");
+    const viewer = createPhotoViewer({
+      images, label, galleryId,
+      origins: triggers.map(trigger => trigger.querySelector("img")),
+      onBeforeClose: index => {
+        const item = triggers[index]?.closest(".cyanotype-slide, .archive-card");
+        if (!rail || !item) return;
+        rail.setAttribute("data-animating", "");
+        rail.scrollLeft = item.offsetLeft - rail.firstElementChild.offsetLeft;
+        requestAnimationFrame(() => rail.removeAttribute("data-animating"));
+      },
+    });
     triggers.forEach((trigger, index) => trigger.addEventListener("click", () => viewer.open(index, trigger)));
     return viewer;
   };
@@ -39,32 +48,38 @@ const initialize = () => {
     const stage = carousel.querySelector(".zine-slide");
     const photos = [...(stage?.querySelectorAll("img") || [])];
     if (!stage || !photos.length) return;
-    const zoom = document.createElement("button");
-    zoom.type = "button";
-    zoom.className = "gallery-zoom";
-    zoom.setAttribute("aria-label", "Открыть изображение крупно");
-    zoom.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg>';
-    carousel.append(zoom);
-    const viewer = createPhotoLightbox({
+    const viewer = createPhotoViewer({
       images: photos.map(sourceFrom),
+      origins: photos,
       label: document.querySelector(".zine-info h1")?.textContent || "Просмотр работ",
       originStage: stage,
+      onBeforeClose: index => {
+        stage.setAttribute("data-animating", "");
+        stage.scrollLeft = photos[index].offsetLeft - photos[0].offsetLeft;
+        requestAnimationFrame(() => stage.removeAttribute("data-animating"));
+      },
       onClose: index => stage.dispatchEvent(new CustomEvent("gallery:select", { detail: index })),
-    }, createGallery);
-    const open = () => viewer.open(Math.max(0, photos.findIndex(photo => photo.dataset.active === "true")), zoom);
-    zoom.addEventListener("click", open);
-    stage.addEventListener("click", event => { if (event.target instanceof HTMLImageElement) open(); });
+    });
+    stage.addEventListener("click", event => {
+      if (!(event.target instanceof HTMLImageElement)) return;
+      viewer.open(Math.max(0, photos.indexOf(event.target)), event.target);
+    });
     stage.classList.add("can-enlarge");
   });
   const cyanotypeSlides = [...document.querySelectorAll("#cyanotype .cyanotype-slide")];
   const cyanotypeSources = cyanotypeSlides.map(slide => sourceFrom(slide.querySelector("img")));
   const cyanotypeTriggers = cyanotypeSlides.map((slide, index) => {
+    const image = slide.querySelector("img");
+    const sheet = document.createElement("div");
+    sheet.className = "cyanotype-sheet";
+    image.replaceWith(sheet);
+    sheet.append(image);
     const trigger = document.createElement("button");
     trigger.type = "button";
-    trigger.className = "object-slide-button";
-    trigger.setAttribute("aria-label", "Открыть цианотипию " + (index + 1));
-    trigger.append(...slide.childNodes);
-    slide.append(trigger);
+    trigger.className = "cyanotype-expand";
+    trigger.setAttribute("aria-label", "Увеличить цианотипию " + (index + 1));
+    sheet.replaceWith(trigger);
+    trigger.append(sheet);
     return trigger;
   });
   connect(cyanotypeTriggers, cyanotypeSources, "Просмотр цианотипий", "home:cyanotype");

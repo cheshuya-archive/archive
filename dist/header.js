@@ -326,7 +326,7 @@
       startSize = matchMedia('(min-width:641px)').matches ? 162 : 142;
       const button = controls.querySelector('button').getBoundingClientRect();
       headerY = button.top + button.height / 2;
-      contentWidth = Math.max(83, Math.min(640, innerWidth - 32));
+      contentWidth = Math.max(83, document.querySelector('.archive-shell')?.getBoundingClientRect().width || Math.min(640, innerWidth - 32));
       render();
     };
     addEventListener('scroll', () => { if (frame === null) frame = requestAnimationFrame(render); }, { passive: true });

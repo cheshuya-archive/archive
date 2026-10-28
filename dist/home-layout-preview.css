@@ -1,0 +1,63 @@
+/* Desktop layout: wide by default, with a portrait-card comparison option. */
+#objects .section-description {
+  margin-bottom: 36px;
+}
+
+@media (min-width: 701px) {
+  .archive-page .static-tabs {
+    width: min(100%, 480px);
+    margin-inline: auto;
+  }
+
+  html[data-home-layout="wide"] .archive-shell {
+    width: min(800px, calc(100% - 32px));
+  }
+
+  html[data-home-layout="wide"] .archive-shell .rail:not(.rail-art) .rail-scroll > .archive-card,
+  html[data-home-layout="vertical"] .archive-shell .rail:not(.rail-art) .rail-scroll > .archive-card {
+    flex: 0 0 calc((100% - 32px) / 3);
+    min-width: 0;
+  }
+
+  html[data-home-layout="wide"] #zines .rail-scroll > .archive-card,
+  html[data-home-layout="vertical"] #zines .rail-scroll > .archive-card {
+    flex-basis: calc((100% - 32px) / 3);
+  }
+
+  html[data-home-layout="vertical"] .archive-shell .rail:not(.rail-art) .archive-image {
+    aspect-ratio: 3 / 4;
+  }
+
+  #cyanotype .rail-scroll > .cyanotype-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: none;
+    height: 600px;
+    aspect-ratio: auto;
+  }
+
+  #cyanotype .cyanotype-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  #objects .rail-scroll > .cyanotype-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: none;
+    height: 600px;
+    aspect-ratio: auto;
+    overflow: hidden;
+  }
+
+  #objects .object-slide-button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: scale(1.8);
+  }
+}
