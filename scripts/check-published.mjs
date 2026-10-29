@@ -28,6 +28,9 @@ for (let attempt=0;attempt<10;attempt++) {
   }
 }
 const assets = new Set(["site-localization.js","site-translations.js","photo-lightbox.js","photo-zoom.js","gallery-viewer.js","photo-expand.js","inline-photo-pinch.js","gallery-ui.css","site-theme.css","home-layout-preview.css","analytics.js","analytics.css","site-version.js","fonts/IBMPlexMono-Regular.woff2"]);
+assert.ok(home.includes("cover-400.webp 400w") && home.includes("cover-800.webp 800w"),"Missing compact responsive card images");
+assets.add("images/new-site-assets/zines/nedostatochno-pamyati/cover-400.webp");
+assets.add("images/new-site-assets/zines/nedostatochno-pamyati/cover-800.webp");
 const routes = ["index.html","catalog-prints.html","catalog-exhibitions.html","catalog-objects.html","catalog-objects-ceramic.html","catalog-objects-metal.html","catalog-drawings.html","catalog-merch.html","merch-dom-white.html","merch-dom-black.html","cyanotype.html","zine-nedostatochno-pamyati.html","zine-ubezhishche.html","zine-sloi.html","drawing.html?surface=paper","object.html?id=ceramic-1","exhibition.html?id=polya-prisutstviya","privacy.html"];
 for (const path of routes) {
   const html = path==="index.html" ? home : await get(path);

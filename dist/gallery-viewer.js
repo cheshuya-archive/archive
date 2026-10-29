@@ -1,4 +1,4 @@
-import { enableInlinePhotoPinch } from "./inline-photo-pinch.js";
+import { enableInlinePhotoPinch } from "./inline-photo-pinch.js?v=free-pinch-2";
 
 // The larger photograph loads only when the visitor opens one.
 const createPhotoViewer = options => {
@@ -92,27 +92,6 @@ const initialize = () => {
     display.className = button.className;
     display.append(...button.childNodes);
     button.replaceWith(display);
-  });
-
-  const merchTrack = document.querySelector("#merch .merch-photo-track");
-  merchTrack?.addEventListener("click", event => {
-    if (!(event.target instanceof HTMLImageElement)) return;
-    const photos = [...merchTrack.querySelectorAll(".merch-photo-slide img")];
-    const index = photos.indexOf(event.target);
-    if (index < 0) return;
-    const viewer = createPhotoViewer({
-      images: photos.map(sourceFrom),
-      origins: photos,
-      label: document.querySelector("#merch .merch-product-link")?.textContent || "Футболка «Дом»",
-      galleryId: "home:merch",
-      originStage: merchTrack,
-      onBeforeClose: selected => {
-        merchTrack.setAttribute("data-animating", "");
-        merchTrack.scrollLeft = photos[selected].offsetLeft - photos[0].offsetLeft;
-        requestAnimationFrame(() => merchTrack.removeAttribute("data-animating"));
-      },
-    });
-    viewer.open(index, event.target);
   });
 
   const drawings = [...document.querySelectorAll("#drawings .archive-card:not([data-drawing-category]), .catalog-page.art-catalog:not(.drawing-catalog):not(:has([data-object-index])) .catalog-card")];

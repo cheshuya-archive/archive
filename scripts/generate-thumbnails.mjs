@@ -1,4 +1,5 @@
-import { copyFile, mkdir, readdir, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { copyFile, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import sharp from "sharp";
 
@@ -32,6 +33,26 @@ for (const file of originals) {
   }
 }
 console.log("Prepared", count, "derived images per site:", bytes, "bytes. Original artwork files preserved.");
+
+// Use the already-generated small files instead of downloading a 600/1200px
+// photograph for every compact card on high-density screens.
+for (const page of (await readdir("dist")).filter(file => file.endsWith(".html"))) {
+  const file = join("dist", page);
+  const html = await readFile(file, "utf8");
+  const optimized = html.replace(/<img\b[^>]*>/g, tag => tag.replace(/\s((?:data-)?srcset)="([^"]+)"/g, (attribute, name, value) => {
+    const entries = value.split(",").map(entry => entry.trim());
+    const base = entries.find(entry => /^images\/.*-600\.webp 600w$/.test(entry))?.replace(/-600\.webp 600w$/, "");
+    if (!base || !entries.includes(`${base}-1200.webp 1200w`)) return attribute;
+    const byWidth = new Map(entries.map(entry => [Number(entry.match(/\s(\d+)w$/)?.[1]), entry]));
+    for (const width of [400, 800]) {
+      if (!byWidth.has(width) && existsSync(join("dist", decodeURIComponent(`${base}-${width}.webp`)))) {
+        byWidth.set(width, `${base}-${width}.webp ${width}w`);
+      }
+    }
+    return ` ${name}="${[...byWidth].sort((a, b) => a[0] - b[0]).map(([, entry]) => entry).join(", ")}"`;
+  }));
+  if (optimized !== html) await writeFile(file, optimized);
+}
 
 await copyFile("lib/photo-lightbox.js", "dist/photo-lightbox.js");
 await copyFile("public/gallery-ui.css", "dist/gallery-ui.css");
