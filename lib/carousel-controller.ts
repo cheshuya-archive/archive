@@ -1,6 +1,82 @@
 // Shared carousel behaviour for React and the static GitHub Pages site.
 // The browser owns touch scrolling; arrow animations temporarily suspend snap.
-export function createCardCarousel(viewport: HTMLElement) {
+function createRailPhotoPreloader(viewport: HTMLElement) {
+  const decoded = new WeakMap<HTMLImageElement, Promise<boolean>>();
+  let nearViewport = false;
+  let direction = 1;
+  let lastLeft = viewport.scrollLeft;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let version = 0;
+  const ensureDecoded = (image: HTMLImageElement | null): Promise<boolean> => {
+    if (!image) return Promise.resolve(false);
+    if (image.dataset.src) {
+      image.loading = "eager";
+      if (image.dataset.srcset) image.srcset = image.dataset.srcset;
+      image.src = image.dataset.src;
+      delete image.dataset.src;
+      delete image.dataset.srcset;
+    }
+    let task = decoded.get(image);
+    if (!task) {
+      task = image.decode().then(() => image.naturalWidth > 0, () => false);
+      decoded.set(image, task);
+      task.then(ok => { if (!ok && decoded.get(image) === task) decoded.delete(image); });
+    }
+    return task;
+  };
+  const prepare = () => {
+    timer = null;
+    if (!nearViewport || document.visibilityState === "hidden") return;
+    const bounds = viewport.getBoundingClientRect();
+    const slides = Array.from(viewport.children) as HTMLElement[];
+    const visible = slides.filter(slide => {
+      const rect = slide.getBoundingClientRect();
+      return rect.right > bounds.left + 1 && rect.left < bounds.right - 1;
+    });
+    if (!visible.length) return;
+    const edge = direction > 0 ? visible[visible.length - 1] : visible[0];
+    const candidate = slides[slides.indexOf(edge) + direction];
+    const nextImage = candidate?.querySelector<HTMLImageElement>("img");
+    if (!nextImage) return;
+    const ticket = ++version;
+    void ensureDecoded(edge.querySelector<HTMLImageElement>("img")).then(ok => {
+      if (ok && ticket === version && nearViewport) {
+        nextImage.fetchPriority = "low";
+        void ensureDecoded(nextImage);
+      }
+    });
+  };
+  const schedule = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(prepare, 90);
+  };
+  const onScroll = () => {
+    const left = viewport.scrollLeft;
+    if (Math.abs(left - lastLeft) > 1) direction = left > lastLeft ? 1 : -1;
+    lastLeft = left;
+    schedule();
+  };
+  const visibility = new IntersectionObserver(entries => {
+    nearViewport = entries.some(entry => entry.isIntersecting);
+    if (nearViewport) schedule();
+  }, { rootMargin: "200px" });
+  visibility.observe(viewport);
+  const mutation = new MutationObserver(schedule);
+  mutation.observe(viewport, { childList: true });
+  viewport.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("visibilitychange", schedule);
+  return { destroy() {
+    version++;
+    if (timer !== null) clearTimeout(timer);
+    visibility.disconnect();
+    mutation.disconnect();
+    viewport.removeEventListener("scroll", onScroll);
+    document.removeEventListener("visibilitychange", schedule);
+  } };
+}
+
+export function createCardCarousel(viewport: HTMLElement, options: { preloadImages?: boolean } = {}) {
+  const photoPreloader = options.preloadImages ? createRailPhotoPreloader(viewport) : null;
   let frame: number | null = null;
   let restoreFrame: number | null = null;
   let target: number | null = null;
@@ -185,6 +261,7 @@ export function createCardCarousel(viewport: HTMLElement) {
       if (destination !== undefined) goTo(destination);
     },
     destroy() {
+      photoPreloader?.destroy();
       observer.disconnect();
       mutation.disconnect();
       stop();
@@ -235,16 +312,33 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   const loadPhoto = (photo: HTMLImageElement) => {
     if (photo.dataset.gallerySrc && !photo.dataset.galleryLoaded) {
       photo.dataset.galleryLoaded = "true";
-      photo.sizes = photo.dataset.gallerySizes || "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
-      if (photo.dataset.gallerySrcset) photo.srcset = photo.dataset.gallerySrcset;
-      if (photo.getAttribute('src') !== photo.dataset.gallerySrc) photo.src = photo.dataset.gallerySrc;
+      // The first frame already has responsive attributes in the HTML. Keep
+      // them intact so preparing it cannot start a second image request.
+      if (photo.getAttribute("src") !== photo.dataset.gallerySrc) {
+        photo.sizes = photo.dataset.gallerySizes || "(max-width: 700px) calc(100vw - 32px), (max-width: 1112px) calc((100vw - 52px) / 2), 530px";
+        if (photo.dataset.gallerySrcset) photo.srcset = photo.dataset.gallerySrcset;
+        photo.src = photo.dataset.gallerySrc;
+      }
     }
     photo.decoding = "async";
     photo.loading = "eager";
   };
+  const decoded = new Map<HTMLImageElement, Promise<boolean>>();
+  const ensureDecoded = (photo: HTMLImageElement, priority: "high" | "low") => {
+    photo.fetchPriority = priority;
+    loadPhoto(photo);
+    let task = decoded.get(photo);
+    if (!task) {
+      task = photo.decode().then(() => photo.naturalWidth > 0, () => false);
+      decoded.set(photo, task);
+      task.then(ok => { if (!ok && decoded.get(photo) === task) decoded.delete(photo); });
+    }
+    return task;
+  };
   let preloadVersion = 0;
   let preparedIndex = -1;
-  let interacted = false;
+  let preparedDirection = 1;
+  let direction = 1;
   const initialBounds = stage.getBoundingClientRect();
   let nearViewport = initialBounds.bottom > -200 && initialBounds.top < innerHeight + 200;
   const visibility = new IntersectionObserver(entries => {
@@ -254,20 +348,15 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   visibility.observe(stage);
   const prepare = (index: number) => {
     const photo = photos[index];
-    if (!photo || !nearViewport || preparedIndex === index) return;
+    if (!photo || !nearViewport || (preparedIndex === index && preparedDirection === direction)) return;
     preparedIndex = index;
-    photo.fetchPriority = "high";
-    loadPhoto(photo);
+    preparedDirection = direction;
     const ticket = ++preloadVersion;
-    // Warm neighbours after interaction; distant galleries never compete with the lead image.
-    photo.decode().catch(() => {}).then(() => {
-      if (ticket !== preloadVersion || !interacted) return;
-      for (const candidate of [index - 1, index + 1]) {
-        if (photos[candidate]) {
-          photos[candidate].fetchPriority = "low";
-          loadPhoto(photos[candidate]);
-        }
-      }
+    // Decode exactly one frame ahead after the current frame is ready.
+    ensureDecoded(photo, "high").then(ok => {
+      if (ticket !== preloadVersion || !ok || !nearViewport) return;
+      const next = photos[index + direction];
+      if (next) void ensureDecoded(next, "low");
     });
   };
   const selectedIndex = () => {
@@ -279,6 +368,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     syncFrame = null;
     if (!photos.length || !stage.clientWidth) return;
     const current = selectedIndex();
+    if (announced >= 0 && current !== announced) direction = current > announced ? 1 : -1;
     prepare(current);
     carousel.style.setProperty("--gallery-height", stage.clientHeight + "px");
     photos.forEach((photo, index) => {
@@ -296,9 +386,10 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
   const show = (index: number) => {
     if (!photos.length) return;
     nearViewport = true;
-    interacted = true;
+    const from = pending ? requested : selectedIndex();
     requested = Math.max(0, Math.min(photos.length - 1, index));
     const current = requested;
+    if (current !== from) direction = current > from ? 1 : -1;
     const ticket = ++version;
     pending = true;
     stage.setAttribute("data-animating", "");
@@ -312,7 +403,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
       if (photos[current].naturalWidth) controller.goToIndex(current);
       else { stage.removeAttribute("data-animating"); requested = selectedIndex(); syncControls(requested); }
     };
-    photos[current].decode().then(ready, ready);
+    ensureDecoded(photos[current], "high").then(ready, ready);
   };
   const move = (direction: -1 | 1) => {
     if (!pending && !stage.hasAttribute("data-animating")) requested = selectedIndex();
@@ -325,7 +416,6 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     move(event.key === "ArrowLeft" ? -1 : 1);
   };
   const onGesture = () => {
-    interacted = true;
     version++;
     pending = false;
     stage.setAttribute("aria-busy", "false");
@@ -349,6 +439,7 @@ export function createImageGallery(stage: HTMLElement, onChange: (index: number)
     destroy() {
       version++;
       preloadVersion++;
+      decoded.clear();
       visibility.disconnect();
       if (syncFrame !== null) cancelAnimationFrame(syncFrame);
       observer.disconnect();

@@ -82,6 +82,40 @@ export function createPhotoExpand(options) {
       dialog.append(shade, enlarged, previous, next, closeButton);
       const hasMultiple = options.images.length > 1;
       if (!hasMultiple) { previous.hidden = true; next.hidden = true; }
+      // Keep only the current, previous and one prepared next frame decoded.
+      const prepared = new Map();
+      const prepareFrame = frameIndex => {
+        let entry = prepared.get(frameIndex);
+        if (entry) {
+          prepared.delete(frameIndex);
+          prepared.set(frameIndex, entry);
+          return entry.ready;
+        }
+        const frame = options.images[frameIndex];
+        const image = new Image();
+        image.className = "direct-photo-image";
+        image.classList.toggle("direct-photo-cyanotype", frame.src.includes("/cyanotypes/"));
+        image.alt = frame.alt || "";
+        image.decoding = "async";
+        image.sizes = `${Math.round(innerWidth - (innerWidth < 701 ? 24 : 48))}px`;
+        if (frame.srcSet) image.srcset = frame.srcSet;
+        image.src = frame.src;
+        entry = { image, ready: image.decode().then(() => image.naturalWidth ? image : null, () => null) };
+        prepared.set(frameIndex, entry);
+        entry.ready.then(result => { if (!result && prepared.get(frameIndex) === entry) prepared.delete(frameIndex); });
+        while (prepared.size > 3) {
+          const oldest = [...prepared.keys()].find(key => key !== activeIndex);
+          if (oldest === undefined) break;
+          prepared.delete(oldest);
+        }
+        return entry.ready;
+      };
+      const prepareAhead = direction => {
+        if (hasMultiple && !closing) {
+          const frameIndex = (activeIndex + direction + options.images.length) % options.images.length;
+          void prepareFrame(frameIndex);
+        }
+      };
       const overflow = document.body.style.overflow;
       const source = options.images[index];
       enlarged.alt = source.alt || initialOrigin.alt || "";
@@ -133,6 +167,7 @@ export function createPhotoExpand(options) {
         closing = true;
         changeId++;
         navigation?.finish();
+        prepared.clear();
         setZoom(1);
         options.onBeforeClose?.(activeIndex);
         dialog.classList.remove("is-open");
@@ -165,17 +200,9 @@ export function createPhotoExpand(options) {
         lastTap = null;
         setZoom(1);
         const nextIndex = (activeIndex + direction + options.images.length) % options.images.length;
-        const target = options.images[nextIndex];
         const request = ++changeId;
-        const candidate = new Image();
-        candidate.sizes = `${Math.round(innerWidth - (innerWidth < 701 ? 24 : 48))}px`;
-        if (target.srcSet) candidate.srcset = target.srcSet;
-        candidate.src = target.src;
-        Promise.resolve(candidate.decode?.()).catch(() => {}).then(() => {
-          if (request !== changeId || closing || !candidate.naturalWidth) return;
-          candidate.className = "direct-photo-image";
-          candidate.classList.toggle("direct-photo-cyanotype", target.src.includes("/cyanotypes/"));
-          candidate.alt = target.alt || "";
+        prepareFrame(nextIndex).then(candidate => {
+          if (request !== changeId || closing || !candidate) return;
           const outgoing = enlarged;
           const distance = innerWidth;
           dialog.classList.add("is-navigating");
@@ -194,6 +221,7 @@ export function createPhotoExpand(options) {
             activeIndex = nextIndex;
             navigation = null;
             dialog.classList.remove("is-navigating");
+            prepareAhead(direction);
             if (!closing) document.dispatchEvent(new CustomEvent("cheshuya:lightbox-change", {
               detail: { stage: options.originStage, id: options.galleryId, index: activeIndex, total: options.images.length },
             }));
@@ -305,6 +333,9 @@ export function createPhotoExpand(options) {
           enlarged.sizes = `${Math.round(destination(initialOrigin).width)}px`;
           enlarged.srcset = source.srcSet;
         }
+        const ready = enlarged.decode().then(() => enlarged.naturalWidth ? enlarged : null, () => null);
+        prepared.set(index, { image: enlarged, ready });
+        ready.then(image => { if (image) prepareAhead(1); });
         closeButton.focus({ preventScroll: true });
       });
     },

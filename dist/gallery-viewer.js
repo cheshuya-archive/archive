@@ -8,7 +8,7 @@ const createPhotoViewer = options => {
       if (pending) return;
       trigger?.setAttribute("aria-busy", "true");
       try {
-        pending = import("./photo-expand.js?v=touch-gallery-1");
+        pending = import("./photo-expand.js?v=gallery-preload-1");
         const module = await pending;
         viewer ||= module.createPhotoExpand(options);
         viewer.open(index, trigger);

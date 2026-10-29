@@ -62,7 +62,7 @@
     slide.append(image);
     return slide;
   };
-  carousel = window.CheshuyaCarousel.createCardCarousel(track);
+  carousel = window.CheshuyaCarousel.createCardCarousel(track, { preloadImages: true });
 
   new IntersectionObserver(entries => {
     card.classList.toggle('merch-motion-visible', Boolean(entries[0]?.isIntersecting));
@@ -77,7 +77,7 @@
     card.dataset.merchColor = color;
     track.replaceChildren(...Array.from({length: colors[color].count}, (_, index) => createPhoto(index + 1)));
     track.scrollLeft = 0;
-    carousel = window.CheshuyaCarousel.createCardCarousel(track);
+    carousel = window.CheshuyaCarousel.createCardCarousel(track, { preloadImages: true });
     renderText();
   }));
   document.addEventListener('cheshuya:locale', event => {

@@ -80,7 +80,7 @@
   }
   document.querySelectorAll('.rail').forEach(rail => {
     const viewport = rail.querySelector('.rail-scroll');
-    const controller = window.CheshuyaCarousel.createCardCarousel(viewport);
+    const controller = window.CheshuyaCarousel.createCardCarousel(viewport, { preloadImages: true });
     rail.querySelector('.rail-prev')?.addEventListener('click', () => controller.move(-1));
     rail.querySelector('.rail-next')?.addEventListener('click', () => controller.move(1));
   });
